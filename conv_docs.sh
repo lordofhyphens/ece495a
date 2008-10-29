@@ -7,5 +7,5 @@
 
 # switch statement here to tell us to which we want to do our conversions.
 
-ooffice2 -invisible 
-  "macro:///Standard.MyConversions.SaveAsOOO(`pwd $1`/$1)"
+soffice -invisible 
+  "macro:///Standard.MyConversions.SaveAsXLS(`pwd $1`/$1)"
