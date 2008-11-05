@@ -7,5 +7,4 @@
 
 # switch statement here to tell us to which we want to do our conversions.
 
-soffice -invisible 
-  "macro:///Standard.MyConversions.SaveAsXLS(`pwd $1`/$1)"
+/c/Program\ Files/Openoffice.org\ 3/program/soffice -invisible "macro:///Standard.MyConversions.SaveAsXLS(`pwd $1`/$1)"
