@@ -1,0 +1,3 @@
+Questions to consider asking during the design review, referring to where
+in the design you're referring to).
+*) Adapting logic voltage levels (Ref: External-attached logic analyzer)
