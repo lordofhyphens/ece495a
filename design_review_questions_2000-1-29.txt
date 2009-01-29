@@ -3,3 +3,4 @@ in the design you're referring to).
 *) Adapting logic voltage levels (Ref: External-attached logic analyzer)
 *) Discrete ADC or integrated ADC (Ref: O-scope, other similar probes)
 *) Suggestions as to whether it would be more efficient as to whether to place the I/O on a main bus or to sequester it through a microcontroller's interface (such as UART). 
+*) All in all, just see if what we plan to do will work.
