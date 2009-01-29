@@ -1,0 +1,21 @@
+Statement of Norms, Expectations, and Corrective Actions
+Ref: FA08-74-DIAGTOOL
+
+Norms:
+	· All team members will be notified 48 hours in advance to any changes in the meeting schedule.
+	· No team member will be more than 15 minutes late to a meeting without prior notification.
+	· All team members are to bring their design notebook to every meeting.
+	· All team members are expected to contribute ¼ the cost of any and all expenses that arise from the project.
+	
+Expectations:
+	· Team members are expected to treat one another with respect.
+	· Team members will help one another when deemed necessary.
+	· Team members will ask for help when they first realize they need it and not wait until the last minute to request it.
+	· Team members may offer constructive criticism, but may not bash, insult, put down, or otherwise demoralize other team members.
+	· Anything that is not written in the team's design notebooks is to be published to the team repository.
+
+Corrective Actions:
+	· Verbal warning from any or all team members.
+	· Verbal warning from the project manager.
+	· Written warning from the project manager and a verbal report to the course professors.
+	· Written report to the course professors.

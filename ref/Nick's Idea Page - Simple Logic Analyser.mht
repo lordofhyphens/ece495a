@@ -1,0 +1,662 @@
+From: <Saved by Windows Internet Explorer 7>
+Subject: Nick's Idea Page - Simple Logic Analyser
+Date: Tue, 23 Sep 2008 20:37:47 -0500
+MIME-Version: 1.0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://uvasux.googlepages.com/simplelogicanalyser
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.5579
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" =
+"http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML><HEAD><TITLE>Nick's Idea Page - Simple Logic Analyser</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DUTF-8">
+<STYLE type=3Dtext/css>#g_title P {
+	MARGIN: 0px
+}
+#g_footer P {
+	MARGIN: 0px
+}
+#g_description P {
+	MARGIN: 0px
+}
+* HTML .wrapper {
+	HEIGHT: 0.1%
+}
+
+@media Tty   =20
+{
+I {
+	content: "";/*" "*/}} * html #container { height: 1%; } /*"
+}
+    }
+.editable {
+	BORDER-RIGHT: blue 1px dashed; BORDER-TOP: blue 1px dashed; =
+BORDER-LEFT: blue 1px dashed; BORDER-BOTTOM: blue 1px dashed
+}
+#footer {
+	CLEAR: both
+}
+#extraDiv1 {
+	DISPLAY: none
+}
+#extraDiv2 {
+	DISPLAY: none
+}
+#extraDiv3 {
+	DISPLAY: none
+}
+#extraDiv4 {
+	DISPLAY: none
+}
+#extraDiv5 {
+	DISPLAY: none
+}
+#extraDiv6 {
+	DISPLAY: none
+}
+A IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+:link IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+:visited IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+BODY {
+	TEXT-ALIGN: center
+}
+#container {
+	MARGIN: 0px auto; WIDTH: 718px; TEXT-ALIGN: left
+}
+H1 {
+	FONT-SIZE: 1em
+}
+H2 {
+	FONT-SIZE: 1em
+}
+H3 {
+	FONT-SIZE: 1em
+}
+H4 {
+	FONT-SIZE: 1em
+}
+H5 {
+	FONT-SIZE: 1em
+}
+H6 {
+	FONT-SIZE: 1em
+}
+PRE {
+	FONT-SIZE: 1em
+}
+CODE {
+	FONT-SIZE: 1em
+}
+P {
+	FONT-SIZE: 1em
+}
+DL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+DT {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+H1 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+H2 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+H3 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+H4 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+H5 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+H6 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+PRE {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+FORM {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+HTML {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+P {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+BLOCKQUOTE {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+FIELDSET {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+INPUT {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+A IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+:link IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+:visited IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+ADDRESS {
+	FONT-STYLE: normal
+}
+HTML {
+	BACKGROUND: #a0aa6d
+}
+BODY {
+	FONT-SIZE: 0.85em; BACKGROUND: #a0aa6d; MARGIN: 0px; FONT-FAMILY: =
+'Georgia', 'Times New Roman','Times', serif
+}
+A {
+	COLOR: #3366ff; BORDER-BOTTOM: #3366ff 1px dotted; TEXT-DECORATION: =
+none
+}
+A:visited {
+	COLOR: #cc33ff; BORDER-BOTTOM: #cc33ff 1px dotted; TEXT-DECORATION: =
+none
+}
+A:hover {
+	COLOR: #ff6600; BORDER-BOTTOM: #ff6600 1px dotted; TEXT-DECORATION: =
+none
+}
+A:active {
+	COLOR: #ff6600; BORDER-BOTTOM: #ff6600 1px dotted; TEXT-DECORATION: =
+none
+}
+B {
+	FONT-WEIGHT: bold
+}
+STRONG {
+	FONT-WEIGHT: bold
+}
+BLOCKQUOTE {
+	PADDING-LEFT: 1em; FONT-SIZE: 0.8em; MARGIN: 1em 3em; BORDER-LEFT: =
+#a0aa6d 2px dotted; COLOR: #697335
+}
+BLOCKQUOTE P {
+	LINE-HEIGHT: 1.45em
+}
+EM {
+	FONT-STYLE: italic
+}
+H1 {
+	FONT-WEIGHT: normal; MARGIN: 1.5em 0px 0.5em
+}
+H2 {
+	FONT-WEIGHT: normal; MARGIN: 1.5em 0px 0.5em
+}
+H3 {
+	FONT-WEIGHT: normal; MARGIN: 1.5em 0px 0.5em
+}
+H4 {
+	FONT-WEIGHT: normal; MARGIN: 1.5em 0px 0.5em
+}
+H5 {
+	FONT-WEIGHT: normal; MARGIN: 1.5em 0px 0.5em
+}
+H6 {
+	FONT-WEIGHT: normal; MARGIN: 1.5em 0px 0.5em
+}
+H1 {
+	FONT-SIZE: 2.25em; MARGIN: 0px; COLOR: #697335; BORDER-BOTTOM: #a0aa6d =
+3px solid
+}
+H2 {
+	FONT-SIZE: 2em; COLOR: #697335; BORDER-BOTTOM: #a0aa6d 3px dotted
+}
+H3 {
+	FONT-SIZE: 1.75em; COLOR: #697335; BORDER-BOTTOM: #a0aa6d 2px solid
+}
+H4 {
+	FONT-SIZE: 1.5em; COLOR: #697335; BORDER-BOTTOM: #a0aa6d 2px dotted
+}
+H5 {
+	FONT-SIZE: 1.25em; COLOR: #697335; BORDER-BOTTOM: #a0aa6d 1px solid
+}
+H6 {
+	FONT-SIZE: 1em; COLOR: #697335; BORDER-BOTTOM: #a0aa6d 1px dotted
+}
+P {
+	MARGIN: 0px 0px 1em; COLOR: #697335; LINE-HEIGHT: 1.75em
+}
+LI {
+	MARGIN: 0px 0px 1em; COLOR: #697335; LINE-HEIGHT: 1.75em
+}
+BLOCKQUOTE P {
+	MARGIN-BOTTOM: 0.5em
+}
+TABLE P {
+	MARGIN-BOTTOM: 0.5em
+}
+DD P {
+	MARGIN-BOTTOM: 0.5em
+}
+LI P {
+	MARGIN-BOTTOM: 0.5em
+}
+#header P {
+	MARGIN-BOTTOM: 0.5em
+}
+UL {
+	PADDING-LEFT: 1.6em; MARGIN: 1em 0px
+}
+OL {
+	PADDING-LEFT: 1.6em; MARGIN: 1em 0px
+}
+LI {
+	MARGIN: 0.25em 0px
+}
+UL LI {
+	LIST-STYLE-TYPE: disc
+}
+OL LI {
+	LIST-STYLE-TYPE: decimal
+}
+TABLE {
+	BORDER-RIGHT: #a0aa6d 1px solid; BORDER-TOP: #a0aa6d 1px solid; =
+BORDER-LEFT: #a0aa6d 1px solid; BORDER-BOTTOM: #a0aa6d 0px solid
+}
+TABLE CAPTION {
+	DISPLAY: block; FONT-SIZE: 0.85em; MARGIN: 0.5em 1em; COLOR: #697335; =
+WHITE-SPACE: nowrap
+}
+TABLE TD {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; PADDING-BOTTOM: 0.5em; =
+VERTICAL-ALIGN: top; PADDING-TOP: 0.5em
+}
+TABLE TH {
+	PADDING-RIGHT: 1em; PADDING-LEFT: 1em; PADDING-BOTTOM: 0.5em; =
+VERTICAL-ALIGN: top; PADDING-TOP: 0.5em
+}
+TABLE TH {
+	COLOR: #e9eccf; BACKGROUND-COLOR: #a0aa6d
+}
+TABLE TD {
+	COLOR: #697335; BORDER-BOTTOM: #a0aa6d 1px solid
+}
+DL {
+	MARGIN: 1em; COLOR: #697335; LINE-HEIGHT: 1.5em; LIST-STYLE-TYPE: disc
+}
+DT {
+	MARGIN-TOP: 0.5em; COLOR: #697335
+}
+DD {
+	MARGIN-LEFT: 2em; COLOR: #697335
+}
+#adsense {
+	TEXT-ALIGN: center
+}
+#container {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px =
+auto; PADDING-TOP: 0px; BACKGROUND-COLOR: #e9eccf
+}
+#footer {
+	MARGIN-TOP: 0em; BACKGROUND: =
+url(/-/includes/style/branches/skin_branch_bottom.jpg) #e9eccf no-repeat =
+left bottom
+}
+#footer HR {
+	MARGIN: 0px
+}
+#footer P {
+	MARGIN: 0px
+}
+#footer wrapper {
+	MARGIN: 0px
+}
+#g_footer {
+	FONT-SIZE: 0.85em; MARGIN: 0px; COLOR: #697335; FONT-FAMILY: Georgia, =
+"Times New Roman", Times, serif; TEXT-ALIGN: center
+}
+#page-title {
+	BORDER-TOP-STYLE: none; PADDING-TOP: 75px; FONT-STYLE: italic; =
+FONT-FAMILY: Georgia, "Times New Roman", Times, serif; =
+BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; TEXT-ALIGN: left; =
+BORDER-BOTTOM-STYLE: none
+}
+#g_description {
+	PADDING-RIGHT: 25px; PADDING-LEFT: 25px; COLOR: #a0aa6d; FONT-STYLE: =
+italic; FONT-FAMILY: Georgia, "Times New Roman", Times, serif; =
+TEXT-ALIGN: right
+}
+#header {
+	BACKGROUND: url(/-/includes/style/branches/skin_branch_top.jpg) #d2d6b1 =
+no-repeat left top
+}
+#header .wrapper {
+	PADDING-LEFT: 260px
+}
+#sidebar {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; FONT-SIZE: 0.85em; BACKGROUND: =
+url(/-/includes/style/branches/skin_branch_main_bg.jpg) #e9eccf repeat-x =
+left top; PADDING-BOTTOM: 5px; PADDING-TOP: 5px
+}
+#sidebar :first-child {
+	MARGIN-TOP: 0px
+}
+#sidebar-alternate {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; FONT-SIZE: 0.85em; BACKGROUND: =
+url(/-/includes/style/branches/skin_branch_main_bg.jpg) #e9eccf repeat-x =
+left top; PADDING-BOTTOM: 5px; PADDING-TOP: 5px
+}
+#sidebar-alternate :first-child {
+	MARGIN-TOP: 0px
+}
+#main-content {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; BACKGROUND: =
+url(/-/includes/style/branches/skin_branch_main_bg.jpg) #e9eccf repeat-x =
+left top; PADDING-BOTTOM: 10px; PADDING-TOP: 10px
+}
+#main-content H2:first-child {
+	MARGIN-TOP: 0px
+}
+HR {
+	MARGIN: 0px 20px; BORDER-TOP-STYLE: none; BORDER-BOTTOM: #a0aa6d 2px =
+dotted; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; HEIGHT: 1px; =
+BACKGROUND-COLOR: #e9eccf
+}
+
+@media Print   =20
+{
+HTML {
+	BACKGROUND: #fff
+}
+#container {
+	BORDER-TOP-WIDTH: 0px! important; PADDING-RIGHT: 0px! important; =
+PADDING-LEFT: 0px! important; BORDER-LEFT-WIDTH: 0px! important; =
+BORDER-BOTTOM-WIDTH: 0px! important; PADDING-BOTTOM: 0px! important; =
+PADDING-TOP: 0px! important; BORDER-RIGHT-WIDTH: 0px! important
+}
+    }
+#threecolumn #main-content .wrapper {
+=09
+}
+#threecolumn #sidebar {
+	WIDTH: 118px
+}
+#threecolumn #sidebar-alternative {
+	WIDTH: 118px
+}
+#threecolumn P.description {
+	MARGIN: 0px
+}
+#twocolumn-left #main-content .wrapper {
+=09
+}
+#twocolumn-left #sidebar {
+	WIDTH: 218px
+}
+#twocolumn-right #main-content .wrapper {
+=09
+}
+#twocolumn-right #sidebar {
+	WIDTH: 218px
+}
+#twocolumn-liquid-right #container {
+=09
+}
+#twocolumn-liquid-right #main-content .wrapper {
+=09
+}
+#twocolumn-liquid-left #container {
+=09
+}
+#twocolumn-liquid-left #main-content .wrapper {
+=09
+}
+#onecolumn #main-content .wrapper {
+=09
+}
+</STYLE>
+<!-- Hack to avoid flash of unstyled content in IE -->
+<SCRIPT> </SCRIPT>
+
+<META content=3D"MSHTML 6.00.6000.16705" name=3DGENERATOR></HEAD>
+<BODY id=3Donecolumn>
+<DIV id=3Dcontainer>
+<DIV class=3Dwrapper>
+<DIV id=3Dheader>
+<DIV class=3Dwrapper>
+<H1 id=3Dpage-title>
+<DIV id=3Dg_title>Simple Logic Analyser</DIV></H1>
+<DIV style=3D"CLEAR: both"></DIV>
+<P class=3Ddescription>
+<DIV id=3Dg_description>
+<P>5-binary inputs, 250K samples/sec, One IC, Less than =
+$5&nbsp;</P></DIV>
+<P></P>
+<DIV style=3D"CLEAR: both"></DIV></DIV></DIV><!-- /editable --><!-- =
+/wrapper --><!-- /header -->
+<DIV id=3Dmain-content>
+<DIV class=3Dwrapper>
+<DIV class=3D"content-item ">
+<DIV id=3Dg_body>
+<H2>Simple Logic Analyser&nbsp;</H2>
+<P>The idea is to build a circuit and computer software that will turn =
+my=20
+computer into a logic analyser.&nbsp; I'd like to be able to inspect =
+logic=20
+values within a digital circuit.&nbsp; This circuit is unbelievably =
+easy: it=20
+only uses one IC and needs no external power supply.</P>
+<P>&nbsp;The logic analyser (<A=20
+href=3D"http://uvasux.googlepages.com/analyser5bit.png">schematic</A>) =
+is=20
+basically a buffer between the user's circuit and the parallel port =
+using a <A=20
+href=3D"http://findchips.com/avail?part=3D74hc4050">74hc4050</A> hex =
+non-inverting=20
+buffer.&nbsp; I assembled one in about 10 minutes.</P>
+<P><I>See also:</I> <A=20
+href=3D"http://uvasux.googlepages.com/interfacingtheparallelport">Interfa=
+cing the=20
+parallel port</A>.&nbsp;</P>
+<H3>A Short Introduction to Measurement by Sampling</H3>
+<P>Back in the day, an engineer named <A=20
+href=3D"http://en.wikipedia.org/wiki/Harry_Nyquist">Harry Nyquist</A> =
+did some=20
+math and discovered some important results about measurement by =
+sampling.&nbsp;=20
+In particular, he discovered that when taking samples at some frequency =
+f, that=20
+the orginial signal can only be unambiguously reconstructed if all of =
+the=20
+constituent frequencies of the signal are less than f/2.&nbsp; This is =
+called=20
+the <A=20
+href=3D"http://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_the=
+orem">Nyquist-Shannon=20
+Sampling Theorem</A>, and it matters to you!</P>
+<P>So say that our logic analyser can collect 250 Ksamples/sec. Then our =
+samples=20
+will accurately characterize frequencies up to 125 KHz.&nbsp; But what =
+about=20
+frequencies above 125 KHz?&nbsp; Well, if this signal is at f &gt; 125 =
+KHz, then=20
+we might witness it as f/2 or f/4 or f/8 or ...&nbsp; This is called=20
+aliasing.&nbsp; That fancy video-effect called anti-aliasing is based on =
+this=20
+principle, in that it smooths the image, reducing high frequencies =
+(across rows=20
+or columns of a display). </P>
+<P>So, don't be alarmed when aliasing happens to you.&nbsp; You might =
+detect a=20
+67 KHz signal, when it's actually a 134 KHz signal.<BR></P>
+<H3>Easy to understand software&nbsp;</H3>
+<P>The source code for a simple program which will capture data until =
+you hit=20
+ctrl-c is <A=20
+href=3D"http://uvasux.googlepages.com/slow-capture.c">slow-capture.c</A>.=
+&nbsp; It=20
+writes its output in comma-separated values (CSV), which can be easily =
+read by=20
+gnuplot, openoffice.org, or ms excel. However, because it's doing I/O =
+after each=20
+sample, it's kind of slow, and I only got about=20
+12.5Ksamples/sec.&nbsp;&nbsp;</P>
+<H3>Faster Sampling&nbsp;</H3>
+<P>A faster, though less understandable version of the software is <A=20
+href=3D"http://uvasux.googlepages.com/fast-capture.c">fast-capture.c</A>.=
+&nbsp;=20
+This version will buffer all the samples in memory, and only write out =
+the data=20
+when done collecting.&nbsp; I was able to get 250Ksamples/sec, which is =
+a 20x=20
+improvement.&nbsp; Now, this logic analyser is sufficient to inspect my =
+<A=20
+href=3D"http://uvasux.googlepages.com/pwmmodulator">PWM circuit</A>.</P>
+<H3>Faster Sampling, Smaller Data Files&nbsp;</H3>
+<P>But, the 250 Ksamples/sec adds up to a very large datafile.&nbsp; =
+When you=20
+look at the file, you notice that very often consecutive lines are=20
+identical.&nbsp; Thus, I've written <A=20
+href=3D"http://uvasux.googlepages.com/delta-fast-capture.c">delta-fast-ca=
+pture.c</A>,=20
+which will only save a sample if it's different from the previous. Thus, =
+if your=20
+circuit is running at 1Hz instead of 250KHz, it will only save one =
+sample per=20
+second, instead of 250Ksamples.</P>
+<H3>Calculating Signal Frequency</H3>
+<P>So, say you have collected some data, and you want to know what the=20
+frequencies of the signals are--maybe your trying to make sure your <A=20
+href=3D"http://uvasux.googlepages.com/555page">555 timers</A> are set =
+right, or=20
+that your <A href=3D"http://uvasux.googlepages.com/pwmmodulator">PWM =
+modulator</A>=20
+is working properly.</P>
+<P>So, I've written <A=20
+href=3D"http://uvasux.googlepages.com/estimate-freq.c">estimate-freq.c</A=
+> which=20
+will read in the output from *-capture.c, and will calculate the =
+frequencies on=20
+each signal.&nbsp; It's pretty simple: for each sample, it checks if =
+that sample=20
+is a positive (rising) or negative (falling) edge.&nbsp; When it detects =
+a=20
+positive edge, it calculates how long its been since the previous =
+falling edge,=20
+and vice-versa.&nbsp; It then calculates an average of all the t1's =
+(high-level=20
+pulses) and the t2's (low-level pulses), and infers a frequency.&nbsp; =
+Note that=20
+this is averaged over the entire dataset; it does not give you a =
+frequency=20
+estimate at each sample.&nbsp;</P>
+<H2>How to take this a step further</H2>
+<P>There are about a million enhancements to make this logic analyzer =
+more=20
+powerful.&nbsp; Here are just a few ideas:</P>
+<UL>
+  <LI><B>More inputs:&nbsp;</B> You could switch over to a different =
+parallel=20
+  port mode and get up to 13 signals.&nbsp; Another idea would be to =
+collect as=20
+  many signals as you want, and save them into registers. You would want =
+to=20
+  strobe the&nbsp; registers simultaneously.&nbsp; Then, use some MUXes, =
+
+  controlled by the parallel port's DATA pins to fetch the appropriate =
+nibble at=20
+  a time.&nbsp; Here is an <A=20
+  href=3D"http://uvasux.googlepages.com/logic-analyser.png">example</A> =
+which=20
+  collects 24 signals, and has an 8-bit counter input.
+  <LI><B>Counter inputs: </B>If you want to measure very high =
+frequencies, you=20
+  might try to add some counter ICs to your circuit.&nbsp; These =
+basically let=20
+  the hardware count pulses much faster than you could read the parallel =
+
+  port.&nbsp; The example from the previous bullet does this.
+  <LI><B>Outputs: </B>As it is, we aren't even using the DATA lines from =
+the=20
+  parallel port.&nbsp; Why not use them to set signals in your test=20
+  circuit?&nbsp; You will need level conversion!&nbsp; Once you have =
+this, you=20
+  should write software that let's you describe and verify test =
+cases--ideally,=20
+  you would be able to express "when this signal goes high, this other =
+signal=20
+  should go low within 250msec," etc.<BR>
+  <LI><B>Better Software:</B> I have given you software with the most =
+basic=20
+  capture utilities.&nbsp; What if it could plot on it's own, instead of =
+using=20
+  gnuplot?&nbsp; If you want to do this, you might want to look into =
+using <A=20
+  href=3D"http://www.libsdl.org/index.php">libSDL</A>.
+  <LI><B>USB:</B> Parallel ports prevent you from connecting more than =
+one=20
+  peripheral at a time.&nbsp; Why not try USB?&nbsp; <A=20
+  href=3D"http://www.hobbyengineering.com/H1517.html">This chip</A> =
+should make=20
+  the job not too much more difficult than the parallel=20
+port.&nbsp;</LI></UL></DIV></DIV>
+<DIV style=3D"CLEAR: both"></DIV></DIV></DIV><!-- /wrapper --><!-- =
+/main-content -->
+<DIV id=3Dfooter>
+<DIV class=3Dwrapper>
+<HR>
+
+<P>
+<DIV id=3Dg_footer>
+<P>(C) 2006 Nick Johnson&nbsp;</P></DIV>
+<P></P>
+<DIV=20
+style=3D"CLEAR: both"></DIV></DIV></DIV><!-- /wrapper --><!-- /footer =
+--></DIV></DIV><!-- /wrapper --><!-- /container -->
+<DIV id=3DextraDiv1><SPAN></SPAN></DIV>
+<DIV id=3DextraDiv2><SPAN></SPAN></DIV>
+<DIV id=3DextraDiv3><SPAN></SPAN></DIV>
+<DIV id=3DextraDiv4><SPAN></SPAN></DIV>
+<DIV id=3DextraDiv5><SPAN></SPAN></DIV>
+<DIV id=3DextraDiv6><SPAN></SPAN></DIV></BODY></HTML>

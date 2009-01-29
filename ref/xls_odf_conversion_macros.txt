@@ -1,0 +1,97 @@
+REM  *****  BASIC  *****
+
+' Design pulled from 
+' http://www.xml.com/pub/a/2006/01/11/from-microsoft-to-openoffice.html?page=2
+
+' Save document as an Acrobat PDF file.
+Sub SaveAsPDF( cFile )
+   cURL = ConvertToURL( cFile )
+   ' Open the document. Just blindly assume that the document 
+   ' is of a type that OOo will correctly recognize and open 
+   ' without specifying an import filter.
+   oDoc = StarDesktop.loadComponentFromURL( cURL, "_blank", 0, _
+            Array(MakePropertyValue( "Hidden", True ),))
+
+   cFile = Left( cFile, Len( cFile ) - 4 ) + ".pdf"
+   cURL = ConvertToURL( cFile )
+   
+   ' Save the document using a filter.   
+   oDoc.storeToURL( cURL, Array(_
+            MakePropertyValue( "FilterName", "writer_pdf_Export" ),)
+   
+   oDoc.close( True )
+End Sub
+
+' Save document as a Microsoft Word file. 
+Sub SaveAsDoc( cFile ) 
+   ' mostly a copy of SaveAsPDF
+   cURL = ConvertToURL( cFile )
+   oDoc = StarDesktop.loadComponentFromURL( cURL, "_blank", 0, (_
+            Array(MakePropertyValue( "Hidden", True ),))
+
+
+   cFile = Left( cFile, Len( cFile ) - 4 ) + ".doc"
+   cURL = ConvertToURL( cFile )
+   
+   oDoc.storeToURL( cURL, Array(_
+            MakePropertyValue( "FilterName", "MS WinWord 6.0" ),)
+   oDoc.close( True )
+
+End Sub
+
+Sub SaveAsXls( cFile ) 
+   ' mostly a copy of SaveAsDoc, which is mostly a copy of SaveAsPDF
+   cURL = ConvertToURL( cFile )
+   oDoc = StarDesktop.loadComponentFromURL( cURL, "_blank", 0, (_
+            Array(MakePropertyValue( "Hidden", True ),))
+
+
+   cFile = Left( cFile, Len( cFile ) - 4 ) + ".doc"
+   cURL = ConvertToURL( cFile )
+   
+   oDoc.storeToURL( cURL, Array(_
+            MakePropertyValue( "FilterName", "MS Excel 6.0" ),)
+   oDoc.close( True )
+
+End Sub 
+
+' Save document as an OpenOffice 2 file. 
+Sub SaveAsOOO( cFile ) 
+   ' mostly a copy of SaveAsPDF. Save as an OpenOffice file. 
+   cURL = ConvertToURL( cFile )
+   oDoc = StarDesktop.loadComponentFromURL( cURL, "_blank", 0, _
+            Array(MakePropertyValue( "Hidden", True ),))
+
+   ' Set output file extension based on lower-case 
+   ' version of input extension.
+   Select Case LCase(Right(cFile,3))
+     Case "ppt"         ' PowerPoint file.
+       cFileExt = "odp"
+     Case "doc"         ' Word file.
+       cFileExt = "odt"
+     Case "xls"         ' Excel file.
+       cFileExt = "ods"
+     Case Else
+       cFileExt = "xxx"
+    End Select
+       
+   cFile = Left( cFile, Len( cFile ) - 3 ) + cFileExt
+   cURL = ConvertToURL( cFile )
+   
+   oDoc.storeAsURL( cURL, Array() )
+   oDoc.close( True )
+
+End Sub
+
+
+Function MakePropertyValue( Optional cName As String, Optional uValue ) _
+   As com.sun.star.beans.PropertyValue
+   Dim oPropertyValue As New com.sun.star.beans.PropertyValue
+   If Not IsMissing( cName ) Then
+      oPropertyValue.Name = cName
+   EndIf
+   If Not IsMissing( uValue ) Then
+      oPropertyValue.Value = uValue
+   EndIf
+   MakePropertyValue() = oPropertyValue
+End Function
