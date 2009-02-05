@@ -1,0 +1,62 @@
+Team 74 First Design Review 1/29/2009
+
+Attendance
+
+Team: Joe Lenox, Douglas Palmer, Nick, Wesley Tredinnick
+
+Advisors: Dr. Hwang, Dr. Traogoudas, Dr. Allen Weston, Dr. Kay M. Purcell, Dr. Fran                                                            Harackiwikz, Dr. William Osborn
+
+Minutes
+Begin 3:25pm
+Joe: Describes on how the project is divided into 2 parts (shows block diagram).
+
+Weston: What is sample rate?
+
+Joe: 1-4 Msamples.
+
+Osborn: Will you need a MCU?
+
+Joe: Resistor adjustments by use of Analog Mux.
+
+Wes: Talk about signal acquisition. 
+
+Advisors: Make sure to clamp so that the device does not blow up.
+
+Hwnag: Switch polarity, switch 5V to 2.5V, connect to single ground, use big capacitor at most right OP AMP.
+
+Osborn: Bluetooth is serial, will you have enough bandwidth?
+
+Joe: I think so; I will need to run the numbers.
+
+Douglas: The design that the acquisition design is based off of has a digital to analog converter and I am not sure why.
+
+Osborn: DAC may be needed to do self corrections.
+
+Purcell: Why do you not use the 741 OP AMP?
+
+Wes: I just went with the first OP AMP I found in Eagle.
+
+Advisors: Compare the OP AMPS.
+
+Purcell: Why do you not use WIFI?
+
+Joe: Because we would have to make the drivers on the Windows side.
+Purcell: Make sure to order as soon as possible.
+
+Harackiwikz: Why have you not ordered yet?
+
+Joe: I am waiting for a more concrete design.
+
+Purcell: We have had teams in the past order components and those not come until after they graduated.
+
+Osborn: Bluetooth DIP may be able to make things simpler.
+
+Osborn: You guys have a lot of interesting work ahead of you.
+
+Harackiwikz: Will hardwire be primary or backup connection?
+
+Joe: We want to do both hardwire and wireless, preferring wireless.
+
+Tragoudas: I will be happy to help.
+
+End 3:57pm
