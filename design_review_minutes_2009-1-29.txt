@@ -12,7 +12,7 @@ Joe: Describes on how the project is divided into 2 parts (shows block diagram).
 
 Weston: What is sample rate?
 
-Joe: 1-4 Msamples.
+Joe: 1-4 Msamples is desired, that can change as I'm the customer here--I'm happy to get something working and improve it from there.
 
 Osborn: Will you need a MCU?
 
