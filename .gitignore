@@ -2,5 +2,8 @@ Thumbs.db
 .~lock*
 *.~*
 *.s\#*
-*_xmsgs/*
-*_xdb/*
+
+# Ignore generated files created by Xilinx
+*.restore
+*_xmsgs/
+*_xdb/
