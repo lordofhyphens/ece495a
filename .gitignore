@@ -2,3 +2,5 @@ Thumbs.db
 .~lock*
 *.~*
 *.s\#*
+*_xmsgs/*
+*_xdb/*
