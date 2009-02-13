@@ -1,8 +1,11 @@
+# Ignore windows thumbnail file
 Thumbs.db
 .~lock*
 *.~*
-*.s\#*
 
+# ignore backup files created by Eagle
+*.s\#*
+*.b\#*
 # Ignore generated files created by Xilinx
 *.restore
 *.jhd
