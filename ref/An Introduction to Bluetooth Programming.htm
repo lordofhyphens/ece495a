@@ -1,0 +1,572 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>An Introduction to Bluetooth Programming</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="NEXT"
+TITLE="Introduction"
+HREF="c33.html"><META
+NAME="KEYWORD"
+CONTENT="Bluetooth"><META
+NAME="KEYWORD"
+CONTENT="BlueZ"><META
+NAME="KEYWORD"
+CONTENT="Linux"><META
+NAME="KEYWORD"
+CONTENT="Bluetooth Linux"><META
+NAME="KEYWORD"
+CONTENT="Bluetooth programming"><META
+NAME="KEYWORD"
+CONTENT="Python Bluetooth"></HEAD
+><BODY
+CLASS="book"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="AEN1"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="title"
+><A
+NAME="AEN2"
+>An Introduction to Bluetooth Programming</A
+></H1
+><H3
+CLASS="author"
+><A
+NAME="AEN5"
+></A
+>Albert Huang</H3
+><DIV
+CLASS="affiliation"
+><DIV
+CLASS="address"
+><P
+CLASS="address"
+><CODE
+CLASS="email"
+>&#60;<A
+HREF="mailto:albert@csail.mit.edu"
+>albert@csail.mit.edu</A
+>&#62;</CODE
+></P
+></DIV
+></DIV
+><P
+CLASS="copyright"
+>Copyright &copy; 2005-2008 Albert Huang.  This document may be redistributed under the terms of the <a href="http://www.gnu.org/licenses/fdl-1.2.txt">GNU Free Documentation License.</a></P
+><DIV
+><DIV
+CLASS="abstract"
+><P
+></P
+><A
+NAME="AEN13"
+></A
+><P
+>&#13;<SPAN
+CLASS="bold"
+><B
+CLASS="emphasis"
+>Book News:</B
+></SPAN
+>  Since its writing, this document
+has been expanded into a more complete text, published by Cambridge University
+Press.  The book is titled <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Bluetooth Essentials for
+Programmers</I
+></SPAN
+> and provides a much more detailed introduction to
+Bluetooth.  It also describes how to write Bluetooth programs targeted for the
+GNU/Linux, Windows XP, OS X, and Series 60 platforms.  Examples are given in C,
+Python, and Java.
+</P
+><P
+>&#13;This tutorial on Bluetooth programming in GNU/Linux will continue to be freely
+distributed from this website, but if you find it useful, or would like to
+learn more about Bluetooth programming, please consider purchasing, borrowing,
+or otherwise obtaining a copy of the book.  Cheers.
+</P
+><P
+>&#13;<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>-Albert</I
+></SPAN
+>
+</P
+><P
+>&#13;More information is available at the website: <A
+HREF="http://www.btessentials.com"
+TARGET="_top"
+>http://www.btessentials.com</A
+>
+</P
+><P
+></P
+></DIV
+></DIV
+><HR></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>1. <A
+HREF="c33.html"
+>Introduction</A
+></DT
+><DD
+><DL
+><DT
+>1.1. <A
+HREF="c33.html#intro-about"
+>About this booklet</A
+></DT
+><DT
+>1.2. <A
+HREF="x39.html"
+>Who this document is for</A
+></DT
+><DT
+>1.3. <A
+HREF="x45.html"
+>Obtaining BlueZ and PyBluez</A
+></DT
+></DL
+></DD
+><DT
+>2. <A
+HREF="c54.html"
+>Bluetooth Programming Introduced</A
+></DT
+><DD
+><DL
+><DT
+>2.1. <A
+HREF="c54.html#Overview"
+>Overview</A
+></DT
+><DT
+>2.2. <A
+HREF="x79.html"
+>Choosing a communication partner</A
+></DT
+><DD
+><DL
+><DT
+>2.2.1. <A
+HREF="x79.html#device-name"
+>Device Name</A
+></DT
+></DL
+></DD
+><DT
+>2.3. <A
+HREF="x95.html"
+>Choosing a transport protocol</A
+></DT
+><DD
+><DL
+><DT
+>2.3.1. <A
+HREF="x95.html#rfcomm-and-tcp"
+>RFCOMM + TCP</A
+></DT
+><DT
+>2.3.2. <A
+HREF="x95.html#l2cap-and-udp"
+>L2CAP + UDP</A
+></DT
+></DL
+></DD
+><DT
+>2.4. <A
+HREF="x148.html"
+>Port numbers and the Service Discovery Protocol</A
+></DT
+><DT
+>2.5. <A
+HREF="x192.html"
+>Establishing connections and transferring data</A
+></DT
+><DT
+>2.6. <A
+HREF="x196.html"
+>Bluetooth Profiles + RFCs</A
+></DT
+></DL
+></DD
+><DT
+>3. <A
+HREF="c212.html"
+>Bluetooth programming with Python - PyBluez</A
+></DT
+><DD
+><DL
+><DT
+>3.1. <A
+HREF="c212.html#pbz-choosing-device"
+>Choosing a communication partner</A
+></DT
+><DT
+>3.2. <A
+HREF="x232.html"
+>Communicating with RFCOMM</A
+></DT
+><DT
+>3.3. <A
+HREF="x264.html"
+>Communicating with L2CAP</A
+></DT
+><DT
+>3.4. <A
+HREF="x290.html"
+>Service Discovery Protocol</A
+></DT
+><DT
+>3.5. <A
+HREF="x339.html"
+>Advanced usage</A
+></DT
+><DD
+><DL
+><DT
+>3.5.1. <A
+HREF="x339.html#pbz-adv-async"
+>Asynchronous device discovery</A
+></DT
+><DT
+>3.5.2. <A
+HREF="x339.html#pbz-adv-rawbt"
+>The <TT
+CLASS="literal"
+>_bluetooth</TT
+> module</A
+></DT
+></DL
+></DD
+><DT
+>3.6. <A
+HREF="x380.html"
+>Alternatives</A
+></DT
+><DD
+><DL
+><DT
+>3.6.1. <A
+HREF="x380.html#pbz-java"
+>Java</A
+></DT
+><DT
+>3.6.2. <A
+HREF="x380.html#pbz-pyaffix"
+>PyAffix</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>4. <A
+HREF="c404.html"
+>Bluetooth programming in C with BlueZ</A
+></DT
+><DD
+><DL
+><DT
+>4.1. <A
+HREF="c404.html#bzi-choosing"
+>Choosing a communication partner</A
+></DT
+><DD
+><DL
+><DT
+>4.1.1. <A
+HREF="c404.html#bzi-compilation"
+>Compilation</A
+></DT
+><DT
+>4.1.2. <A
+HREF="c404.html#bzi-explanation"
+>Explanation</A
+></DT
+></DL
+></DD
+><DT
+>4.2. <A
+HREF="x502.html"
+>RFCOMM sockets</A
+></DT
+><DD
+><DL
+><DT
+>4.2.1. <A
+HREF="x502.html#bzi-addressing"
+>Addressing structures</A
+></DT
+><DT
+>4.2.2. <A
+HREF="x502.html#bzi-byte-order"
+>A note on byte ordering</A
+></DT
+><DT
+>4.2.3. <A
+HREF="x502.html#bzi-dynamic-port-numbers"
+>Dynamically assigned port numbers</A
+></DT
+><DT
+>4.2.4. <A
+HREF="x502.html#bz-rfcomm-summary"
+>RFCOMM summary</A
+></DT
+></DL
+></DD
+><DT
+>4.3. <A
+HREF="x559.html"
+>L2CAP sockets</A
+></DT
+><DD
+><DL
+><DT
+>4.3.1. <A
+HREF="x559.html#bzi-l2cap-mtu"
+>Maximum Transmission Unit</A
+></DT
+><DT
+>4.3.2. <A
+HREF="x559.html#bzi-l2cap-unreliable"
+>Unreliable sockets</A
+></DT
+></DL
+></DD
+><DT
+>4.4. <A
+HREF="x604.html"
+>Service Discovery Protocol</A
+></DT
+><DD
+><DL
+><DT
+>4.4.1. <A
+HREF="x604.html#bzi-sdpd"
+><TT
+CLASS="literal"
+>sdpd</TT
+> - The SDP daemon</A
+></DT
+><DT
+>4.4.2. <A
+HREF="x604.html#bzi-desc-sdp"
+>Describing a service</A
+></DT
+><DT
+>4.4.3. <A
+HREF="x604.html#bzi-sdp-register"
+>Registering a service</A
+></DT
+></DL
+></DD
+><DT
+>4.5. <A
+HREF="x682.html"
+>Advanced BlueZ programming</A
+></DT
+><DT
+>4.6. <A
+HREF="x701.html"
+>Chapter Summary</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Tables</B
+></DT
+><DT
+>2-1. <A
+HREF="x95.html#protocol-table"
+>A comparison of the requirements that would lead us to choose certain
+protocols.  Best-effort streams communication is not shown because it
+reduces to best-effort datagram communication.</A
+></DT
+><DT
+>2-2. <A
+HREF="x148.html#port-numbers"
+>Port numbers and their terminology for various protocols</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Examples</B
+></DT
+><DT
+>3-1. <A
+HREF="c212.html#findmyphone.py"
+>findmyphone.py</A
+></DT
+><DT
+>3-2. <A
+HREF="x232.html#rfcomm-server.py"
+>rfcomm-server.py</A
+></DT
+><DT
+>3-3. <A
+HREF="x232.html#rfcomm-client.py"
+>rfcomm-client.py</A
+></DT
+><DT
+>3-4. <A
+HREF="x264.html#py-l2cap-server"
+>l2cap-server.py</A
+></DT
+><DT
+>3-5. <A
+HREF="x264.html#py-l2cap-client"
+>l2cap-client.py</A
+></DT
+><DT
+>3-6. <A
+HREF="x290.html#py-rfcomm-server-sdp"
+>rfcomm-server-sdp.py</A
+></DT
+><DT
+>3-7. <A
+HREF="x290.html#py-rfcomm-client-sdp"
+>rfcomm-client-sdp.py</A
+></DT
+><DT
+>3-8. <A
+HREF="x339.html#AEN347"
+>asynchronous-inquiry.py</A
+></DT
+><DT
+>4-1. <A
+HREF="c404.html#simplescan.c"
+>simplescan.c</A
+></DT
+><DT
+>4-2. <A
+HREF="x502.html#rfcomm-server.c"
+>rfcomm-server.c</A
+></DT
+><DT
+>4-3. <A
+HREF="x502.html#rfcomm-client.c"
+>rfcomm-client.c</A
+></DT
+><DT
+>4-4. <A
+HREF="x559.html#l2cap-server.c"
+>l2cap-server.c</A
+></DT
+><DT
+>4-5. <A
+HREF="x559.html#l2cap-client.c"
+>l2cap-client.c</A
+></DT
+><DT
+>4-6. <A
+HREF="x559.html#set-flush-to.c"
+>set-flush-to.c</A
+></DT
+><DT
+>4-7. <A
+HREF="x604.html#sdpsearch1"
+>Step one of searching a device for a service with UUID 0xABCD</A
+></DT
+><DT
+>4-8. <A
+HREF="x604.html#sdpsearch2"
+>parsing and interpreting an SDP search result</A
+></DT
+><DT
+>4-9. <A
+HREF="x604.html#sdpdesc"
+>Describing a service</A
+></DT
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c33.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Introduction</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
