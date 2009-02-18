@@ -17,33 +17,45 @@ void uart_init (void) {
 	UBRRL = BAUD_PRESCALE; // Load lower 8-bits of the baud rate value into the low byte of the UBRR register
 	UBRRH = (BAUD_PRESCALE >> 8); // Load upper 8-bits of the baud rate value into the high byte of the UBRR register
 }
-// initialize the I/O ports we'll be using.
+// initialize the I/O ports we'll be using. Might not actually necessary 
 void io_init(void) {
+	// Set PORTC to input, and PORTD6 and PORTD7 to input
+	DDRC = 0;
+	DDRD6 = 0;
+	DDRD7 = 0;
 }
 int main(void) {
 	// Set up the uart.
 	unsigned char ByteToSend;
-	unsigned char nextByte;
+	unsigned char bufferByte;
 	unsigned char zero = 0;
 	unsigned int n = 0;
 	uart_init();
 	io_init();
+
+	// TODO: Allow us to start and stop the loop, based on a given input port.
+	// Probably will involve some tri-stating of the USART transmit/receive.
+
 	//Set up the first two bytes to send.
 	ByteToSend = PORTC;
-	nextByte = ((1 >> PORTD7) & PORTD6);
-	// Loop forever ! 
+	bufferByte = ((1 >> PORTD7) | PORTD6);
+	// Loop forever !
 	while (1) {
 		// Wait for the buffer to clear before filling it more.
 		while ((UCSRA & (1 << UDRE)) == 0) {}; 
 		UDR = ByteToSend;
 		n++;
 		if (n > 4) { n = 0; }
-		ByteToSend = nextByte |= ((2*n) >> PORTC);
-		nextByte = zero; // clear the buffer between writes
+		// the 2*n multiplier on the shift is because of the leftover bits when doing a 10->8 adaptation.
+		ByteToSend = bufferByte |= ((2*n) >> PORTC);
+		bufferByte = zero; // clear the buffer between writes
 		if (n!=0) {
-			nextByte = (unsigned int)((2*n) << PORTC) | (2*n) >> PORTD6 | (((2*n)+1) >> PORTD7);
+			/* Set the buffer to the proper amount of shift. 
+			   the branch should actually be unnecessary.
+			*/
+			bufferByte = (unsigned int)((2*n) << PORTC) | (2*n) >> PORTD6 | (((2*n)+1) >> PORTD7);
 		} else {
-			nextByte = (1 >> PORTD7) & PORTD6;
+			bufferByte = (1 >> PORTD7) | PORTD6;
 		}
 	}
 	return 0;

@@ -15,3 +15,6 @@ FLAGS=-Wall -mmcu=$(MCU) -D$(F_CPU) -g -O$(OPTI_LEVEL)
 
 all: 
 	$(CC) usart.c $(FLAGS)
+
+clean:
+	rm -f *.o *.s
