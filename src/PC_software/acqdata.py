@@ -1,8 +1,26 @@
 # acqdata.py
 # Performs data acquisition over serial port
 # Well, acquires data from a file at the moment.
-import sys, struct
+import os, sys, struct
 
+
+# Get file prefix
+from time import gmtime, strftime
+pref = strftime("%d%b%Y", gmtime());
+
+max = 0;
+undsplit = []
+for root, dirs, files in os.walk('data\\'):
+	for name in files:
+		name = name.split('.')[0]
+		undsplit = name.split('_')
+		if undsplit[0] == pref:
+			if int(undsplit[1][0]) > max:
+				max = int(undsplit[1][0])
+
+acqnum = max + 1
+
+	
 
 ###***** Function definitions *****##
 
@@ -56,8 +74,9 @@ def bin2int(bin):
 	
 
 
-def openNewOut(filenum):
-	return open(r'data\d'+str(filenum)+'.dat', "wb")
+def openNewOut(filepart):
+	filename = 'data\\'+pref+'_'+str(acqnum)+filepart+'.dat'
+	return open(filename, "wb")
 
 
 
@@ -72,6 +91,13 @@ def parseHexTextData(chunk):
 	for j in range(0, len(parsed) / 8):
 		range1 = j*8
 		range2 = (j+1)*8
+		parseNums.append(bin2int(parsed[range1:range2]))
+
+
+	# If data doesn't evenly match 8 bit chunks, pad last 4
+	if range2 != len(parsed):
+		range1 = range2
+		range2 = len(parsed)
 		parseNums.append(bin2int(parsed[range1:range2]))
 
 
@@ -99,9 +125,9 @@ else:
 print "\nAcquiring data from", acqfile
 f = open(acqfile, "r")
 
-dfilenum = 0;
+dfilepart = 'a';
 dfileinc = 0;
-writeF = openNewOut(dfilenum)
+writeF = openNewOut(dfilepart)
 
 
 # Read 4096-byte chunks from file and convert each char to integer
@@ -110,9 +136,10 @@ while 1:
 
 	# Open a new binary file if the old file is 100 kb in size
 	if dfileinc > 24:
-		dfilenum += 1
+		dfilepart = chr(ord(dfilepart) + 1)
+		dfileinc = 0;
 		writeF.close()
-		writeF = openNewOut(dfilenum)
+		writeF = openNewOut(dfilepart)
 
 	# If read data is empty, break loop
 	# Otherwise keep processing data
@@ -123,5 +150,7 @@ while 1:
 
 		for i in range(0, len(parseNums)):
 			writeF.write(struct.pack('B', parseNums[i]))
+	
+	dfileinc += 1
 
 
