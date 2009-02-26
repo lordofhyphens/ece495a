@@ -5,7 +5,7 @@ function [val, count] = displaydata(path)
 		return;
 	else
 		dfid = fopen(path, "r");
-		[val, count] = fread(dfid, 20, "uint8");
+		[val, count] = fread(dfid, 20, "int8");
 
 		n = 0:count-1;
 		stem(n, val);

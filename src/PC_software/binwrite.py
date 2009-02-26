@@ -23,7 +23,7 @@ for thisnum in innums.split(','):
 fid = open(wrifile, "wb")
 
 for i in range(0, len(nums)):
-	fid.write(struct.pack('B', nums[i]))
+	fid.write(struct.pack('b', nums[i]))
 
 
 fid.close()
