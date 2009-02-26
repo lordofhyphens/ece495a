@@ -1,7 +1,11 @@
-# acqdata.py
-# Performs data acquisition over serial port
-# Well, acquires data from a file at the moment.
-import os, sys, struct
+##################################################
+#                   acqdata.py                   #
+##################################################
+# Performs data acquisition over serial port     #
+# Well, acquires data from a file at the moment. #
+##################################################
+
+import os, sys, struct      
 
 
 # Get file prefix
@@ -22,7 +26,9 @@ acqnum = max + 1
 
 	
 
-###***** Function definitions *****##
+########################################
+#         Function definitions         #
+########################################
 
 def hex2bin(c):
 	c = c.upper()
@@ -64,16 +70,6 @@ def hex2bin(c):
 
 
 
-def bin2int(bin):
-	conv = 0;
-
-	for i in range(0, len(bin)):
-		conv = conv + int(bin[i]) * 2**(7-i)
-	
-	return conv
-	
-
-
 def openNewOut(filepart):
 	filename = 'data\\'+pref+'_'+str(acqnum)+filepart+'.dat'
 	return open(filename, "wb")
@@ -88,28 +84,34 @@ def parseHexTextData(chunk):
 		parsed += hex2bin(chunk[i])
 
 	
-	for j in range(0, len(parsed) / 8):
-		range1 = j*8
-		range2 = (j+1)*8
-		parseNums.append(bin2int(parsed[range1:range2]))
+	for j in range(0, len(parsed), 8):
+		if (j+8) > len(parsed):
+			range2 = len(parsed)
+		else:
+			range2 = j + 8
 
-
-	# If data doesn't evenly match 8 bit chunks, pad last 4
-	if range2 != len(parsed):
-		range1 = range2
-		range2 = len(parsed)
-		parseNums.append(bin2int(parsed[range1:range2]))
+		parseNums.append(int(parsed[j:range2], 2))
 
 
 	return parseNums
+
+
+
+def parseBin(chunk):
+	parsed = []
+	for i in range(0, len(chunk)):
+		parsed.append(struct.unpack('B', chunk[i]))
+
+	return parsed
 
 		
 
 
 
 
-
-###***** Begin program *****###
+########################################
+#            Begin  program            #
+########################################
 
 if len(sys.argv) == 2:
 	acqfile = sys.argv[1]
@@ -123,7 +125,13 @@ else:
 
 
 print "\nAcquiring data from", acqfile
-f = open(acqfile, "r")
+
+if acqfile.find('.bin') == -1:
+	f = open(acqfile, "r")
+	inIsBin = 0
+else:
+	f = open(acqfile, "rb")
+	inIsBin = 1
 
 dfilepart = 'a';
 dfileinc = 0;
@@ -146,10 +154,14 @@ while 1:
 	if len(thisChunk) == 0: 
 		break
 	else:
-		parseNums = parseHexTextData(thisChunk)
+		if(inIsBin):
+			parseNums = parseBin(thisChunk)
+		else:
+			parseNums = parseHexTextData(thisChunk)
+
 
 		for i in range(0, len(parseNums)):
-			writeF.write(struct.pack('B', parseNums[i]))
+			writeF.write(struct.pack('B', parseNums[i][0]))
 	
 	dfileinc += 1
 
