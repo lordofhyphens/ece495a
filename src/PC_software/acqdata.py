@@ -100,7 +100,7 @@ def parseHexTextData(chunk):
 def parseBin(chunk):
 	parsed = []
 	for i in range(0, len(chunk)):
-		parsed.append(struct.unpack('B', chunk[i]))
+		parsed.append(struct.unpack('b', chunk[i]))
 
 	return parsed
 
@@ -161,7 +161,7 @@ while 1:
 
 
 		for i in range(0, len(parseNums)):
-			writeF.write(struct.pack('B', parseNums[i][0]))
+			writeF.write(struct.pack('b', parseNums[i][0]))
 	
 	dfileinc += 1
 
