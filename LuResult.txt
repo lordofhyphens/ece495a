@@ -1,0 +1,3 @@
+Install Failed
+16
+The LiveUpdate install failed due to an internal error.
