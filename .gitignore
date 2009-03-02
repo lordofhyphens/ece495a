@@ -5,6 +5,7 @@ Thumbs.db
 
 # ignore backup files created by Eagle
 *.s\#*
+*.s\#*
 *.b\#*
 # Ignore generated files created by Xilinx
 *.restore
