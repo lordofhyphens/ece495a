@@ -18,6 +18,7 @@ class App(Frame):
 	def __init__(self, master = None):
 		self.makeAcqWidgets(master)
 		self.makeDispWidgets(master)
+		self.makeCtrlWidgets(master)
 		self.pathto = "data\\"
 		self.fsuff = ".dat"
 
@@ -60,7 +61,7 @@ class App(Frame):
 
 
 	def makeDispWidgets(self, master):
-		# Acquisition Display LabelFrame
+		# Data Display LabelFrame
 		dispfrm = LabelFrame(master, text="Data Display", padx=5, pady=5)
 		dispfrm.grid(row=0, column=4)
 
@@ -78,6 +79,41 @@ class App(Frame):
 		self.clearList.grid(row=4, column=1, columnspan=1)
 		self.deleteItem.grid(row=4, column=2, columnspan=1)
 		self.displayData.grid(row=4, column=3, columnspan=1)
+
+
+
+	def makeCtrlWidgets(self, master):
+		# Control Interface LabelFrame
+		ctrlfrm = LabelFrame(master, text="Control Interface", padx=5, pady=5)
+		ctrlfrm.grid(row=5, column=0, sticky=W)
+
+		# Checkboxes
+		c = [0, 0, 0, 0, 0, 0, 0]
+		self.chck1 = Checkbutton(ctrlfrm, text="Check1", variable=c[0])
+		self.chck2 = Checkbutton(ctrlfrm, text="Check2", variable=c[1])
+		self.chck3 = Checkbutton(ctrlfrm, text="Check3", variable=c[2])
+		self.chck4 = Checkbutton(ctrlfrm, text="Check4", variable=c[3])
+		self.chck5 = Checkbutton(ctrlfrm, text="Check5", variable=c[4])
+		self.chck6 = Checkbutton(ctrlfrm, text="Check6", variable=c[5])
+		self.chck7 = Checkbutton(ctrlfrm, text="Check7", variable=c[6])
+
+		self.chck1.grid(row=5, column=1, columnspan=2)
+		self.chck2.grid(row=6, column=1, columnspan=2)
+		self.chck3.grid(row=7, column=1, columnspan=2)
+		self.chck4.grid(row=8, column=1, columnspan=2)
+		self.chck5.grid(row=9, column=1, columnspan=2)
+		self.chck6.grid(row=10, column=1, columnspan=2)
+		self.chck7.grid(row=12, column=1, columnspan=2)
+	
+
+		# Radio buttons
+		r = IntVar()
+		self.rad1 = Radiobutton(ctrlfrm, text="One", variable=r, value=1)
+		self.rad2 = Radiobutton(ctrlfrm, text="Two", variable=r, value=2)
+
+		self.rad1.grid(row=11, column=1, columnspan=1)
+		self.rad2.grid(row=11, column=2, columnspan=1)
+
 			
 
 
