@@ -1,5 +1,5 @@
-#ifndef CONTROL_UTIL_H
-#define CONTROL_UTIL_H
+//#ifndef CONTROL_UTIL_H
+//#define CONTROL_UTIL_H
 /** Function prototypes for main control logic.
 **/
 
@@ -20,4 +20,4 @@ void close_data_input(int input);
 void close_output();
 void open_output();
 
-#endif
+//#endif
