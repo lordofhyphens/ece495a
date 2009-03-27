@@ -5,30 +5,37 @@
 # Well, acquires data from a file at the moment. #
 ##################################################
 
-import os, sys, struct      
-
-
-# Get file prefix
+import os, sys, struct
 from time import gmtime, strftime
-pref = strftime("%d%b%Y", gmtime());
 
-max = 0;
-undsplit = []
-for root, dirs, files in os.walk('data\\'):
-	for name in files:
-		name = name.split('.')[0]
-		undsplit = name.split('_')
-		if undsplit[0] == pref:
-			if int(undsplit[1][0]) > max:
-				max = int(undsplit[1][0])
 
-acqnum = max + 1
+############################
+#   Function definitions   #
+############################
 
-	
+def getPre():
+	pref = strftime("%d%b%Y", gmtime());
 
-########################################
-#         Function definitions         #
-########################################
+	max = 0;
+	undsplit = []
+	for root, dirs, files in os.walk('data\\'):
+		for name in files:
+			name = name.split('.')[0]
+			undsplit = name.split('_')
+			if undsplit[0] == pref:
+				if int(undsplit[1][0]) > max:
+					max = int(undsplit[1][0])
+
+	acqnum = max + 1
+	return acqnum, pref
+
+
+
+def openNewOut(filepart, pref, acqnum):
+	filename = 'data\\'+pref+'_'+str(acqnum)+filepart+'.dat'
+	return open(filename, "wb")
+
+
 
 def hex2bin(c):
 	c = c.upper()
@@ -70,12 +77,6 @@ def hex2bin(c):
 
 
 
-def openNewOut(filepart):
-	filename = 'data\\'+pref+'_'+str(acqnum)+filepart+'.dat'
-	return open(filename, "wb")
-
-
-
 def parseHexTextData(chunk):
 	parsed = ""
 	parseNums = []
@@ -107,62 +108,52 @@ def parseBin(chunk):
 		
 
 
+def acq(acqfile=""):
+	acqnum, pref = getPre()
 
-
-########################################
-#            Begin  program            #
-########################################
-
-if len(sys.argv) == 2:
-	acqfile = sys.argv[1]
-else:
-	if len(sys.argv) == 1:
+	if(acqfile == ""):
 		prompt = "Please enter the name of the file to acquire data from: "
-	elif len(sys.argv) > 2:
-		prompt = "Too many arguments, please enter the name of the file to acquire data from: "
-	
-	acqfile = raw_input(prompt)
+		acqfile = raw_input(prompt)
 
+	print "\nAcquiring data from", acqfile
 
-print "\nAcquiring data from", acqfile
-
-if acqfile.find('.bin') == -1:
-	f = open(acqfile, "r")
-	inIsBin = 0
-else:
-	f = open(acqfile, "rb")
-	inIsBin = 1
-
-dfilepart = 'a';
-dfileinc = 0;
-writeF = openNewOut(dfilepart)
-
-
-# Read 4096-byte chunks from file and convert each char to integer
-while 1:
-	thisChunk = f.read(4096).rstrip('\n')
-
-	# Open a new binary file if the old file is 100 kb in size
-	if dfileinc > 24:
-		dfilepart = chr(ord(dfilepart) + 1)
-		dfileinc = 0;
-		writeF.close()
-		writeF = openNewOut(dfilepart)
-
-	# If read data is empty, break loop
-	# Otherwise keep processing data
-	if len(thisChunk) == 0: 
-		break
+	# Determine if input file is binary
+	if acqfile.find('.bin') == -1:
+		f = open(acqfile, "r")
+		inIsBin = 0
 	else:
-		if(inIsBin):
-			parseNums = parseBin(thisChunk)
+		f = open(acqfile, "rb")
+		inIsBin = 1
+
+	dfilepart = 'a';
+	dfileinc = 0;
+	writeF = openNewOut(dfilepart, pref, acqnum)
+
+
+	# Read 4096-byte chunks from file and convert each char to integer
+	while 1:
+		thisChunk = f.read(4096).rstrip('\n')
+
+		# Open a new binary file if the old file is 100 kb in size
+		if dfileinc > 24:
+			dfilepart = chr(ord(dfilepart) + 1)
+			dfileinc = 0;
+			writeF.close()
+			writeF = openNewOut(dfilepart, pref, acqnum)
+
+		# If read data is empty, break loop
+		# Otherwise keep processing data
+		if len(thisChunk) == 0: 
+			break
 		else:
-			parseNums = parseHexTextData(thisChunk)
+			if(inIsBin):
+				parseNums = parseBin(thisChunk)
+			else:
+				parseNums = parseHexTextData(thisChunk)
 
 
-		for i in range(0, len(parseNums)):
-			writeF.write(struct.pack('b', parseNums[i][0]))
+			for i in range(0, len(parseNums)):
+				writeF.write(struct.pack('b', parseNums[i][0]))
 	
-	dfileinc += 1
-
+		dfileinc += 1
 
