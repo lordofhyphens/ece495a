@@ -33,8 +33,22 @@ def getPre():
 
 def openNewOut(filepart, pref, acqnum):
 	filename = 'data\\'+pref+'_'+str(acqnum)+filepart+'.dat'
-	return open(filename, "wb")
+	return open(filename, "wb"), filename
 
+
+class acqConfig:
+	"configures acqconfig.txt"
+	def __init__(self, file):
+		self.beginFile = file
+		self.endFile = ""
+
+	def update(self, file):
+		self.endFile = file
+
+	def write(self):
+		self.writetext = self.beginFile+';'+self.endFile+';'
+		self.confFile = open("acqconfig.txt", "w")
+		self.confFile.write(self.writetext)
 
 
 def hex2bin(c):
@@ -127,8 +141,8 @@ def acq(acqfile=""):
 
 	dfilepart = 'a';
 	dfileinc = 0;
-	writeF = openNewOut(dfilepart, pref, acqnum)
-
+	writeF, writeFileName = openNewOut(dfilepart, pref, acqnum)
+	conf = acqConfig(writeFileName)
 
 	# Read 4096-byte chunks from file and convert each char to integer
 	while 1:
@@ -139,8 +153,9 @@ def acq(acqfile=""):
 			dfilepart = chr(ord(dfilepart) + 1)
 			dfileinc = 0;
 			writeF.close()
-			writeF = openNewOut(dfilepart, pref, acqnum)
-
+			writeF, writeFileName = openNewOut(dfilepart, pref, acqnum)
+			conf.update(writeFileName)
+	
 		# If read data is empty, break loop
 		# Otherwise keep processing data
 		if len(thisChunk) == 0: 
@@ -156,4 +171,7 @@ def acq(acqfile=""):
 				writeF.write(struct.pack('b', parseNums[i][0]))
 	
 		dfileinc += 1
+	
+
+	conf.write()
 

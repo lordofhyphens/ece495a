@@ -1,26 +1,24 @@
-function [val, count] = displaydata(path)
-
-	if (nargin != 1)
-		usage("displaydata(filename)");
+function displaydata
+	if(nargin != 0)
+		usage("displaydata");
 		return;
 	else
-		dfid = fopen(path, "r");
-		[val, count] = fread(dfid, 20, "int8");
+		acfid = fopen("acqconfig.txt", "r");
+		txt = fgetl(acfid);
+		semipos = findstr(txt, ";");
+		
+		startfile = substr(txt, 1, semipos(1) - 1);
 
-		n = 0:count-1;
-		stem(n, val);
+		if(semipos(2) > semipos(1) + 1)
+			endfile = substr(txt, (semipos(1) + 1), semipos(2) - (semipos(1) + 1));
+		else
+			endfile = "";
+		endif
 
-		undloc = findstr(path, "_");
-		fnameloc = rindex(path,"\\");
+		fclose(acfid);
+		readandplot(startfile)
 
-		fdate = substr(path, fnameloc+1, (undloc)-(fnameloc+1));
-		fnum = substr(path, undloc+1, 1);
-
-		disp(['fdate = ', fdate, '; fnum = ', fnum]);
-		title(['Plot of ', fdate, ' - ', fnum]);
-
+		
 	endif
-
-
 endfunction
 
