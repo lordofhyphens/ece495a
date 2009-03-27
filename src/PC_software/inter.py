@@ -1,4 +1,17 @@
 from Tkinter import *
+import sys, acqdata
+
+def getAcqFile(argv):
+	global acqfile
+	if(len(argv) == 2):
+		acqfile = argv[1]
+	else:
+		if(len(argv) > 2):
+			prompt = "Too many arguments. Please enter file to acquire data from: "
+		else:
+			prompt = "No acq file supplied. Please enter file to acquire data from: "
+
+		acqfile = raw_input(prompt)
 
 
 class App(Frame):
@@ -42,17 +55,19 @@ class App(Frame):
 
 
 	def beginAcqClick(self):
-			 self.beginAcq.grid_remove();
-			 self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
+		self.beginAcq.grid_remove();
+		self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
+		acqdata.acq(acqfile)
 
 
 	def endAcqClick(self):
-			 self.endAcq.grid_remove();
-			 self.beginAcq.grid(row=2, column=0, columnspan=2, sticky=S)
+		self.endAcq.grid_remove();
+		self.beginAcq.grid(row=2, column=0, columnspan=2, sticky=S)
 		
 
 
 
+getAcqFile(sys.argv)
 root = Tk()
 app = App(root)
 root.mainloop() 
