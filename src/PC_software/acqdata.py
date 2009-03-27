@@ -8,6 +8,9 @@
 import os, sys, struct
 from time import gmtime, strftime
 
+global pathTo;
+pathTo = 'data\\'
+
 
 ############################
 #   Function definitions   #
@@ -18,7 +21,7 @@ def getPre():
 
 	max = 0;
 	undsplit = []
-	for root, dirs, files in os.walk('data\\'):
+	for root, dirs, files in os.walk(pathTo):
 		for name in files:
 			name = name.split('.')[0]
 			undsplit = name.split('_')
@@ -32,8 +35,8 @@ def getPre():
 
 
 def openNewOut(filepart, pref, acqnum):
-	filename = 'data\\'+pref+'_'+str(acqnum)+filepart+'.dat'
-	return open(filename, "wb"), filename
+	filename = pref+'_'+str(acqnum)+filepart+'.dat'
+	return open(pathTo+filename, "wb"), filename
 
 
 class acqConfig:

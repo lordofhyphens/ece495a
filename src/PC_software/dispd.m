@@ -1,9 +1,11 @@
-function displaydata
+function dispd
+	pathto = "data\";
+
 	if(nargin != 0)
-		usage("displaydata");
+		usage("dispd");
 		return;
 	else
-		acfid = fopen("acqconfig.txt", "r");
+		acfid = fopen(strcat(pathto, "acqconfig.txt"), "r");
 		txt = fgetl(acfid);
 		semipos = findstr(txt, ";");
 		
@@ -16,9 +18,13 @@ function displaydata
 		endif
 
 		fclose(acfid);
-		readandplot(startfile)
+		readandplot(startfile);
+		nextfile = getnextfile(startfile);
 
-		
+		do
+			currfile = nextfile;
+			nextfile = getnextfile(currfile);
+		until(strcmp(nextfile, endfile) == 1);
 	endif
 endfunction
 
