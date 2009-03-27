@@ -18,8 +18,9 @@ int main(void) {
 	cmd = SPI_Slave_Receive();
 	// loop forever for now, we'll use an interrupt to reset.
 	while(1) {
-		
+
 	}
+	return 0;
 }
 
 

@@ -5,15 +5,16 @@
 *
 */
 #include <avr/io.h>
-#include <avr/interrupts.h>
+#include <avr/interrupt.h>
 #include <stdio.h>
-#define SPI_MASTER 1
 #define USART_BAUDRATE 921600
 #define BAUD_PRESCALE ((F_CPU / (USART_BAUDRATE * 16)) - 1)
 
 // This needs to be after the defines because the utils use them.
-#include "usart_util.h"
 #include "spi_util.h"
+#include "usart_util.h"
+
+void io_init();
 
 int main(void) {
 	// Set up the uart.
@@ -22,7 +23,7 @@ int main(void) {
 	unsigned char command;
 	unsigned char zero = 0;
 	unsigned int n = 0;
-	uart_init();
+	usart_init();
 	io_init();
 	// set up the SPI.
 	SPI_Master_Init();
@@ -65,9 +66,17 @@ int main(void) {
 // Recieve a new command for the device.
 ISR(UART_RX_vect) 
 {
+	char command;
 	// Just to be sure, wait to make sure we're good to go.
 	while (!(UCSRA & (1<<RXC))) {;}
 	command = UDR;
 	SPI_Master_Transmit(command, 1);
 }
+// initialize the I/O ports we'll be using. Might not actually necessary
+void io_init(void) {
+	// Set PORTC to input, and PORTD6 and PORTD7 to input
+	DDRC = 0;
+	DDRD = (1<<6) | (1<<7);
+}
+
 

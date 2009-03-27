@@ -1,5 +1,5 @@
-#ifndef CONTROL_DEFINES_H
-#define CONTROL_DEFINES_H
+//#ifndef CONTROL_DEFINES_H
+//#define CONTROL_DEFINES_H
 /*
  * Definitions of constants for controls MCU-MCU communication.
  * General definition: TARGETDEVICE_COMMAND value (in hex)
@@ -24,4 +24,4 @@
 #define MCU_A_ON_D_OFF_O_OFF 0x1
 #define MCU_A_ON_D_OFF_O_ON  0x5
 
-#endif
+//#endif

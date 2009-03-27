@@ -1,13 +1,14 @@
 #include <avr/io.h>
+#include "control_util.h"
 
 void open_data_input(int input) {
 	switch (input) {
 		case ANALOG_INPUT: 
 			if (PORTC2 == INPUT_ON) {
-				PORTC2 = INPUT_OFF;
+				portc = portc & (0<<PORTC2);
 			}
 			if (PORTC1 == INPUT_OFF) {
-				PORTC1 = INPUT_ON;
+				portc = portc & (1<<PORTC2);
 			}
 			break;
 		case DIGITAL_INPUT:

@@ -8,10 +8,9 @@
 #include <avr/io.h>
 #include "spi_util.h"
 
-#ifdef SPI_MASTER
 void SPI_Master_Init() {
 	// Set the MOSI and SCK as output, everything else input.
-	DDR_MOSI = 1; DDR_SCK = 1;
+	PORTB = (1 << DDR_MOSI) | (1 << DDR_SCK); 
 	SPCR = (1 << SPE)|(1 << MSTR) | (1 << SPR0);
 }
 void SPI_Master_Transmit(char cData, int wait_for_transmit) {
@@ -19,11 +18,9 @@ void SPI_Master_Transmit(char cData, int wait_for_transmit) {
 	while(!(SPSR & (1<<SPIF)) && wait_for_transmit); 
 }
 
-#endif 
 
-#ifdef SPI_SLAVE
 void SPI_Slave_Init() {
-	DDR_MISO = 1;
+	PORTB = (1 << DDR_MISO);
 	SPCR = (1 << SPE );
 }
 
@@ -32,4 +29,3 @@ char SPI_Slave_Receive() {
 	while (!(SPSR & (1 << SPIF))) {;}
 	return SPDR;
 }
-#endif
