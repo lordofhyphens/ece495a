@@ -2,7 +2,7 @@
 #define CONTROL_DEFINES_H
 /*
  * Definitions of constants for controls MCU-MCU communication.
- * General definition: TARGETDEVICE_COMMAND value
+ * General definition: TARGETDEVICE_COMMAND value (in hex)
  */
 
 // Commands for USART from Main control Unit (MCU).
