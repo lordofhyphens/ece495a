@@ -6,7 +6,7 @@
 ##################################################
 
 import os, sys, struct
-from time import gmtime, strftime
+from time import localtime, strftime
 
 global pathTo;
 pathTo = 'data\\'
@@ -17,7 +17,7 @@ pathTo = 'data\\'
 ############################
 
 def getPre():
-	pref = strftime("%d%b%Y", gmtime());
+	pref = strftime("%d%b%Y", localtime());
 
 	max = 0;
 	undsplit = []
@@ -36,22 +36,29 @@ def getPre():
 
 def openNewOut(filepart, pref, acqnum):
 	filename = pref+'_'+str(acqnum)+filepart+'.dat'
-	return open(pathTo+filename, "wb"), filename
+	acqname = pref+'_'+str(acqnum)
+	return open(pathTo+filename, "wb"), acqname
 
 
 class acqConfig:
 	"configures acqconfig.txt"
-	def __init__(self, file):
-		self.beginFile = file
-		self.endFile = ""
+	def __init__(self, pref):
+		self.prefix = pref
+		self.lastCh = ""
 
-	def update(self, file):
-		self.endFile = file
+	def setLast(self, ch):
+		self.lastCh = ch
 
-	def write(self):
-		self.writetext = self.beginFile+';'+self.endFile+';'
+	def writeConfig(self):
+		self.writetext = self.prefix+':'+self.lastCh
 		self.confFile = open("acqconfig.txt", "w")
 		self.confFile.write(self.writetext)
+		
+	def updateInfo(self):
+		self.writetext = self.prefix+':'+self.lastCh+'\n'
+		self.infoF = open("acqinfo.txt", "a")
+		self.infoF.write(self.writetext)
+
 
 
 def hex2bin(c):
@@ -144,8 +151,8 @@ def acq(acqfile=""):
 
 	dfilepart = 'a';
 	dfileinc = 0;
-	writeF, writeFileName = openNewOut(dfilepart, pref, acqnum)
-	conf = acqConfig(writeFileName)
+	writeF, acqName = openNewOut(dfilepart, pref, acqnum)
+	conf = acqConfig(acqName)
 
 	# Read 4096-byte chunks from file and convert each char to integer
 	while 1:
@@ -157,7 +164,7 @@ def acq(acqfile=""):
 			dfileinc = 0;
 			writeF.close()
 			writeF, writeFileName = openNewOut(dfilepart, pref, acqnum)
-			conf.update(writeFileName)
+			conf.setLast(dfilepart)
 	
 		# If read data is empty, break loop
 		# Otherwise keep processing data
@@ -176,5 +183,6 @@ def acq(acqfile=""):
 		dfileinc += 1
 	
 
-	conf.write()
+	conf.writeConfig()
+	conf.updateInfo()
 

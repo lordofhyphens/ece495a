@@ -1,11 +1,15 @@
 function dispd
-	pathto = "data\";
+	pathto = "data\\";
+	next = "next";
+	n = "next";
+	quit = "quit";
+	q = "quit";
 
 	if(nargin != 0)
 		usage("dispd");
 		return;
 	else
-		acfid = fopen(strcat(pathto, "acqconfig.txt"), "r");
+		acfid = fopen("acqconfig.txt", "r");
 		txt = fgetl(acfid);
 		semipos = findstr(txt, ";");
 		
@@ -18,13 +22,21 @@ function dispd
 		endif
 
 		fclose(acfid);
-		readandplot(startfile);
-		nextfile = getnextfile(startfile);
+		readandplot(startfile, pathto);
 
-		do
-			currfile = nextfile;
-			nextfile = getnextfile(currfile);
-		until(strcmp(nextfile, endfile) == 1);
+		if(strcmp(endfile, "") != 1)
+			nextfile = getnextfile(startfile);
+
+			do
+				uin = menu("Plot options ", "Display next plot", "Quit");
+
+				if(uin == 1)
+					readandplot(nextfile, pathto);
+					nextfile = getnextfile(nextfile);
+				endif
+			until(strcmp(nextfile, endfile) == 1 || uin == 2);
+
+		endif
 	endif
 endfunction
 
