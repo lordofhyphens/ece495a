@@ -50,7 +50,7 @@ int main(void) {
 			// Don't touch port c0-c2, so we need to be careful.
 			PORTC = (~((cmd & 31) ^ (PORTC >> 3)) | mask);
 			PORTD = (cmd >> 5) ^ PORTD;
-			_NOP();
+			//_NOP(); // need to find this function
 		}
 		
 		// wait for a new command from the user.
@@ -61,25 +61,25 @@ int main(void) {
 
 void mcu_pin_init() {
 	// set pins C3-C7 to output
-	DDRC = (1<<DDRC3) | (1<<DDRC4) | (1<<DDRC5) | (1<<DDRC6) | (1<<DDRC7);
-	DDRD = (1<<DDRD7);
-	_NOP();
+	DDRC = (1<<PORTC3) | (1<<PORTC4) | (1<<PORTC5) | (1<<PORTC6) | (1<<PORTC7);
+	DDRD = (1<<PORTD7);
+	// _NOP(); // need to find this.
 }
 
 // MCU_*_ON values are in control_defines.h
 unsigned char decode_datapath_code(char command, char port) {
 	unsigned char outp = port;
-	if (command & MCU_ANALOG_ON   != 0) { 
+	if ((command & MCU_ANALOG_ON)   != 0) { 
 		outp = outp | MCU_ANALOG_ON;
 	} else { 
 		outp = outp & ~(MCU_ANALOG_ON);
 	}
-	if (command & MCU_DIGITAL_ON  != 0) { 
+	if ((command & MCU_DIGITAL_ON)  != 0) { 
 		outp = outp | MCU_DIGITAL_ON;
 	} else {
 		outp = outp & ~(MCU_DIGITAL_ON);
 	}
-	if (command & MCU_OUTPUT_ON != 0) { 
+	if ((command & MCU_OUTPUT_ON) != 0) { 
 		outp = outp | MCU_OUTPUT_ON;
 	} else {
 		outp = outp & ~(MCU_OUTPUT_ON);
