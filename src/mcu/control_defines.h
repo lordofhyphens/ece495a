@@ -13,15 +13,14 @@
 // Commands from USART to MCU. 
 
 // Datapath configuration, general values.
-#define ANALOG_ON 0x1
-#define DIGITAL_ON 0x2
-#define OUTPUT_ON 0x4
-// Presets for the "known" states allowed (for the output ports).
-#define MCU_A_ON_D_ON_O_ON 0x7
-#define MCU_A_OFF_D_OFF_O_OFF 0x0
-#define MCU_A_OFF_D_ON_O_OFF 0x2
-#define MCU_A_OFF_D_ON_O_ON 0x6
-#define MCU_A_ON_D_OFF_O_OFF 0x1
-#define MCU_A_ON_D_OFF_O_ON  0x5
+#define MCU_ANALOG_ON 0x1
+#define MCU_DIGITAL_ON 0x2
+#define MCU_OUTPUT_ON 0x4
+
+#define MCU_OPCODE 0x3 
+#define MCU_COMMAND 0xFC
+
+#define OPC_INPUT 0x0
+#define OPC_DATAP 0x3
 
 //#endif

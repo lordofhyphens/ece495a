@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include "control_defines.h"
 #include "control_util.h"
 
 void open_data_input(int input) {
