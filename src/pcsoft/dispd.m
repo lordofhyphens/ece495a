@@ -5,7 +5,7 @@ function dispd
 		usage("dispd");
 		return;
 	else
-		acfid = fopen("acqconfig.txt", "r");
+		acfid = fopen("acqdisp.txt", "r");
 		txt = fgetl(acfid);
 
 		if(txt != -1)
