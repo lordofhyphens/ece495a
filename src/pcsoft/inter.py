@@ -1,5 +1,5 @@
 from Tkinter import *
-import os, sys, acqdata
+import os, sys, acqdata, glob
 
 def getAcqFile(argv):
 	global acqfile
@@ -95,41 +95,25 @@ class App(Frame):
 
 
 	def clearAcqs(self):
-		acqs = []
-		thisacq = []
+		acqnames = self.acqlist.get(0, END)
+		
+		# Delete acq files
+		for i in range(len(acqnames)):
+			for acqfile in glob.glob(self.pathto+acqnames[i]+'*.dat'):
+				os.remove(acqfile)
 
-		self.infofile = open("acqinfo.txt", "r")
-		self.nextLine = self.infofile.readline()
-
-		while self.nextLine != "":
-			acqs.append(self.nextLine.rstrip("\r\n"))
-			self.nextLine = self.infofile.readline()
-
-		self.infofile.close()
+		# Clear listbox entries
 		self.acqlist.delete(0, END)
 
-		for i in range(len(acqs)):
-			thisacq = acqs[i].split(":")
-			self.delAcqFiles(thisacq[0], thisacq[1])
-
-			self.infofile = open("acqinfo.txt", "w")
-			self.infofile.write("")
-			self.infofile.close()
-
-			self.cfgfile = open("acqconfig.txt", "w")
-			self.cfgfile.write("")
-			self.cfgfile.close()
-
-
-	
-	def delAcqFiles(self, acqpref, acqend):
-		if acqend == '':
-			os.remove(self.pathto+acqpref+'a'+self.fsuff)
-		else:
-			for i in range(ord('a'), ord(acqend)):
-				os.remove(self.pathto+acqpref+chr(i)+self.fsuff)
 		
+		# Clear acqinfo & acqdisp
+		self.infofile = open("acqinfo.txt", "w")
+		self.infofile.write("")
+		self.infofile.close()
 
+		self.cfgfile = open("acqdisp.txt", "w")
+		self.cfgfile.write("")
+		self.cfgfile.close()
 
 
 	def deleteAcq(self):
@@ -183,8 +167,9 @@ class App(Frame):
 
 
 	def displayAcq(self):
-		pass
-
+		sel = self.acqlist.curselection()
+		self.dispfile = open("acqdisp.txt", "w")
+		
 
 	def beginAcqClick(self):
 		self.beginAcq.grid_remove();

@@ -41,7 +41,7 @@ def openNewOut(filepart, pref, acqnum):
 
 
 class acqConfig:
-	"configures acqconfig.txt"
+	"configures acqdisp.txt"
 	def __init__(self, pref):
 		self.prefix = pref
 		self.lastCh = ""
@@ -51,7 +51,7 @@ class acqConfig:
 
 	def writeConfig(self):
 		self.writetext = self.prefix+':'+self.lastCh
-		self.confFile = open("acqconfig.txt", "w")
+		self.confFile = open("acqdisp.txt", "w")
 		self.confFile.write(self.writetext)
 		
 	def updateInfo(self):
@@ -107,7 +107,6 @@ def parseHexTextData(chunk):
 
 	for i in range(0, len(chunk)):
 		parsed += hex2bin(chunk[i])
-
 	
 	for j in range(0, len(parsed), 8):
 		if (j+8) > len(parsed):
@@ -116,7 +115,6 @@ def parseHexTextData(chunk):
 			range2 = j + 8
 
 		parseNums.append(int(parsed[j:range2], 2))
-
 
 	return parseNums
 
