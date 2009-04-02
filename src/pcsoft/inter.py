@@ -165,6 +165,18 @@ class App(Frame):
 		infofile.close()
 
 
+		# Clear acqdisp if necessary
+		dispfile = open("acqdisp.txt", "r")
+		acqdisp = dispfile.readline()
+		dispfile.close()
+
+		for i in range(len(acqsToDel)):
+			if acqdisp.split(":")[0] == self.acqlist.get(acqsToDel[i]):
+				dipsfile = open("acqdisp.txt", "w")
+				dispfile.write("")
+				dipsfile.close()
+				break
+
 		# Refresh listbox
 		self.refreshListBox()
 
