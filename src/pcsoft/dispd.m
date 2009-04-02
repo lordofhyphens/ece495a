@@ -51,6 +51,10 @@ function dispd
 			endif
 
 			lastpoll = thispoll;
+
+			acfid = fopen("acqdisp.txt", "w");
+			fputs(acfid, "");
+			fclose(acfid);
 			
 			opt = menu("Program options:", "Display acquisition", "Quit");
 		until(opt == 2);
