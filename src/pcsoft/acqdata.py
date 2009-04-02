@@ -49,11 +49,6 @@ class acqConfig:
 	def setLast(self, ch):
 		self.lastCh = ch
 
-	def writeConfig(self):
-		self.writetext = self.prefix+':'+self.lastCh
-		self.confFile = open("acqdisp.txt", "w")
-		self.confFile.write(self.writetext)
-		
 	def updateInfo(self):
 		self.writetext = self.prefix+':'+self.lastCh+'\n'
 		self.infoF = open("acqinfo.txt", "a")
@@ -181,6 +176,5 @@ def acq(acqfile=""):
 		dfileinc += 1
 	
 
-	conf.writeConfig()
 	conf.updateInfo()
 

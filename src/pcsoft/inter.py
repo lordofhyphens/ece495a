@@ -111,9 +111,9 @@ class App(Frame):
 		infofile.write("")
 		infofile.close()
 
-		cfgfile = open("acqdisp.txt", "w")
-		cfgfile.write("")
-		cfgfile.close()
+		dispfile = open("acqdisp.txt", "w")
+		dispfile.write("")
+		dispfile.close()
 
 
 	def deleteAcq(self):
@@ -172,25 +172,27 @@ class App(Frame):
 
 	def displayAcq(self):
 		sel = self.acqlist.curselection()
-		infofile = open("acqinfo.txt", "r")
 
-		nextLine = infofile.readline()
-
-		# Get acqdisp contents
-		while nextLine != "":
-			nextLine = nextLine.rstrip("\r\n")
-
-			if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
-				toWrite = nextLine
+		if len(sel) == 1:
+			infofile = open("acqinfo.txt", "r")
 
 			nextLine = infofile.readline()
 
-		infofile.close()
+			# Get acqdisp contents
+			while nextLine != "":
+				nextLine = nextLine.rstrip("\r\n")
 
-		# Write 'em.
-		dispfile = open("acqdisp.txt", "w")
-		dispfile.write(toWrite)
-		dispfile.close()
+				if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
+					toWrite = nextLine
+
+				nextLine = infofile.readline()
+
+			infofile.close()
+
+			# Write 'em.
+			dispfile = open("acqdisp.txt", "w")
+			dispfile.write(toWrite)
+			dispfile.close()
 
 
 		
