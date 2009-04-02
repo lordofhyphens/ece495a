@@ -23,4 +23,7 @@
 #define OPC_INPUT 0x0
 #define OPC_DATAP 0x3
 
+// 
+// bit mask for whether or not the chip is in data mode.
+#define WT_DATA_MODE 0x20
 //#endif
