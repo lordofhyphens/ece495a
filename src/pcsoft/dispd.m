@@ -5,37 +5,55 @@ function dispd
 		usage("dispd");
 		return;
 	else
-		acfid = fopen("acqconfig.txt", "r");
-		txt = fgetl(acfid);
+		acfid = fopen("acqdisp.txt", "r");
+		lastpoll = fgetl(acfid);
+		fclose(acfid);
 
-		if(txt != -1)
-			colpos = index(txt, ":");
-			pref = substr(txt, 1, colpos-1);
-			startfile = strcat(pref, 'a.dat');
-
-			if(length(txt) > colpos)
-				endfile = strcat(pref, substr(txt, colpos+1, 1), '.dat');
-			else
-				endfile = "";
-			endif
-
+		do
+			acfid = fopen("acqdisp.txt", "r");
+			thispoll = fgetl(acfid);
 			fclose(acfid);
-			readandplot(startfile, pathto);
 
-			if(strcmp(endfile, "") != 1)
-				nextfile = getnextfile(startfile);
-
-				do
-					uin = menu("Plot options ", "Display next plot", "Quit");
-
-					if(uin == 1)
-						readandplot(nextfile, pathto);
-						nextfile = getnextfile(nextfile);
-					endif
-				until(strcmp(nextfile, endfile) == 1 || uin == 2);
-
+			if(thispoll == -1)
+				thispoll = int2str(thispoll);
 			endif
-		endif
+			if(lastpoll == -1)
+				lastpoll = int2str(lastpoll);
+			endif
+
+
+			if(strcmp(thispoll, "-1") != 1)
+				colpos = index(thispoll, ":");
+				pref = substr(thispoll, 1, colpos-1);
+				startfile = strcat(pref, 'a.dat');
+
+				if(length(thispoll) > colpos)
+					endfile = strcat(pref, substr(thispoll, colpos+1, 1), '.dat');
+				else
+					endfile = "";
+				endif
+
+				# Plot the (first) data.
+				readandplot(startfile, pathto);
+
+				if(strcmp(endfile, "") != 1)
+					nextfile = getnextfile(startfile);
+
+					do
+						opt = menu("Plot is multi-part. Options:", "Display next part", "Quit");
+
+						if(opt == 1)
+							readandplot(nextfile, pathto);
+							nextfile = getnextfile(nextfile);
+						endif
+					until(strcmp(nextfile, endfile) == 1 || opt == 2);
+				endif
+			endif
+
+			lastpoll = thispoll;
+			
+			opt = menu("Program options:", "Display acquisition", "Quit");
+		until(opt == 2);
 	endif
 endfunction
 

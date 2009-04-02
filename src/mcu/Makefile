@@ -7,7 +7,7 @@ CC=avr-gcc
 MCU=atmega8515
 UTILS=spi_util.o usart_util.o 
 USART_OBJECTS=usart.o  
-CONT_OBJECTS=main_control.o control_util.o
+CONT_OBJECTS=main_control.o 
 
 # CPU Frequency in Hz (so freq in MHz * 10^6). 
 F_CPU='F_CPU=18432000'
@@ -27,7 +27,7 @@ main : $(CONT_OBJECTS) $(UTILS)
 $(UTILS): $(UTILS:.o=.h) $(UTILS:.o=.c) usart_baud.inc
 	$(CC) $(FLAGS) -c $(UTILS:.o=.c)
 
-$(CONT_OBJECTS): main_control.h control_util.h $(UTILS)
+$(CONT_OBJECTS): $(CONT_OBJECTS:.o=.h) $(UTILS)
 	$(CC) $(FLAGS) -c $(CONT_OBJECTS:.o=.c)
 
 $(USART_OBJECTS): $(USART_OBJECTS:.o=.h) $(USART_OBJECTS:.o=.c) usart.h $(UTILS)

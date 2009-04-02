@@ -1,5 +1,5 @@
 from Tkinter import *
-import os, sys, acqdata
+import os, sys, acqdata, glob
 
 def getAcqFile(argv):
 	global acqfile
@@ -82,109 +82,120 @@ class App(Frame):
 
 
 	def refreshListBox(self):
-		self.infofile = open("acqinfo.txt", "r")
-		self.nextLine = self.infofile.readline()
+		infofile = open("acqinfo.txt", "r")
+		nextLine = infofile.readline()
 
 		self.acqlist.delete(0, END)
 
-		while self.nextLine != "":
-			self.acqlist.insert(END, self.nextLine.rstrip(":\r\n"))
-			self.nextLine = self.infofile.readline()
+		while nextLine != "":
+			self.acqlist.insert(END, nextLine.rstrip(":\r\n"))
+			nextLine = infofile.readline()
 
-		self.infofile.close()
+		infofile.close()
 
 
 	def clearAcqs(self):
-		acqs = []
-		thisacq = []
+		acqnames = self.acqlist.get(0, END)
+		
+		# Delete acq files
+		for i in range(len(acqnames)):
+			for acqfile in glob.glob(self.pathto+acqnames[i]+'*.dat'):
+				os.remove(acqfile)
 
-		self.infofile = open("acqinfo.txt", "r")
-		self.nextLine = self.infofile.readline()
-
-		while self.nextLine != "":
-			acqs.append(self.nextLine.rstrip("\r\n"))
-			self.nextLine = self.infofile.readline()
-
-		self.infofile.close()
+		# Clear listbox entries
 		self.acqlist.delete(0, END)
 
-		for i in range(len(acqs)):
-			thisacq = acqs[i].split(":")
-			self.delAcqFiles(thisacq[0], thisacq[1])
-
-			self.infofile = open("acqinfo.txt", "w")
-			self.infofile.write("")
-			self.infofile.close()
-
-			self.cfgfile = open("acqconfig.txt", "w")
-			self.cfgfile.write("")
-			self.cfgfile.close()
-
-
-	
-	def delAcqFiles(self, acqpref, acqend):
-		if acqend == '':
-			os.remove(self.pathto+acqpref+'a'+self.fsuff)
-		else:
-			for i in range(ord('a'), ord(acqend)):
-				os.remove(self.pathto+acqpref+chr(i)+self.fsuff)
 		
+		# Clear acqinfo & acqdisp
+		infofile = open("acqinfo.txt", "w")
+		infofile.write("")
+		infofile.close()
 
+		dispfile = open("acqdisp.txt", "w")
+		dispfile.write("")
+		dispfile.close()
 
 
 	def deleteAcq(self):
 		sel = self.acqlist.curselection()
-		self.acqsToDel = []
-		self.infoLines = []
-		self.delLines = []
+		acqsToDel = []
+		infoLines = []
 
+		# Build and sort acqsToDel
 		for i in range(len(sel)):
-			self.acqsToDel.append(int(sel[i]))
+			acqsToDel.append(int(sel[i]))
 
-		self.acqsToDel = sorted(self.acqsToDel)
+		acqsToDel = sorted(acqsToDel)
 
-		self.infofile = open("acqinfo.txt", "r")
-		self.nextLine = self.infofile.readline()
+		# Open acqinfo and read first line
+		infofile = open("acqinfo.txt", "r")
+		nextLine = infofile.readline()
 
+		# Filter out all to-be-deleted acqs from acqinfo and store in infoLines
 		i = 0;
 		delInd = 0;
-		while self.nextLine != "":
-			self.nextLine = self.nextLine.rstrip("\r\n")
+		while nextLine != "":
+			nextLine = nextLine.rstrip("\r\n")
 
-			if delInd < len(self.acqsToDel):
-				if i != self.acqsToDel[delInd]:
-					self.infoLines.append(self.nextLine);
+			if delInd < len(acqsToDel):
+				if i != acqsToDel[delInd]:
+					infoLines.append(nextLine);
 				else:
-					self.delLines.append(self.nextLine);
 					delInd += 1
 			else:
-				self.infoLines.append(self.nextLine);
+				infoLines.append(nextLine);
 
-			self.nextLine = self.infofile.readline()
+			nextLine = infofile.readline()
 			i = i + 1
 
-
-		# Delete the files in pathto
-		for i in range(len(self.delLines)):
-			delSplit = self.delLines[i].split(":")
-			self.delAcqFiles(delSplit[0], delSplit[1]);
-
-		self.infofile.close()
+		infofile.close()
 
 
-		self.infofile = open("acqinfo.txt", "w")
+		# Delete acq files
+		for i in range(len(acqsToDel)):
+			for acqfile in glob.glob(self.pathto+self.acqlist.get(acqsToDel[i])+'*.dat'):
+				os.remove(acqfile)
 
-		for i in range(len(self.infoLines)):
-			self.infofile.write(self.infoLines[i]+"\n")
-		self.infofile.close()
+
+		# Update acqinfo
+		infofile = open("acqinfo.txt", "w")
+
+		for i in range(len(infoLines)):
+			infofile.write(infoLines[i]+"\n")
+		infofile.close()
 
 
+		# Refresh listbox
 		self.refreshListBox()
 
 
-	def displayAcq(self):
-		pass
 
+	def displayAcq(self):
+		sel = self.acqlist.curselection()
+
+		if len(sel) == 1:
+			infofile = open("acqinfo.txt", "r")
+
+			nextLine = infofile.readline()
+
+			# Get acqdisp contents
+			while nextLine != "":
+				nextLine = nextLine.rstrip("\r\n")
+
+				if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
+					toWrite = nextLine
+
+				nextLine = infofile.readline()
+
+			infofile.close()
+
+			# Write 'em.
+			dispfile = open("acqdisp.txt", "w")
+			dispfile.write(toWrite)
+			dispfile.close()
+
+
+		
 
 	def beginAcqClick(self):
 		self.beginAcq.grid_remove();
