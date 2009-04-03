@@ -7,6 +7,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <string.h>
 #define USART_BAUDRATE 921600
 #define BAUD_PRESCALE ((F_CPU / (USART_BAUDRATE * 16)) - 1)
 
@@ -63,14 +64,17 @@ int main(void) {
 	return 0;
 }
 
-// Recieve a new command for the device.
+// Recieve a new command for the device, which requires
+// that we be in the WT32 data mode.
 ISR(UART_RX_vect) 
 {
-	char command;
-	// Just to be sure, wait to make sure we're good to go.
-	while (!(UCSRA & (1<<RXC))) {;}
-	command = UDR;
-	SPI_Master_Transmit(command, 1);
+	if ((PORTD & WT_DATA_MODE) != 0) {
+		char command;
+		// Just to be sure, wait to make sure we're good to go.
+		while (!(UCSRA & (1<<RXC))) {;}
+		command = UDR;
+		SPI_Master_Transmit(command, 1);
+	}
 }
 // initialize the I/O ports we'll be using. Might not actually necessary
 void io_init(void) {
@@ -79,4 +83,18 @@ void io_init(void) {
 	DDRD = (1<<6) | (1<<7);
 }
 
+void send_bt_command(char* cmd) {
+	int i;
 
+	
+	// need a 1s delay loop here.
+	for (i = 0; i < 3; i++) {
+		while ((UCSRA & (1 << UDRE)) == 0) {}; 
+		UDR = '+'
+	}
+	// need another 1s delay loop here
+	for (i = 0; i < strlen(cmd); i++) {
+		while ((UCSRA & (1 << UDRE)) == 0) {}; 
+		UDR = cmd[i];
+	}
+}
