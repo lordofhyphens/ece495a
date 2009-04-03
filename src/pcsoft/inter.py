@@ -213,6 +213,7 @@ class App(Frame):
 		self.beginAcq.grid_remove();
 		self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
 		acqdata.acq(acqfile)
+		# os.system("acqdata.py")
 
 
 	def endAcqClick(self):
