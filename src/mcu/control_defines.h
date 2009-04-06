@@ -13,8 +13,8 @@
 // Commands from USART to MCU. 
 
 // Datapath configuration, general values.
-#define MCU_ANALOG_ON 0x1
-#define MCU_DIGITAL_ON 0x2
+#define MCU_ANALOG_ON 0x2
+#define MCU_DIGITAL_ON 0x1
 #define MCU_OUTPUT_ON 0x4
 
 #define MCU_OPCODE 0x3 

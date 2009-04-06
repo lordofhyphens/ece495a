@@ -6,16 +6,15 @@
 */
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#define USART_BAUDRATE 921600
-#define BAUD_PRESCALE ((F_CPU / (USART_BAUDRATE * 16)) - 1)
 
 // This needs to be after the defines because the utils use them.
 #include "spi_util.h"
 #include "usart_util.h"
-
-void io_init();
+#include "control_defines.h"
+#include "usart.h"
 
 int main(void) {
 	// Set up the uart.
@@ -85,16 +84,26 @@ void io_init(void) {
 
 void send_bt_command(char* cmd) {
 	int i;
-
-	
-	// need a 1s delay loop here.
+	delay_s(1);	
 	for (i = 0; i < 3; i++) {
 		while ((UCSRA & (1 << UDRE)) == 0) {}; 
-		UDR = '+'
+		UDR = '+';
 	}
-	// need another 1s delay loop here
+	delay_s(1);	
+	
 	for (i = 0; i < strlen(cmd); i++) {
 		while ((UCSRA & (1 << UDRE)) == 0) {}; 
 		UDR = cmd[i];
 	}
+}
+
+void delay_s(int t) {
+	int i;
+	TCCR0 = 5;
+	TCNT0 = 0;
+	TIFR = (1 << TOV0);
+	for (i = 0; i < t * (F_CPU / 1024); i++) {
+		while ((TIFR & 1) != 1) {}
+	}
+	
 }

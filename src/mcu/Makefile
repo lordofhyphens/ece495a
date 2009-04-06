@@ -11,10 +11,12 @@ CONT_OBJECTS=main_control.o
 
 # CPU Frequency in Hz (so freq in MHz * 10^6). 
 F_CPU='F_CPU=18432000'
+# Desired baud rate for our USART.
+USART_BAUD='USART_BAUDRATE=115200'
 # Optimization level 
 OPTI_LEVEL=s
 # Putting it all together for the compiler.
-FLAGS=-Wall -mmcu=$(MCU) -D$(F_CPU) -g -O$(OPTI_LEVEL) -funsigned-char
+FLAGS=-Wall -mmcu=$(MCU) -D$(F_CPU) -D$(USART_BAUD) -g -O$(OPTI_LEVEL) -funsigned-char
 
 all: $(UTILS) $(USART_OBJECTS) $(CONT_OBJECTS)
 	$(CC) -o usart_c.o $(USART_OBJECTS) $(UTILS)
@@ -24,7 +26,7 @@ usart : $(USART_OBJECTS) $(UTILS)
 main : $(CONT_OBJECTS) $(UTILS)
 	${CC} -o mainc.o $(UTILS) $(CONT_OBJECTS)
 
-$(UTILS): $(UTILS:.o=.h) $(UTILS:.o=.c) usart_baud.inc
+$(UTILS): $(UTILS:.o=.h) $(UTILS:.o=.c)
 	$(CC) $(FLAGS) -c $(UTILS:.o=.c)
 
 $(CONT_OBJECTS): $(CONT_OBJECTS:.o=.h) $(UTILS)
