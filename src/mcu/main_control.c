@@ -102,7 +102,7 @@ unsigned char decode_datapath_code(char command, char port) {
 
 unsigned char send_usart_command(unsigned char cmd) {
 	// clear the low
-	unsigned char old_set = PORTA;
+	unsigned char old_set = PINA;
 	// check to make sure cmd is in the left side.
 	if ((cmd & 0xF0) != 0) {
 	} else { 

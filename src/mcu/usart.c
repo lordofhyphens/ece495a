@@ -19,6 +19,7 @@
 int main(void) {
 	// Set up the uart.
 	unsigned char ByteToSend;
+	unsigned char c, d;
 	unsigned char bufferByte;
 	unsigned char command;
 	unsigned char zero = 0;
@@ -44,21 +45,22 @@ int main(void) {
 	// Loop forever !
 	while (1) {
 		// Wait for the buffer to clear before filling it more.
-		while ((UCSRA & (1 << UDRE)) == 0) {}; 
+		while ((UCSRA & (1 << UDRE)) == 0) {};
 		UDR = ByteToSend;
 		n++;
 		if (n > 4) { n = 0; }
 		// the 2*n multiplier on the shift is because of the leftover bits when doing a 10->8 adaptation.
-		ByteToSend = bufferByte |= (PINC << (2*n));
+		c = PINC;
+		d = (PIND & 0xA0) >> 6;
+		ByteToSend = bufferByte | (c << (2*n));
 		bufferByte = zero; // clear the buffer between writes
 		if (n!=0) {
 			/* Set the buffer to the proper amount of shift. 
 			   the branch should actually be unnecessary.
 			*/
-			bufferByte = (unsigned char)(PINC << (2*n)) | (PIND & 0xA0) << (2*n);
-//			bufferByte = (unsigned int)(PINC << (2*n)) | (2*n) >> PORTD6 | (((2*n)+1) >> PORTD7);
+			bufferByte = (unsigned char)(c >> (2*(4-n))) | d << (2*n);
 		} else {
-			bufferByte = (PIND & 0xA0) >> 6;
+			bufferByte = d;
 		}
 	}
 	return 0;
