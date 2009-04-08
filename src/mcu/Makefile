@@ -21,6 +21,14 @@ FLAGS=-Wall -mmcu=$(MCU) -D$(F_CPU) -D$(USART_BAUD) -g -O$(OPTI_LEVEL) -funsigne
 all: $(UTILS) $(USART_OBJECTS) $(CONT_OBJECTS)
 	$(CC) -o usart_c.o $(USART_OBJECTS) $(UTILS)
 	${CC} -o main_c.o $(UTILS) $(CONT_OBJECTS)
+debug: $(UTILS) $(USART_OBJECTS) $(CONT_OBJECTS)
+	$(CC) -g -o usart_c.o $(USART_OBJECTS) $(UTILS)
+	${CC} -g -o main_c.o $(UTILS) $(CONT_OBJECTS)
+asm: $(UTILS) $(USART_OBJECTS) $(CONT_OBJECTS)
+	$(CC) -o usart_c.o $(USART_OBJECTS) $(UTILS)
+	${CC} -o main_c.o $(UTILS) $(CONT_OBJECTS)
+	avr-objdump -zhD main_c.o > main_c.od
+	avr-objdump -zhD usart_c.o > usart_c.od
 usart : $(USART_OBJECTS) $(UTILS)
 	$(CC) $(FLAGS) $(UTILS) $(USART_OBJECTS) -o usart_c.o 
 main : $(CONT_OBJECTS) $(UTILS)
@@ -36,5 +44,5 @@ $(USART_OBJECTS): $(USART_OBJECTS:.o=.h) $(USART_OBJECTS:.o=.c) usart.h $(UTILS)
 	$(CC) $(FLAGS) -c $(USART_OBJECTS:.o=.c)
 
 clean:
-	rm -f *.o *.s
+	rm -f *.o *.s *.od
 

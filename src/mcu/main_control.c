@@ -12,9 +12,7 @@
 #define SPI_SLAVE 1
 #include "spi_util.h"
 #include <avr/io.h>
-
-void mcu_pin_init();
-unsigned char decode_datapath_code(char command, char port);
+#include <util/delay.h>
 
 int main(void) {
 	// inp - the raw data from the user. 
@@ -26,6 +24,7 @@ int main(void) {
 	// given operation flags. 
 	char flags;
 	// Starting initializiations.
+	mcu_pin_init();
 	SPI_Slave_Init();
 
 	// Get the initial configuration from the other controller.	
@@ -50,7 +49,18 @@ int main(void) {
 			// Don't touch port c0-c2, so we need to be careful.
 			PORTC = (~((cmd & 31) ^ (PORTC >> 3)) | mask);
 			PORTD = (cmd >> 5) ^ PORTD;
+			_delay_ms(5);
 			//_NOP(); // need to find this function
+		}
+		if ((opc & OPC_USART) != 0) {
+			PORTA = send_usart_command(cmd);
+			// set our configuration ports
+			// set the interrupt high that we're using for BT commands.
+			PORTA = PORTA | (1 << PORTA2);
+			// delay for a short time.
+			_delay_ms(100);
+			// reset the interrupt to low.
+			PORTA = PORTA & ~(1 << PORTA2);
 		}
 		
 		// wait for a new command from the user.
@@ -60,9 +70,12 @@ int main(void) {
 }
 
 void mcu_pin_init() {
-	// set pins C3-C7 to output
-	DDRC = (1<<PORTC3) | (1<<PORTC4) | (1<<PORTC5) | (1<<PORTC6) | (1<<PORTC7);
+	// set all of PORTC to output
+	DDRC = 0xF;
 	DDRD = (1<<PORTD7);
+	// Set PORTA to output.
+	DDRA = 0xF;
+	// PortB is being handled by SPI_slave_init()
 	// _NOP(); // need to find this.
 }
 
@@ -85,4 +98,18 @@ unsigned char decode_datapath_code(char command, char port) {
 		outp = outp & ~(MCU_OUTPUT_ON);
 	}
 	return outp;
+}
+
+unsigned char send_usart_command(unsigned char cmd) {
+	// clear the low
+	unsigned char old_set = PORTA;
+	// check to make sure cmd is in the left side.
+	if ((cmd & 0xF0) != 0) {
+	} else { 
+		cmd = (cmd << 4);
+	}
+	// Clear, set, and then assign.
+	old_set = old_set & 0x0F;
+	old_set = old_set | cmd;
+	return old_set;
 }

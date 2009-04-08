@@ -15,5 +15,6 @@ void reset_UART();
 void open_data_input(int input);
 void close_data_input(int input);
 
-void close_output();
-void open_output();
+void mcu_pin_init();
+unsigned char decode_datapath_code(char command, char port);
+unsigned char send_usart_command(unsigned char);

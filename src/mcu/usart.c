@@ -38,8 +38,8 @@ int main(void) {
 	SPI_Master_Transmit(command, 1);
 
 	//Set up the first two bytes to send.
-	ByteToSend = PORTC;
-	bufferByte = ((1 >> PORTD7) | PORTD6);
+	ByteToSend = PINC;
+	bufferByte = (PIND & 0xA0) >> 6;
 	
 	// Loop forever !
 	while (1) {
@@ -49,15 +49,16 @@ int main(void) {
 		n++;
 		if (n > 4) { n = 0; }
 		// the 2*n multiplier on the shift is because of the leftover bits when doing a 10->8 adaptation.
-		ByteToSend = bufferByte |= ((2*n) >> PORTC);
+		ByteToSend = bufferByte |= (PINC << (2*n));
 		bufferByte = zero; // clear the buffer between writes
 		if (n!=0) {
 			/* Set the buffer to the proper amount of shift. 
 			   the branch should actually be unnecessary.
 			*/
-			bufferByte = (unsigned int)((2*n) << PORTC) | (2*n) >> PORTD6 | (((2*n)+1) >> PORTD7);
+			bufferByte = (unsigned char)(PINC << (2*n)) | (PIND & 0xA0) << (2*n);
+//			bufferByte = (unsigned int)(PINC << (2*n)) | (2*n) >> PORTD6 | (((2*n)+1) >> PORTD7);
 		} else {
-			bufferByte = (1 >> PORTD7) | PORTD6;
+			bufferByte = (PIND & 0xA0) >> 6;
 		}
 	}
 	return 0;
@@ -67,7 +68,7 @@ int main(void) {
 // that we be in the WT32 data mode.
 ISR(UART_RX_vect) 
 {
-	if ((PORTD & WT_DATA_MODE) != 0) {
+	if ((PIND & WT_DATA_MODE) != 0) {
 		char command;
 		// Just to be sure, wait to make sure we're good to go.
 		while (!(UCSRA & (1<<RXC))) {;}
@@ -75,11 +76,24 @@ ISR(UART_RX_vect)
 		SPI_Master_Transmit(command, 1);
 	}
 }
-// initialize the I/O ports we'll be using. Might not actually necessary
+// initialize the I/O ports we'll be using.
 void io_init(void) {
+	char tmp; 
 	// Set PORTC to input, and PORTD6 and PORTD7 to input
 	DDRC = 0;
-	DDRD = (1<<6) | (1<<7);
+	PORTC = 0xFF;
+	DDRD = (1<<PORTD6) | (1<<PORTD7);
+	PORTD = 0xA0;
+
+	// Set PORTE0 to input with pull-up
+
+	// set the interrupts behavior
+	tmp = MCUCR & 0xF0; 
+	MCUCR = tmp | 0x0F;
+
+	// enable all three interrupts.
+	tmp = GICR & 0x1F;
+	GICR = tmp | 0xE0;
 }
 
 void send_bt_command(char* cmd) {
