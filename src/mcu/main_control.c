@@ -24,8 +24,8 @@ int main(void) {
 	// given operation flags. 
 	char flags;
 	// Starting initializiations.
-	mcu_pin_init();
 	SPI_Slave_Init();
+	mcu_pin_init();
 
 	// Get the initial configuration from the other controller.	
 	inp = SPI_Slave_Receive();
@@ -42,13 +42,13 @@ int main(void) {
 		}
 		if ((opc & OPC_INPUT) != 0) {
 			char buf = cmd & 0x1F;
-			char mask = PORTC & 7; // save the last three bits of PORTC.
+			char mask = PINC & 7; // save the last three bits of PORTC.
 			// cmd is for periphial configuration.
 			// Pin C3 = LSB, Pin D7 = MSB. 
 			// This makes for weird assignments and bit operations.
 			// Don't touch port c0-c2, so we need to be careful.
 			PORTC = (~((cmd & 31) ^ (PORTC >> 3)) | mask);
-			PORTD = (cmd >> 5) ^ PORTD;
+			PORTD = (cmd >> 5) ^ PIND;
 			_delay_ms(5);
 			//_NOP(); // need to find this function
 		}

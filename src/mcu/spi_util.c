@@ -10,7 +10,8 @@
 
 void SPI_Master_Init() {
 	// Set the MOSI and SCK as output, everything else input.
-	PORTB = (1 << DDR_MOSI) | (1 << DDR_SCK); 
+	DDRB = (1 << DDR_MOSI) | (1 << DDR_SCK); 
+	PORTB = PORTB | (1 << PORTB6) | (1 << PORTB4);
 	SPCR = (1 << SPE)|(1 << MSTR) | (1 << SPR0);
 }
 void SPI_Master_Transmit(char cData, int wait_for_transmit) {
@@ -20,7 +21,8 @@ void SPI_Master_Transmit(char cData, int wait_for_transmit) {
 
 
 void SPI_Slave_Init() {
-	PORTB = (1 << DDR_MISO);
+	DDRB = (1 << DDR_MISO);
+	PORTB = PORTB | (1 << PORTB7) | (1 << PORTB5) | (1 << PORTB4);
 	SPCR = (1 << SPE );
 }
 
