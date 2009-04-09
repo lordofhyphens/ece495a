@@ -1,5 +1,4 @@
 #include <avr/io.h>
-#include <stdio.h>
 #include "usart_util.h"
 
 void usart_init (void) {

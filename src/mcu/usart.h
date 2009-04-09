@@ -12,4 +12,4 @@
 #endif
 void io_init();
 void delay_s(int);
-void send_bt_command(char*);
+void send_bt_command(PGM_P);

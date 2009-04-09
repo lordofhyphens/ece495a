@@ -20,9 +20,8 @@ int main(void) {
 	// cmd - the high end bits, used to define either a datapath
 	//       or specific input configurations.
 	char inp, opc, cmd;
+	unsigned char buf, mask;
 
-	// given operation flags. 
-	char flags;
 	// Starting initializiations.
 	SPI_Slave_Init();
 	mcu_pin_init();
@@ -36,13 +35,13 @@ int main(void) {
 		cmd = ((inp & MCU_COMMAND) >> 2); // right shift to keep everything in lowest
 		if ((opc & OPC_DATAP) != 0) {
 			// cmd is for datapath configuration
-			char buf = cmd & 0x1F;
-			char mask = PORTC & 7; // save the first five bits of PORTC.
-			PORTC = decode_datapath_code(cmd, PORTC);
+			buf = cmd & 0x1F;
+			mask = PORTC & 0x07; // save the first five bits of PORTC.
+			PORTC = decode_datapath_code(cmd, PINC);
 		}
 		if ((opc & OPC_INPUT) != 0) {
-			char buf = cmd & 0x1F;
-			char mask = PINC & 7; // save the last three bits of PORTC.
+			buf = cmd & 0x1F;
+			mask = PINC & 7; // save the last three bits of PORTC.
 			// cmd is for periphial configuration.
 			// Pin C3 = LSB, Pin D7 = MSB. 
 			// This makes for weird assignments and bit operations.

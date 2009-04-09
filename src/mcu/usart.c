@@ -8,10 +8,6 @@
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 // This needs to be after the defines because the utils use them.
 #include "spi_util.h"
 #include "usart_util.h"
@@ -121,12 +117,7 @@ ISR(INT0_vect)
 {
 	// check the status of PINA0-A3
 	unsigned char sel = (PINA & 0x0F);
-	char* buf;
-	// copy the proper string out of our special string table in program space.
-	buf = malloc((sizeof(char)*strlen_P((PGM_P)pgm_read_word(&(wt32_commands[sel]))))+1);
-	strcpy_P(buf, (PGM_P)pgm_read_word(&(wt32_commands[sel])));
-	send_bt_command(buf);
-	free(buf);
+	send_bt_command((PGM_P)pgm_read_word(&(wt32_commands[sel])));
 }
 
 // initialize the I/O ports we'll be using.
@@ -150,7 +141,7 @@ void io_init(void) {
 	GICR = tmp | 0xE0;
 }
 // Function to send an actual BT command to the RS232 system, given a specific string. 
-void send_bt_command(char* cmd) {
+void send_bt_command(PGM_P cmd) {
 	int i;
 	while ((PIND & WT_DATA_MODE) != 0) {
 		delay_s(1);	
@@ -161,7 +152,7 @@ void send_bt_command(char* cmd) {
 		delay_s(1);	
 	}	
 	// Send the command itself
-	for (i = 0; i < strlen(cmd); i++) {
+	for (i = 0; i < strlen_P(cmd); i++) {
 		while ((UCSRA & (1 << UDRE)) == 0) {}; 
 		UDR = cmd[i];
 	}
@@ -186,6 +177,5 @@ void delay_s(int t) {
 	for (i = 0; i < t * (F_CPU / 1024); i++) {
 		while ((TIFR & 1) != 1) {}
 	}
-	
 }
 
