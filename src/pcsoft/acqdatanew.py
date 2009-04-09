@@ -69,10 +69,21 @@ def main():
 	# Socket params
 	host = "localhost"
 	port = 19367
-	buf = 4096
 	addr = (host,port)
+	buff = 4096
 
+	# Create socket and bind
 	sock = socket(AF_INET, SOCK_DGRAM)
+	sock.bind(addr)
+
+	while(1):
+		data = sock.recv(buff)
+		
+		if data == "begin":
+			print "Beginning acquisition (not really)"
+		elif data == "end":
+			print "Ending acquisition (word is bond)"
+
 
 	dfilepart = 'a';
 	dfileinc = 0;
