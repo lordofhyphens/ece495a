@@ -1,5 +1,6 @@
 from Tkinter import *
 import os, sys, acqdata, glob
+from socket import *
 
 def getAcqFile(argv):
 	global acqfile
