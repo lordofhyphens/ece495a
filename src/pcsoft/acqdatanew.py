@@ -7,6 +7,7 @@
 
 import os, sys, struct
 from time import localtime, strftime
+from socket import *
 
 global pathTo;
 pathTo = 'data\\'
@@ -17,8 +18,12 @@ pathTo = 'data\\'
 ############################
 
 def getPre():
+	"""Returns date-based file prefix as well as the acquisition number for this day"""
+	# Get prefix, in ddMonYYYY format
 	pref = strftime("%d%b%Y", localtime());
 
+	# Using pathTo, find list of all files with above prefix
+	# and get the last acqnum with split()
 	max = 0;
 	undsplit = []
 	for root, dirs, files in os.walk(pathTo):
@@ -29,6 +34,7 @@ def getPre():
 				if int(undsplit[1][0]) > max:
 					max = int(undsplit[1][0])
 
+	# Increment acqnum, return acqnum & prefix
 	acqnum = max + 1
 	return acqnum, pref
 
@@ -41,7 +47,7 @@ def openNewOut(filepart, pref, acqnum):
 
 
 class acqConfig:
-	"configures acqdisp.txt"
+	"""configures acqinfo.txt"""
 	def __init__(self, pref):
 		self.prefix = pref
 		self.lastCh = ""
@@ -57,7 +63,27 @@ class acqConfig:
 
 
 def main():
+	# Get date-based file prefix
 	acqnum, pref = getPre()
+
+	# Socket params
+	host = "localhost"
+	port = 19367
+	addr = (host,port)
+	buff = 4096
+
+	# Create socket and bind
+	sock = socket(AF_INET, SOCK_DGRAM)
+	sock.bind(addr)
+
+	while(1):
+		data = sock.recv(buff)
+		
+		if data == "begin":
+			print "Beginning acquisition (not really)"
+		elif data == "end":
+			print "Ending acquisition (word is bond)"
+
 
 	dfilepart = 'a';
 	dfileinc = 0;
