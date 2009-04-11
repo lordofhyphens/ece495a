@@ -14,6 +14,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+unsigned char i2c_tx(unsigned char d);
+void i2c_start();
+unsigned char i2c_rx(char ack);
+void i2c_stop();
+
 int main(void) {
 	// inp - the raw data from the user. 
 	// opc - opcode of this given command (lowest 2 bits).
@@ -122,6 +127,7 @@ unsigned char send_usart_command(unsigned char cmd) {
 /* I2C software implementation on port C7 and D7
    Adapted from http://www.robot-electronics.co.uk/htm/using_the_i2c_bus.htm
    This should probably be broken out into its own source file.
+   Usage: i2c_start() -> i2c_tx(device address) -> i2c_tx/rx -> i2c_stop()
 */
 void i2c_start() {
 	// C7 is SDA
@@ -193,4 +199,4 @@ unsigned char i2c_tx(unsigned char d) {
 	PORTD = (unsigned char)PORTD & (unsigned char)~_BV(PORTD7);
 	return b;
 }
-
+/* End I2C functions */
