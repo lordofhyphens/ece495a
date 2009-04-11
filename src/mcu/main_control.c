@@ -19,8 +19,14 @@ int main(void) {
 	// opc - opcode of this given command (lowest 2 bits).
 	// cmd - the high end bits, used to define either a datapath
 	//       or specific input configurations.
-	char inp, opc, cmd;
-	unsigned char buf, mask;
+	unsigned volatile char inp, opc, cmd;
+	unsigned volatile char buf, mask;
+	opc = 0;
+	inp = 0;
+	cmd = 0;
+	buf = 0;
+	mask = 0;
+
 
 	// Starting initializiations.
 	SPI_Slave_Init();
@@ -33,25 +39,25 @@ int main(void) {
 		// Decode the command.
 		opc = inp & MCU_OPCODE;
 		cmd = ((inp & MCU_COMMAND) >> 2); // right shift to keep everything in lowest
-		if ((opc & OPC_DATAP) != 0) {
+		if (opc == OPC_DATAP) {
 			// cmd is for datapath configuration
 			buf = cmd & 0x1F;
 			mask = PORTC & 0x07; // save the first five bits of PORTC.
 			PORTC = decode_datapath_code(cmd, PINC);
 		}
-		if ((opc & OPC_INPUT) != 0) {
+		if (opc == OPC_INPUT) {
 			buf = cmd & 0x1F;
-			mask = PINC & 7; // save the last three bits of PORTC.
+			mask = PORTC & 7; // save the last three bits of PORTC.
 			// cmd is for periphial configuration.
 			// Pin C3 = LSB, Pin D7 = MSB. 
 			// This makes for weird assignments and bit operations.
 			// Don't touch port c0-c2, so we need to be careful.
-			PORTC = (~((cmd & 31) ^ (PORTC >> 3)) | mask);
-			PORTD = (cmd >> 5) ^ PIND;
+			PORTC = (buf << 3) | mask;
+			PORTD = (cmd >> 5) ^ PORTD;
 			_delay_ms(5);
 			//_NOP(); // need to find this function
 		}
-		if ((opc & OPC_USART) != 0) {
+		if (opc == OPC_USART) {
 			PORTA = send_usart_command(cmd);
 			// set our configuration ports
 			// set the interrupt high that we're using for BT commands.
@@ -70,17 +76,17 @@ int main(void) {
 
 void mcu_pin_init() {
 	// set all of PORTC to output
-	DDRC = 0xF;
+	DDRC = 0xFF;
 	DDRD = (1<<PORTD7);
 	// Set PORTA to output.
-	DDRA = 0xF;
+	DDRA = 0xFF;
 	// PortB is being handled by SPI_slave_init()
 	// _NOP(); // need to find this.
 }
 
 // MCU_*_ON values are in control_defines.h
 unsigned char decode_datapath_code(char command, char port) {
-	unsigned char outp = port;
+	volatile char outp = port;
 	if ((command & MCU_ANALOG_ON)   != 0) { 
 		outp = outp | MCU_ANALOG_ON;
 	} else { 
@@ -101,7 +107,7 @@ unsigned char decode_datapath_code(char command, char port) {
 
 unsigned char send_usart_command(unsigned char cmd) {
 	// clear the low
-	unsigned char old_set = PINA;
+	unsigned volatile char old_set = PORTA;
 	// check to make sure cmd is in the left side.
 	if ((cmd & 0xF0) != 0) {
 	} else { 
@@ -112,3 +118,79 @@ unsigned char send_usart_command(unsigned char cmd) {
 	old_set = old_set | cmd;
 	return old_set;
 }
+
+/* I2C software implementation on port C7 and D7
+   Adapted from http://www.robot-electronics.co.uk/htm/using_the_i2c_bus.htm
+   This should probably be broken out into its own source file.
+*/
+void i2c_start() {
+	// C7 is SDA
+	PORTC = _BV(PORTC7);
+	_delay_us(1);
+	// D7 is SCL
+	PORTD = _BV(PORTD7);
+	_delay_us(1);
+
+	PORTC = (unsigned char)PORTC & (unsigned char)~_BV(PORTC7);
+	_delay_us(1);
+	PORTD = (unsigned char)PORTD & (unsigned char)~_BV(PORTD7);
+}
+
+void i2c_stop() {
+	PORTC = (unsigned char)PORTC & (unsigned char)~_BV(PORTC7);
+	_delay_us(1);
+	PORTD = _BV(PORTD7);
+	_delay_us(1);
+	PORTC = _BV(PORTC7);
+	_delay_us(1);
+}
+
+unsigned char i2c_rx(char ack) {
+	
+	char x, d=0;
+	PORTC = _BV(PORTC7);
+
+	for(x=0; x<8; x++) {
+		d <<= 1;
+		do {
+			PORTD = _BV(PORTD7);
+		} while((PINC & 0xF0)==0);    // wait for any SCL clock stretching
+		_delay_us(1);
+		if((PINC & 0xF0)) { d |= 1; }
+		PORTD = (unsigned char)PORTD & (unsigned char)~_BV(PORTD7);
+	} 
+
+	if(ack) {
+		PORTC = (unsigned char)PORTC & (unsigned char)~_BV(PORTC7);
+	} else {
+		PORTC = _BV(PORTC7);
+	}
+	
+	PORTD = _BV(PORTD7);
+	_delay_us(1);             // send (N)ACK bit
+	PORTD = (unsigned char)PORTD & (unsigned char)~_BV(PORTD7);
+	return d;
+}
+
+unsigned char i2c_tx(unsigned char d) {
+	char x;
+	static unsigned char b;
+	for(x=8; x; x--) {
+		if (d & 0x80) {
+			PORTC = _BV(PORTC7); 
+		} else {
+			PORTC = (unsigned char)PORTC & (unsigned char)~_BV(PORTC7);
+		}
+		PORTD = _BV(PORTD7);
+		d <<= 1;
+		PORTD = (unsigned char)PORTD & (unsigned char)~_BV(PORTD7);
+		_delay_us(10); // guarantee less than 100Khz
+	}
+	PORTC = _BV(PORTC7);
+  	PORTD = _BV(PORTD7);
+	_delay_us(1);
+	b = (PIND & 0x80) >> 7; // possible ACK bit
+	PORTD = (unsigned char)PORTD & (unsigned char)~_BV(PORTD7);
+	return b;
+}
+

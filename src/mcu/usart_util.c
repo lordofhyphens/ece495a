@@ -9,8 +9,8 @@ void usart_init (void) {
 	// Set PORTD0 to input
 	DDRD = DDRD & 0x02;
 
-	UBRRL = BAUD_PRESCALE; // Load lower 8-bits of the baud rate value into the low byte of the UBRR register
-	UBRRH = (BAUD_PRESCALE >> 8); // Load upper 8-bits of the baud rate value into the high byte of the UBRR register
+	UBRRL = (unsigned char)BAUD_PRESCALE; // Load lower 8-bits of the baud rate value into the low byte of the UBRR register
+	UBRRH = ((unsigned char)BAUD_PRESCALE >> 8); // Load upper 8-bits of the baud rate value into the high byte of the UBRR register
 }
 
 
