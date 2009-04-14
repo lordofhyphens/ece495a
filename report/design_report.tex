@@ -1,14 +1,19 @@
 \documentclass{report}
-\usepackage{fancyhdr}
-\pagestyle{fancy}
+
 \title{Wireless Modular Diagnostic Tooling}
 \author{Douglas Palmer \and Joseph Lenox \and Nick Hamann \and Matthew Morgan \and Wesley Trendinnick}
 \date{April 21, 2008}
 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+% start the document
 \begin{document}
 \maketitle
 \tableofcontents
 
-\input{sub_datap.tex}
+\chapter{Subsystem Discussions}
+\include{sub_datap}
 
+\begin{appendix}
+\end{appendix}
 \end{document}
