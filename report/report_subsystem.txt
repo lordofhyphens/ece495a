@@ -1,7 +1,0 @@
-
-
-Subsystem: Acquisition Unit Datapath Control
-
-The datapath control subsystem is the core of the acquistion unit, providing interfacing to any and all input modules and relaying configuration options from the user. 
-
-
