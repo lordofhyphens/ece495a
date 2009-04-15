@@ -5,15 +5,26 @@
 \date{April 21, 2008}
 
 \usepackage{fancyhdr}
+\usepackage{makeidx}
 \pagestyle{fancy}
+\makeindex
 % start the document
 \begin{document}
 \maketitle
 \tableofcontents
 
+
 \chapter{Subsystem Discussions}
+%include subsystem reports here.
+%like this: \include{report_name}
+%report_name is the name of the .tex file, without the extension.
 \include{sub_datap}
 
+% Our report's index.
+\printindex
+
+% The beginning of the appendix.
 \begin{appendix}
+% Documents that are part of the appendix need to go here.
 \end{appendix}
 \end{document}

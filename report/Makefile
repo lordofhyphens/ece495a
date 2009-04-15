@@ -10,5 +10,5 @@ clean:
 
 index: ${INCL_FILES}
 	${TEX} ${FILES}
+	${index} ${FILES:.tex=.idx}
 	${TEX} ${FILES}
-	${index} ${FILES:.tex=.ind}
