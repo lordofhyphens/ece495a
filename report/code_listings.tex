@@ -1,0 +1,14 @@
+\chapter{Software Listings}
+%Put all printouts of code listings here.
+\lstset{numbers=left, tabsize=2, breakatwhitespace=true}
+\lstset{columns=fullflexible}
+
+\lstset{language=c}
+\lstinputlisting[caption=Main Control Unit, label=lst:mcu_c]{../src/mcu/main_control.c}
+\lstinputlisting[caption=Defines, label=lst:mcu_h]{../src/mcu/control_defines.h}
+
+\lstset{language=python}
+\lstinputlisting[caption=Host PC Data Acquisition,label=lst:acqudata]{../src/pcsoft/acqdata.py}
+
+\lstset{language=matlab}
+\lstinputlisting[caption=Matlab/Octave Data Display,label=lst:dispd]{../src/pcsoft/dispd.m}
