@@ -2,12 +2,21 @@
 %Put all printouts of code listings here.
 \lstset{numbers=left, tabsize=2, breakatwhitespace=true}
 \lstset{columns=fullflexible}
-\section{Microcontroller Source Code}
+\lstset{breaklines=true}
+\section[Controller Source]{Microcontroller Source Code}
+
 \subsection{Main Control Unit}
 \lstset{language=c}
+\lstinputlisting[caption=Main Control Unit Header, label=lst:mcu_h]{../src/mcu/main_control.h}
 \lstinputlisting[caption=Main Control Unit, label=lst:mcu_c]{../src/mcu/main_control.c}
-\lstinputlisting[caption=Defines, label=lst:mcu_h]{../src/mcu/control_defines.h}
+
 \subsection{Serial Control Unit}
+\lstinputlisting[caption=Serial Control Unit, label=lst:scu_c]{../src/mcu/usart.c}
+
+\subsection{Common Utilities}
+\lstinputlisting[caption=SPI Interface Functions, label=lst:spi_c]{../src/mcu/spi_util.c}
+\lstinputlisting[caption=USART Interface Functions, label=lst:usart_c]{../src/mcu/usart_util.c}
+\lstinputlisting[caption=Common Defines, label=lst:common_h]{../src/mcu/control_defines.h}
 
 \section{Host PC Software}
 \lstset{language=python}
