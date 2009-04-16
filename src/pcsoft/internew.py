@@ -16,7 +16,7 @@ class App(Frame):
 	def initSocket(self):
 		# Socket params
 		host = "localhost"
-		port = 19367
+		port = 19368
 		self.addr = (host,port)
 
 		# Create socket
@@ -244,7 +244,6 @@ class App(Frame):
 
 
 		
-
 	def beginAcqClick(self):
 		self.beginAcq.grid_remove()
 		self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
