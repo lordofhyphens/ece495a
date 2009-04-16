@@ -3,20 +3,50 @@
 \section[Datapath Control]{Acquisition Unit Datapath Control}
 % Description of function or purpose
 \subsection{Description}
-The datapath control subsystem regulates the flow of data from the input modules\index{input modules} and serializes it for output to the host PC software. 
+The datapath control subsystem regulates the flow of data from the input modules\index{input modules}
+ and serializes it for output to the host PC software. It provides a multiplexed bus for analog and/or digital interface modules and also provides a control interface for those modules. 
+Table \ref{tab:control comparison} lists an overview of the options considered for the datapath control
+ subsystem. Cost refers to the per-unit cost of a given solution, Complexity is the amount of up-front 
+design work that would need to be done to achieve basic functionality. TTL Logic and FPGAs are, for 
+these considerations, similar. Both require much work to achieve some basic functionality but had very 
+few limits in the the types of solutions that could be realized. FPGAs have an additional advantage over
+ basic logic gates in that they are able to be relatively easily reconfigured or updating, which would 
+make prottotyping simpler. However, both solutions low-level implementations were considered to be too 
+time-inefficient for this design. A general purpose "bare" microprocessor was also considered, but was 
+quickly dismissed for similar reasons as FPGAs - the infrastructure required to get a general 
+microprocessor functioning was also considered time-inefficient.
+\begin{table}[bp]
+\caption[Controllers]{Comparison of different control methods}
+\begin{tabular}{l| c c c c c c}
+		Control Type & Cost & Complexity & Flexibility & Speed & Time Required\\ \hline
+		Basic logic  &     &      &      &     & \\
+		  gate chips & Low & High & High & Low & V. High \\ 
+		FPGA & Average & High & High & Average & High  \\
+		Microprocessor & Average & High & Average & Average & Average \\
+		Microcontroller & Low & Low & Average & Average & Low \\
+\end{tabular}
+\label{tab:control comparison}
+\end{table}
 
-%/* Discussion of options and trade-off studies, justification for chosen options */
-\subsection{Design Options}
+Microcontrollers, however, are ideal for this type of application: they provide a flexible base and 
+generally come packaged with different interfacing subsystems of their own for a low cost. In addition, 
+many microcontrollers have a C compiler ported for their architecture, as well as the ability to 
+reprogram them in-system. Table \ref{tab:MCU capabilities} outlines some of the capabilties of 
+two microcontrollers that had been under consideration. While the the two devices are very similar, 
+the Atmel MCU was chosen for its more flexible layout, multiple integrated interfaces, and the 
+availability of a mature port of the GNU C Compiler for the device (and its family). The PIC required
+the use of the vendor-supplied compiler and IDE.
+\begin{table}[bp]
+\caption[Atmel and PIC MCUs]{Comparison of Atmel ATMega8515 and PIC18F1220}
+\begin{tabular}{l| c c c c c c}
 
-
-%/* Description of relationships to the other subsystems */
-\subsection{Relation to other subsystems}
-
-%/* List of equipment materials, and components */
-\subsection{Components}
-
-%/* Cost data */
-\subsection{Cost}
-
-%/* Schedule data */
-\subsection{Completion Schedule}
+	       &      & Pin  & Maximum& Ease   &            &         \\
+	Device & Cost & Count& Speed  & of Use & Interfaces & Features\\\hline
+	ATMega8515 & Low & 40 & 20Mhz & High & SPI, & Timers\\
+	           &     &    &       &      &USART & External Memory\\\hline
+	PIC18F1220 & Low & 18 & 40Mhz & Average & USART & Timers \\
+	           &     &    &       &      & & 10-bit ADC\\
+\end{tabular}
+\label{tab:MCU capabilities}
+\end{table}
+ 
