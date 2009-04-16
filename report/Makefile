@@ -6,7 +6,7 @@ all: ${INCL_FILES}
 	${TEX} ${FILES}
 	${TEX} ${FILES}
 clean: 
-	rm -f *.aux *.log *.pdf *.toc
+	rm -f *.aux *.log *.pdf *.toc *.idx *.ind
 
 index: ${INCL_FILES}
 	${TEX} ${FILES}
