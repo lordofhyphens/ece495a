@@ -1,1 +1,1 @@
-del *.aux *.idx *.pdf *.toc *.ind *.log
+rm *.aux *.idx *.pdf *.toc *.ind *.log

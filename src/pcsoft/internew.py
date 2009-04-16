@@ -89,21 +89,21 @@ class App(Frame):
 
 		# Checkboxes
 		c = [0, 0, 0, 0, 0, 0, 0]
-		self.chck1 = Checkbutton(ctrlfrm, text="Check1", variable=c[0])
-		self.chck2 = Checkbutton(ctrlfrm, text="Check2", variable=c[1])
-		self.chck3 = Checkbutton(ctrlfrm, text="Check3", variable=c[2])
-		self.chck4 = Checkbutton(ctrlfrm, text="Check4", variable=c[3])
-		self.chck5 = Checkbutton(ctrlfrm, text="Check5", variable=c[4])
-		self.chck6 = Checkbutton(ctrlfrm, text="Check6", variable=c[5])
+		self.chck1 = Checkbutton(ctrlfrm, text="", variable=c[0])
+		self.chck2 = Checkbutton(ctrlfrm, text="", variable=c[1])
+		self.chck3 = Checkbutton(ctrlfrm, text="", variable=c[2])
+		self.chck4 = Checkbutton(ctrlfrm, text="", variable=c[3])
+		self.chck5 = Checkbutton(ctrlfrm, text="", variable=c[4])
+		self.chck6 = Checkbutton(ctrlfrm, text="", variable=c[5])
 		self.chck7 = Checkbutton(ctrlfrm, text="Check7", variable=c[6])
 
-		self.chck1.grid(row=5, column=1, columnspan=2)
-		self.chck2.grid(row=6, column=1, columnspan=2)
-		self.chck3.grid(row=7, column=1, columnspan=2)
-		self.chck4.grid(row=8, column=1, columnspan=2)
-		self.chck5.grid(row=9, column=1, columnspan=2)
-		self.chck6.grid(row=10, column=1, columnspan=2)
-		self.chck7.grid(row=12, column=1, columnspan=2)
+		self.chck1.grid(row=1, column=1)
+		self.chck2.grid(row=1, column=2)
+		self.chck3.grid(row=1, column=3)
+		self.chck4.grid(row=1, column=4)
+		self.chck5.grid(row=1, column=5)
+		self.chck6.grid(row=1, column=6)
+		self.chck7.grid(row=1, column=7)
 	
 
 		# Radio buttons
