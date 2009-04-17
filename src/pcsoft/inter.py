@@ -1,17 +1,8 @@
+# inter.py - graphical front-end
+
 from Tkinter import *
-import os, sys, acqdata, glob
-
-def getAcqFile(argv):
-	global acqfile
-	if(len(argv) == 2):
-		acqfile = argv[1]
-	else:
-		if(len(argv) > 2):
-			prompt = "Too many arguments. Please enter file to acquire data from: "
-		else:
-			prompt = "No acq file supplied. Please enter file to acquire data from: "
-
-		acqfile = raw_input(prompt)
+from socket import *
+import os, sys, glob 
 
 
 class App(Frame):
@@ -21,6 +12,17 @@ class App(Frame):
 		self.makeCtrlWidgets(master)
 		self.pathto = "data\\"
 		self.fsuff = ".dat"
+		self.initSocket()
+
+
+	def initSocket(self):
+		# Socket params
+		host = "localhost"
+		port = 19368
+		self.addr = (host,port)
+
+		# Create socket
+		self.sock = socket(AF_INET, SOCK_DGRAM)
 
 
 	def makeAcqWidgets(self, master):
@@ -89,21 +91,21 @@ class App(Frame):
 
 		# Checkboxes
 		c = [0, 0, 0, 0, 0, 0, 0]
-		self.chck1 = Checkbutton(ctrlfrm, text="Check1", variable=c[0])
-		self.chck2 = Checkbutton(ctrlfrm, text="Check2", variable=c[1])
-		self.chck3 = Checkbutton(ctrlfrm, text="Check3", variable=c[2])
-		self.chck4 = Checkbutton(ctrlfrm, text="Check4", variable=c[3])
-		self.chck5 = Checkbutton(ctrlfrm, text="Check5", variable=c[4])
-		self.chck6 = Checkbutton(ctrlfrm, text="Check6", variable=c[5])
+		self.chck1 = Checkbutton(ctrlfrm, text="", variable=c[0])
+		self.chck2 = Checkbutton(ctrlfrm, text="", variable=c[1])
+		self.chck3 = Checkbutton(ctrlfrm, text="", variable=c[2])
+		self.chck4 = Checkbutton(ctrlfrm, text="", variable=c[3])
+		self.chck5 = Checkbutton(ctrlfrm, text="", variable=c[4])
+		self.chck6 = Checkbutton(ctrlfrm, text="", variable=c[5])
 		self.chck7 = Checkbutton(ctrlfrm, text="Check7", variable=c[6])
 
-		self.chck1.grid(row=5, column=1, columnspan=2)
-		self.chck2.grid(row=6, column=1, columnspan=2)
-		self.chck3.grid(row=7, column=1, columnspan=2)
-		self.chck4.grid(row=8, column=1, columnspan=2)
-		self.chck5.grid(row=9, column=1, columnspan=2)
-		self.chck6.grid(row=10, column=1, columnspan=2)
-		self.chck7.grid(row=12, column=1, columnspan=2)
+		self.chck1.grid(row=1, column=1)
+		self.chck2.grid(row=1, column=2)
+		self.chck3.grid(row=1, column=3)
+		self.chck4.grid(row=1, column=4)
+		self.chck5.grid(row=1, column=5)
+		self.chck6.grid(row=1, column=6)
+		self.chck7.grid(row=1, column=7)
 	
 
 		# Radio buttons
@@ -244,23 +246,25 @@ class App(Frame):
 
 
 		
-
 	def beginAcqClick(self):
-		self.beginAcq.grid_remove();
+		self.beginAcq.grid_remove()
 		self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
-		acqdata.acq(acqfile)
-		# os.system("acqdata.py")
+		self.sock.sendto("begin", self.addr)
 
 
 	def endAcqClick(self):
-		self.endAcq.grid_remove();
+		self.sock.sendto("end", self.addr)
+		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=2, column=0, columnspan=2, sticky=S)
 		self.refreshListBox()
 		
 
+# Launch acqdata
+import subprocess
+proc = subprocess.Popen('acqdata.py',shell=True)
 
 
-getAcqFile(sys.argv)
+# Run interface
 root = Tk()
 app = App(root)
 root.title("PCDiag Control/Display Interface")
