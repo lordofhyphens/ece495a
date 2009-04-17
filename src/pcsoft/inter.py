@@ -1,37 +1,45 @@
+# inter.py - graphical front-end
+
 from Tkinter import *
-import os, sys, acqdata, glob
-
-def getAcqFile(argv):
-	global acqfile
-	if(len(argv) == 2):
-		acqfile = argv[1]
-	else:
-		if(len(argv) > 2):
-			prompt = "Too many arguments. Please enter file to acquire data from: "
-		else:
-			prompt = "No acq file supplied. Please enter file to acquire data from: "
-
-		acqfile = raw_input(prompt)
+from socket import *
+import os, sys, glob 
 
 
-class App(Frame):
-	def __init__(self, master = None):
-		self.makeAcqWidgets(master)
-		self.makeDispWidgets(master)
-		self.makeCtrlWidgets(master)
+class App(Toplevel):
+	def __init__(self):
+		Toplevel.__init__(self)
+		self.protocol("WM_DELETE_WINDOW", self.newClose)
+		self.makeAcqWidgets()
+		self.makeDispWidgets()
+		self.makeCtrlWidgets()
 		self.pathto = "data\\"
 		self.fsuff = ".dat"
+		self.initSocket()
 
 
-	def makeAcqWidgets(self, master):
+	def newClose(self):
+		self.sock.close()
+		root.destroy()
+
+
+	def initSocket(self):
+		# Socket params
+		host = "localhost"
+		port = 19367
+		self.addr = (host,port)
+
+		# Create socket
+		self.sock = socket(AF_INET, SOCK_DGRAM)
+
+
+	def makeAcqWidgets(self):
 		# Data Acquisition LabelFrame
-		acqfrm = LabelFrame(master, text="Data Acquisition", padx=5, pady=5)
-		acqfrm.grid(row=0, column=0, sticky=N+E+S+W)
+		self.acqfrm = LabelFrame(self, text="Data Acquisition", padx=5, pady=5)
+		self.acqfrm.grid(row=0, column=0, in_=self, sticky=N+E+S+W)
 
 		# OptionMenu label
-		self.typesLabel = Label(acqfrm, text="Data: ")
-		self.typesLabel.grid(row=0, column=0, sticky = W)
-
+		typeLabel = Label(self.acqfrm, text="Type: ")
+		typeLabel.grid(row=0, column=0, sticky = W)
 
 		# Data type drop-down menu
 		typeOpts = [
@@ -46,73 +54,70 @@ class App(Frame):
 		var = StringVar()
 		var.set(typeOpts[0])
 
-		self.typesMenu = OptionMenu(acqfrm, var, *typeOpts)
-		self.typesMenu.grid(row=0, column=1, sticky = E + W)
+		typeMenu = OptionMenu(self.acqfrm, var, *typeOpts)
+		typeMenu.grid(row=0, column=1, in_=self.acqfrm, sticky = E + W)
 
 		# Begin/End Acquisition buttons
-		self.beginAcq = Button(acqfrm, text="Begin Acquisition", width=20, command=self.beginAcqClick)
-		self.endAcq = Button(acqfrm, text="End Acquisition", width=20, command=self.endAcqClick)
-		self.beginAcq.grid(row=2, column=0, columnspan=2, sticky=S)
+		self.beginAcq = Button(self.acqfrm, text="Begin Acquisition", width=15, command=self.beginAcqClick)
+		self.endAcq = Button(self.acqfrm, text="End Acquisition", width=15, command=self.endAcqClick)
+		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# Do some resizing
-		acqfrm.columnconfigure(0, minsize=40)
-		acqfrm.columnconfigure(1, minsize=160)
-		acqfrm.rowconfigure(1, minsize=10)
+		self.acqfrm.columnconfigure(0, minsize=40)
+		self.acqfrm.columnconfigure(1, minsize=160)
+		self.acqfrm.rowconfigure(1, minsize=15)
 
 
-	def makeDispWidgets(self, master):
+	def makeDispWidgets(self):
 		# Data Display LabelFrame
-		dispfrm = LabelFrame(master, text="Data Display", padx=5, pady=5)
-		dispfrm.grid(row=0, column=4)
+		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
+		self.dispfrm.grid(row=0, column=1, in_=self)
 
-		self.acqlist = Listbox(dispfrm)
-		self.acqlist.grid(row=0, column=0, columnspan=4, rowspan=3, sticky=E+W)
+		self.acqlist = Listbox(self.dispfrm)
+		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
 		self.refreshListBox()
 
 		# Refresh/Clear/Delete/Display buttons
-		self.refreshList = Button(dispfrm, text="Rfrsh", width=5, command=self.refreshListBox)
-		self.clearList = Button(dispfrm, text="Clr", width=5, command=self.clearAcqs)
-		self.deleteItem = Button(dispfrm, text="Del", width=5, command=self.deleteAcq)
-		self.displayData = Button(dispfrm, text="Disp", width=5, command=self.displayAcq)
+		refreshList = Button(self.dispfrm, text="Rfrsh", width=5, command=self.refreshListBox)
+		clearList = Button(self.dispfrm, text="Clr", width=5, command=self.clearAcqs)
+		deleteItem = Button(self.dispfrm, text="Del", width=5, command=self.deleteAcq)
+		displayData = Button(self.dispfrm, text="Disp", width=5, command=self.displayAcq)
 
-		self.refreshList.grid(row=4, column=0, columnspan=1, sticky=W)
-		self.clearList.grid(row=4, column=1, columnspan=1)
-		self.deleteItem.grid(row=4, column=2, columnspan=1)
-		self.displayData.grid(row=4, column=3, columnspan=1)
+		refreshList.grid(row=4, column=0, in_=self.dispfrm, sticky=W)
+		clearList.grid(row=4, column=1, in_=self.dispfrm)
+		deleteItem.grid(row=4, column=2, in_=self.dispfrm)
+		displayData.grid(row=4, column=3, in_=self.dispfrm)
 
 
 
-	def makeCtrlWidgets(self, master):
+	def makeCtrlWidgets(self):
 		# Control Interface LabelFrame
-		ctrlfrm = LabelFrame(master, text="Control Interface", padx=5, pady=5)
-		ctrlfrm.grid(row=5, column=0, sticky=W)
+		self.ctrlfrm = LabelFrame(self, text="Control Interface")
+		self.ctrlfrm.grid(row=1, column=0, in_=self, columnspan=2, sticky=E+W)
 
-		# Checkboxes
-		c = [0, 0, 0, 0, 0, 0, 0]
-		self.chck1 = Checkbutton(ctrlfrm, text="Check1", variable=c[0])
-		self.chck2 = Checkbutton(ctrlfrm, text="Check2", variable=c[1])
-		self.chck3 = Checkbutton(ctrlfrm, text="Check3", variable=c[2])
-		self.chck4 = Checkbutton(ctrlfrm, text="Check4", variable=c[3])
-		self.chck5 = Checkbutton(ctrlfrm, text="Check5", variable=c[4])
-		self.chck6 = Checkbutton(ctrlfrm, text="Check6", variable=c[5])
-		self.chck7 = Checkbutton(ctrlfrm, text="Check7", variable=c[6])
 
-		self.chck1.grid(row=5, column=1, columnspan=2)
-		self.chck2.grid(row=6, column=1, columnspan=2)
-		self.chck3.grid(row=7, column=1, columnspan=2)
-		self.chck4.grid(row=8, column=1, columnspan=2)
-		self.chck5.grid(row=9, column=1, columnspan=2)
-		self.chck6.grid(row=10, column=1, columnspan=2)
-		self.chck7.grid(row=12, column=1, columnspan=2)
+		# Generate and draw checkboxes, do some column resizing while we're at it
+		c = [0, 0, 0, 0, 0, 0]
+		chcks = []
+
+		for i in range(0, 6):
+			chcks.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
+			chcks[i].grid(row=0, column=i, in_=self.ctrlfrm)
+			self.ctrlfrm.columnconfigure(0, weight=0, minsize=20)
+	
 	
 
 		# Radio buttons
 		r = IntVar()
-		self.rad1 = Radiobutton(ctrlfrm, text="One", variable=r, value=1)
-		self.rad2 = Radiobutton(ctrlfrm, text="Two", variable=r, value=2)
+		self.rad1 = Radiobutton(self.ctrlfrm, text="One", variable=r, value=1)
+		self.rad2 = Radiobutton(self.ctrlfrm, text="Two", variable=r, value=2)
 
-		self.rad1.grid(row=11, column=1, columnspan=1)
-		self.rad2.grid(row=11, column=2, columnspan=1)
+		self.rad1.grid(row=1, column=0, columnspan=6)
+		self.rad2.grid(row=2, column=0, columnspan=6)
+
+
+		# Resize that mug
+
 
 			
 
@@ -244,24 +249,30 @@ class App(Frame):
 
 
 		
-
 	def beginAcqClick(self):
-		self.beginAcq.grid_remove();
-		self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
-		acqdata.acq(acqfile)
-		# os.system("acqdata.py")
+		self.beginAcq.grid_remove()
+		self.endAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+		self.sock.sendto("begin", self.addr)
 
 
 	def endAcqClick(self):
-		self.endAcq.grid_remove();
-		self.beginAcq.grid(row=2, column=0, columnspan=2, sticky=S)
+		self.sock.sendto("end", self.addr)
+		self.endAcq.grid_remove()
+		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.refreshListBox()
 		
 
+# Launch acqdata
+# import subprocess
+# proc = subprocess.Popen('acqdata.py',shell=True)
 
 
-getAcqFile(sys.argv)
+# Create main window and hide
 root = Tk()
-app = App(root)
-root.title("PCDiag Control/Display Interface")
+root.withdraw()
+
+# Create a top level, add a title
+app = App()
+app.title("PCDiag Control/Display Interface")
 root.mainloop() 
+

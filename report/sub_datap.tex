@@ -1,10 +1,18 @@
 % Subsystem report for Datapath control system, typeset for the LaTeX processor.
-
+% Copy the next line and put your initials instead of JL.
+\fancyfoot[R]{JL}
 \section[Datapath Control]{Acquisition Unit Datapath Control}
 % Description of function or purpose
 \subsection{Description}
+For the data acquisition hardware, a flexible base was needed to manage the flow of data from the 
+analog or digital input modules to the host PC. It was also desired to allow the host PC to manage 
+the configuration of the input modules themselves. 
 The datapath control subsystem regulates the flow of data from the input modules\index{input modules}
- and serializes it for output to the host PC software. It provides a multiplexed bus for analog and/or digital interface modules and also provides a control interface for those modules. 
+ and serializes it for output to the host PC software. It provides a multiplexed bus for analog and/or 
+digital interface modules and also provides a control interface for those modules. The bus width was 
+set at 10 bits, which was the minimum size for accepting output from the analog input module designed 
+for use with this datapath.
+\subsection[Tradeoffs]{Design Decisions and Tradeoffs} 
 Table \ref{tab:control comparison} lists an overview of the options considered for the datapath control
  subsystem. Cost refers to the per-unit cost of a given solution, Complexity is the amount of up-front 
 design work that would need to be done to achieve basic functionality. TTL Logic and FPGAs are, for 
@@ -18,12 +26,17 @@ microprocessor functioning was also considered time-inefficient.
 \begin{table}[bp]
 \caption[Controllers]{Comparison of different control methods}
 \begin{tabular}{l| c c c c c c}
-		Control Type & Cost & Complexity & Flexibility & Speed & Time Required\\ \hline
-		Basic logic  &     &      &      &     & \\
-		  gate chips & Low & High & High & Low & V. High \\ 
-		FPGA & Average & High & High & Average & High  \\
-		Microprocessor & Average & High & Average & Average & Average \\
-		Microcontroller & Low & Low & Average & Average & Low \\
+		\multirow{2}{*}{\small{Control Type}} & \multirow{2}{*}{\small{Cost}} 
+		& \multirow{2}{*}{\small{Complexity}} & \multirow{2}{*}{\small{Flexibility}} 
+		& \multirow{2}{*}{\small{Speed}} 
+		& \small{Time}\\
+		&&&&&\small{Required}\\ \hline
+		\small{Basic logic}  &     &      &      &     & \\
+		  \small{gate chips} & \small{Low} & \small{High} & \small{High} & \small{Low} & \small{V. High} \\ 
+		\small{FPGA} & \small{Average} & \small{High} & \small{High} & \small{Average} & \small{High}  \\
+		\small{Microprocessor} &\small{ Average} & \small{High} & \small{Average} & \small{Average}
+		 & \small{Average} \\
+		\small{Microcontroller} & \small{Low} & \small{Low} & \small{Average} & \small{Average} & \small{Low} \\
 \end{tabular}
 \label{tab:control comparison}
 \end{table}
@@ -36,17 +49,44 @@ two microcontrollers that had been under consideration. While the the two device
 the Atmel MCU was chosen for its more flexible layout, multiple integrated interfaces, and the 
 availability of a mature port of the GNU C Compiler for the device (and its family). The PIC required
 the use of the vendor-supplied compiler and IDE.
-\begin{table}[bp]
+\begin{table}[bhp]
 \caption[Atmel and PIC MCUs]{Comparison of Atmel ATMega8515 and PIC18F1220}
 \begin{tabular}{l| c c c c c c}
-
-	       &      & Pin  & Maximum& Ease   &            &         \\
-	Device & Cost & Count& Speed  & of Use & Interfaces & Features\\\hline
-	ATMega8515 & Low & 40 & 20Mhz & High & SPI, & Timers\\
-	           &     &    &       &      &USART & External Memory\\\hline
-	PIC18F1220 & Low & 18 & 40Mhz & Average & USART & Timers \\
-	           &     &    &       &      & & 10-bit ADC\\
+\setlength{\tabcolsep}{1pt}
+	       &      & \small{Pin}  & \small{Maximum} & \small{Ease}   &            &         \\
+	\small{Device} & \small{Cost} & \small{Count} & \small{Speed}  & \small{of Use} 
+	& \small{Interfaces} & \small{Features}\\\hline
+	\multirow{3}{*}{\small{ATMega8515}} & \multirow{3}{*}{\small{Low}} & \multirow{3}{*}{\small{40}}
+	& \multirow{3}{*}{\small{20Mhz}} & \small{High} 
+	& \small{SPI,} & \small{Timers}\\
+	           &     &    &       &      &\small{USART} & \small{External}\\
+	& & & & & &\small{Memory}\\\hline
+	\small{PIC18F1220} & \small{Low} & \small{18} & \small{40Mhz} & \small{Average} & 
+	\small{USART} & \small{Timers} \\
+	           &     &    &       &      &  & \small{10-bit ADC}\\
 \end{tabular}
 \label{tab:MCU capabilities}
 \end{table}
- 
+
+The bus interface features two input ports and one output port. To effectively switch between the 
+two inputs, those connections must be tri-stated. Three 74-series tri-state buffers were considered: 
+the 74*244, the 74*245, and the 74*621. Table \ref{tab:buffer comparison} outlines the key differences
+with the components considered. Ultimately, a 74*245 chip was selected for its flexibility and that there was a supply already on-site. 74*621s were found to be difficult to source in low quantites for a prototype. 74*244s could be used as well with some minor changes in glue logic, as well as 74*621s.
+
+\begin{table}[bhp]
+\caption[Buffer Comparison]{Comparison of different tri-state buffers}
+\small
+\begin{center}
+\begin{tabular}{l| c c c c}
+\setlength{\tabcolsep}{1pt}
+	Device & Width & Bi-Directional & Cost & Availability \\\hline
+	74*244 & 8     & No             & Low  & High\\
+	74*245 & 8     & Yes            & Low  & High\\
+	74*621 & 8     & Yes            & Low  & Low
+\end{tabular}
+\end{center}
+\label{tab:buffer comparison}
+\end{table}
+
+% Keep this at the end of your sections.
+

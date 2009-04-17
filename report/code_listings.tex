@@ -1,0 +1,29 @@
+\chapter{Software Listings}
+%Put all printouts of code listings here.
+\lstset{numbers=left, tabsize=2, breakatwhitespace=true}
+\lstset{columns=fullflexible}
+\lstset{breaklines=true}
+\section[Controller Source]{Microcontroller Source Code}
+
+\subsection{Main Control Unit}
+\lstset{language=c}
+\lstinputlisting[caption=Main Control Unit Header, label=lst:mcu_h]{../src/mcu/main_control.h}
+\lstinputlisting[caption=Main Control Unit, label=lst:mcu_c]{../src/mcu/main_control.c}
+
+\subsection{Serial Control Unit}
+\lstinputlisting[caption=Serial Control Unit, label=lst:scu_c]{../src/mcu/usart.c}
+
+\subsection{Common Utilities}
+\lstinputlisting[caption=SPI Interface Functions, label=lst:spi_c]{../src/mcu/spi_util.c}
+\lstinputlisting[caption=USART Interface Functions, label=lst:usart_c]{../src/mcu/usart_util.c}
+\lstinputlisting[caption=Common Defines, label=lst:common_h]{../src/mcu/control_defines.h}
+
+\section{Host PC Software}
+\lstset{language=python}
+\lstinputlisting[caption=Host PC Interface, label=lst:inter]{../src/pcsoft/inter.py}
+\lstinputlisting[caption=Host PC Data Acquisition,label=lst:acqdata]{../src/pcsoft/acqdata.py}
+
+\lstset{language=matlab}
+\lstinputlisting[caption=Matlab/Octave Data Display,label=lst:dispd]{../src/pcsoft/dispd.m}
+\lstinputlisting[caption=Matlab/Octave Get Next File, label=lst:getnextfile]{../src/pcsoft/getnextfile.m}
+\lstinputlisting[caption=Matlab/Octave Read/Plot Data, label=lst:readandplot]{../src/pcsoft/readandplot.m}

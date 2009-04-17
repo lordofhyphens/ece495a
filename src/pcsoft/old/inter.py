@@ -1,6 +1,19 @@
+# inter.py - graphical front-end
+
 from Tkinter import *
-from socket import *
-import os, sys, glob 
+import os, sys, acqdata_old, glob
+
+def getAcqFile(argv):
+	global acqfile
+	if(len(argv) == 2):
+		acqfile = argv[1]
+	else:
+		if(len(argv) > 2):
+			prompt = "Too many arguments. Please enter file to acquire data from: "
+		else:
+			prompt = "No acq file supplied. Please enter file to acquire data from: "
+
+		acqfile = raw_input(prompt)
 
 
 class App(Frame):
@@ -10,17 +23,6 @@ class App(Frame):
 		self.makeCtrlWidgets(master)
 		self.pathto = "data\\"
 		self.fsuff = ".dat"
-		self.initSocket()
-
-
-	def initSocket(self):
-		# Socket params
-		host = "localhost"
-		port = 19367
-		self.addr = (host,port)
-
-		# Create socket
-		self.sock = socket(AF_INET, SOCK_DGRAM)
 
 
 	def makeAcqWidgets(self, master):
@@ -246,24 +248,21 @@ class App(Frame):
 		
 
 	def beginAcqClick(self):
-		self.beginAcq.grid_remove()
+		self.beginAcq.grid_remove();
 		self.endAcq.grid(row=2, column=0, columnspan=2, sticky=S)
-		self.sock.sendto("begin", self.addr)
+		acqdata_old.acq(acqfile)
+		# os.system("acqdata.py")
 
 
 	def endAcqClick(self):
-		self.sock.sendto("end", self.addr)
-		self.endAcq.grid_remove()
+		self.endAcq.grid_remove();
 		self.beginAcq.grid(row=2, column=0, columnspan=2, sticky=S)
 		self.refreshListBox()
 		
 
-# Launch acqdata
-import subprocess
-proc = subprocess.Popen('acqdatanew.py',shell=True)
 
 
-# Run interface
+getAcqFile(sys.argv)
 root = Tk()
 app = App(root)
 root.title("PCDiag Control/Display Interface")
