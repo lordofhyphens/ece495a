@@ -60,14 +60,13 @@ def main():
 
 	# Socket params
 	host = "localhost"
-	port = 19369
+	port = 19367
 	addr = (host,port)
 	buff = 4096
 
 	# Create socket and bind
 	sock = socket(AF_INET, SOCK_DGRAM)
 	sock.bind(addr)
-	sock.listen(1)
 
 
 	while(1):

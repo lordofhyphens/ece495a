@@ -5,30 +5,37 @@ from socket import *
 import os, sys, glob 
 
 
-class App(Frame):
-	def __init__(self, master = None):
-		self.makeAcqWidgets(master)
-		self.makeDispWidgets(master)
-		self.makeCtrlWidgets(master)
+class App(Toplevel):
+	def __init__(self):
+		Toplevel.__init__(self)
+		self.protocol("WM_DELETE_WINDOW", self.newClose)
+		self.makeAcqWidgets()
+		self.makeDispWidgets()
+		self.makeCtrlWidgets()
 		self.pathto = "data\\"
 		self.fsuff = ".dat"
 		self.initSocket()
 
 
+	def newClose(self):
+		self.sock.close()
+		root.destroy()
+
+
 	def initSocket(self):
 		# Socket params
 		host = "localhost"
-		port = 19369
+		port = 19367
 		self.addr = (host,port)
 
 		# Create socket
 		self.sock = socket(AF_INET, SOCK_DGRAM)
 
 
-	def makeAcqWidgets(self, master):
+	def makeAcqWidgets(self):
 		# Data Acquisition LabelFrame
-		self.acqfrm = LabelFrame(master, text="Data Acquisition", padx=5, pady=5)
-		self.acqfrm.grid(row=0, column=0, in_=master, sticky=N+E+S+W)
+		self.acqfrm = LabelFrame(self, text="Data Acquisition", padx=5, pady=5)
+		self.acqfrm.grid(row=0, column=0, in_=self, sticky=N+E+S+W)
 
 		# OptionMenu label
 		typeLabel = Label(self.acqfrm, text="Type: ")
@@ -61,10 +68,10 @@ class App(Frame):
 		self.acqfrm.rowconfigure(1, minsize=15)
 
 
-	def makeDispWidgets(self, master):
+	def makeDispWidgets(self):
 		# Data Display LabelFrame
-		self.dispfrm = LabelFrame(master, text="Data Display", padx=5, pady=5)
-		self.dispfrm.grid(row=0, column=1, in_=master)
+		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
+		self.dispfrm.grid(row=0, column=1, in_=self)
 
 		self.acqlist = Listbox(self.dispfrm)
 		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
@@ -83,10 +90,10 @@ class App(Frame):
 
 
 
-	def makeCtrlWidgets(self, master):
+	def makeCtrlWidgets(self):
 		# Control Interface LabelFrame
-		self.ctrlfrm = LabelFrame(master, text="Control Interface")
-		self.ctrlfrm.grid(row=1, column=0, in_=master, columnspan=2, sticky=E+W)
+		self.ctrlfrm = LabelFrame(self, text="Control Interface")
+		self.ctrlfrm.grid(row=1, column=0, in_=self, columnspan=2, sticky=E+W)
 
 
 		# Generate and draw checkboxes, do some column resizing while we're at it
@@ -260,10 +267,12 @@ class App(Frame):
 # proc = subprocess.Popen('acqdata.py',shell=True)
 
 
-# Run interface
+# Create main window and hide
 root = Tk()
-app = App(root)
-root.title("PCDiag Control/Display Interface")
-root.mainloop() 
+root.withdraw()
 
+# Create a top level, add a title
+app = App()
+app.title("PCDiag Control/Display Interface")
+root.mainloop() 
 
