@@ -22,14 +22,17 @@
 %include subsystem reports here.
 %like this: \include{report_name}
 %report_name is the name of the .tex file, without the extension.
+\include{sub_analog}
 \include{sub_datap}
 
 % The beginning of the appendix.
+\fancyfoot[R]{}
 \begin{appendix}
 % Documents that are part of the appendix need to go here.
 
 % All datasheets for our project.
-\include{appendix_datasheet}
+% commented out for now. Uncomment when done
+%\include{appendix_datasheet}
 
 % All code listings for our project.
 \include{code_listings}
