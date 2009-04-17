@@ -4,8 +4,13 @@ import os, sys, struct
 from time import localtime, strftime
 from socket import *
 
-global pathTo;
-pathTo = 'data\\'
+
+# Setup global variables
+global pathto, fsuffix, filepart, fileinc;
+pathto = 'data\\'
+fsuffix = '.dat'
+filepart = 'a'
+fileinc = 0
 
 
 def getPre():
@@ -31,15 +36,21 @@ def getPre():
 
 
 
+
 def openNewOut(filepart, pref, acqnum):
-	"""Opens a data acquisition file, returns the handler and name of acquisition"""
-	filename = pref+'_'+str(acqnum)+filepart+'.dat'
+	"""Opens a data acquisition file, returns a) the file handle 
+	and b) the name of acquisition file (excluding extension)"""
+
+	filename = pref+'_'+str(acqnum)+filepart+fsuffix
 	acqname = pref+'_'+str(acqnum)
 	return open(pathTo+filename, "wb"), acqname
 
 
-class acqConfig:
+
+
+class acqFileConfig:
 	"""configures acqinfo.txt"""
+
 	def __init__(self, pref):
 		self.prefix = pref
 		self.lastCh = ""
@@ -52,6 +63,7 @@ class acqConfig:
 		self.infoF = open("acqinfo.txt", "a")
 		self.infoF.write(self.writetext)
 		
+
 
 
 def main():
@@ -73,21 +85,15 @@ def main():
 		data = sock.recv(buff)
 		
 		if data == "begin":
-			print "Beginning acquisition (not really)"
+			print "Beginning acquisition"
+
+			#
+			writeF, acqName = openNewOut(filepart, pref, acqnum)
+			conf = acqFileConfig(acqName)
+
 		elif data == "end":
 			print "Ending acquisition (word is bond)"
 
-
-	dfilepart = 'a';
-	dfileinc = 0;
-	writeF, acqName = openNewOut(dfilepart, pref, acqnum)
-	conf = acqConfig(acqName)
-
-
-
-
+	
 if __name__ == "__main__":
 	sys.exit(main())
-
-
-

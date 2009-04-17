@@ -1,4 +1,4 @@
-# acqdata.py - acquires data over serial port
+# old/acqdata.py - acquires data over serial port
 
 import os, sys, struct
 from time import localtime, strftime

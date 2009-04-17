@@ -4,25 +4,37 @@ from Tkinter import *
 from socket import *
 import os, sys, glob 
 
+global pathto, fsuffix
+pathto = 'data\\'
+fsuffix = '.dat'
+
 
 class App(Toplevel):
 	def __init__(self):
+		# Init window, setup window close handler
 		Toplevel.__init__(self)
 		self.protocol("WM_DELETE_WINDOW", self.newClose)
+
+		# Draw interface widgets
 		self.makeAcqWidgets()
 		self.makeDispWidgets()
 		self.makeCtrlWidgets()
-		self.pathto = "data\\"
-		self.fsuff = ".dat"
+
 		self.initSocket()
 
 
+
+
 	def newClose(self):
+		"""Close socket connection and destroy the root window"""
 		self.sock.close()
 		root.destroy()
 
 
+
+
 	def initSocket(self):
+		"""Create socket connection"""
 		# Socket params
 		host = "localhost"
 		port = 19367
@@ -30,6 +42,8 @@ class App(Toplevel):
 
 		# Create socket
 		self.sock = socket(AF_INET, SOCK_DGRAM)
+
+
 
 
 	def makeAcqWidgets(self):
@@ -68,6 +82,8 @@ class App(Toplevel):
 		self.acqfrm.rowconfigure(1, minsize=15)
 
 
+
+
 	def makeDispWidgets(self):
 		# Data Display LabelFrame
 		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
@@ -90,6 +106,7 @@ class App(Toplevel):
 
 
 
+
 	def makeCtrlWidgets(self):
 		# Control Interface LabelFrame
 		self.ctrlfrm = LabelFrame(self, text="Control Interface")
@@ -104,8 +121,6 @@ class App(Toplevel):
 			chcks.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
 			chcks[i].grid(row=0, column=i, in_=self.ctrlfrm)
 			self.ctrlfrm.columnconfigure(0, weight=0, minsize=20)
-	
-	
 
 		# Radio buttons
 		r = IntVar()
@@ -116,13 +131,12 @@ class App(Toplevel):
 		self.rad2.grid(row=2, column=0, columnspan=6)
 
 
-		# Resize that mug
-
-
-			
 
 
 	def refreshListBox(self):
+		"""Reads acquisition list from acqinfo.txt, clears old contents of acquisition
+		list and re-adds them."""
+
 		infofile = open("acqinfo.txt", "r")
 		nextLine = infofile.readline()
 
@@ -135,12 +149,18 @@ class App(Toplevel):
 		infofile.close()
 
 
+
+
 	def clearAcqs(self):
+		"""Deletes all acquisition files in pathto, clears contents of acqinfo.txt and
+		acqdisp.txt, clears acquisition list."""
+
+		# Get acquisition names
 		acqnames = self.acqlist.get(0, END)
 		
 		# Delete acq files
 		for i in range(len(acqnames)):
-			for acqfile in glob.glob(self.pathto+acqnames[i]+'*.dat'):
+			for acqfile in glob.glob(pathto+acqnames[i]+'*'+fsuffix):
 				os.remove(acqfile)
 
 		# Clear listbox entries
@@ -157,7 +177,14 @@ class App(Toplevel):
 		dispfile.close()
 
 
+
+
 	def deleteAcq(self):
+		"""Deletes currently selected acquisitions, including their related
+		files in pathto and any pertinent entries in acqinfo and acqdisp. Clears
+		the acquisition(s) from the acquisition list as well."""
+
+		# Get currently selected acquisitions
 		sel = self.acqlist.curselection()
 		acqsToDel = []
 		infoLines = []
@@ -194,7 +221,7 @@ class App(Toplevel):
 
 		# Delete acq files
 		for i in range(len(acqsToDel)):
-			for acqfile in glob.glob(self.pathto+self.acqlist.get(acqsToDel[i])+'*.dat'):
+			for acqfile in glob.glob(pathto+self.acqlist.get(acqsToDel[i])+'*'+fsuffix):
 				os.remove(acqfile)
 
 
@@ -223,48 +250,82 @@ class App(Toplevel):
 
 
 
+
 	def displayAcq(self):
+		"""Writes currently selected acquisition to acqdisp.txt"""
+
+		# Get current selection
 		sel = self.acqlist.curselection()
 
+		# Can only display one acquisition at a time. Not unreasonable.
 		if len(sel) == 1:
+			# Open acqinfo and read first line
 			infofile = open("acqinfo.txt", "r")
-
 			nextLine = infofile.readline()
 
-			# Get acqdisp contents
+			# While last read line is not empty (i.e. no EOF)
 			while nextLine != "":
+				# Strip off newline
 				nextLine = nextLine.rstrip("\r\n")
 
+				# acqinfo stores acquisitions one per line in the following format:
+				#
+				# DDMonYYYY_P:c
+				#
+				# "DD"   - two-digit date of acquisition 
+				# "Mon"  - 3-letter abbreviation of the month of the acquisition
+				# "YYYY" - four digit year of the acquisition
+				# "P"    - denotes the Pth acquisition on said day
+				# "c"    - character of the last part of the acquisition
+				#
+				# The acquisition itself is fully described by everything before the colon,
+				# so split string at the colon and compare with the name of the selected
+				# acquisition, which does not include the last part. The only purpose
+				# of this loop is to determine the last part of the acquisition, which we
+				# cannot determine from the list selection alone.
 				if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
 					toWrite = nextLine
+					break
 
+				# Read next line
 				nextLine = infofile.readline()
 
+			# Close acqinfo, write to acqdisp
 			infofile.close()
-
-			# Write 'em.
 			dispfile = open("acqdisp.txt", "w")
 			dispfile.write(toWrite)
 			dispfile.close()
 
 
 		
+
 	def beginAcqClick(self):
+		"""Replace beginAcq button with endAcq, send begin message to acqdata"""
+
 		self.beginAcq.grid_remove()
 		self.endAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.sock.sendto("begin", self.addr)
 
 
+
+
 	def endAcqClick(self):
+		"""Replace endAcq button with beginAcq, send end message to acqdata"""
+
 		self.sock.sendto("end", self.addr)
 		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.refreshListBox()
 		
 
-# Launch acqdata
-# import subprocess
-# proc = subprocess.Popen('acqdata.py',shell=True)
+
+
+
+
+
+# Launch acqdata.py
+import subprocess
+proc = subprocess.Popen('acqdata.py',shell=True)
 
 
 # Create main window and hide
