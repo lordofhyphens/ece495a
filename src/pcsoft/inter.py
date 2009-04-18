@@ -16,7 +16,8 @@ class App(Toplevel):
 		Toplevel.__init__(self)
 		self.protocol("WM_DELETE_WINDOW", self.newClose)
 
-		# Set old behavior flag
+		# Set old behavior flag & init socketOpened
+		self.socketOpened = False
 		if acqfile != "":
 			self.old = True
 		else:
@@ -33,11 +34,11 @@ class App(Toplevel):
 	def newClose(self):
 		"""Close socket connection and destroy the root window"""
 
-		# If no old behavior, close socket
-		if self.old == False:
+		# If socket is open, close it
+		if self.socketOpened == True:
 			self.closeSocket()
-			print "\nTerminating PCDiag Interface"
-
+		
+		print "\nTerminating PCDiag Interface"
 		root.destroy()
 
 
@@ -51,6 +52,7 @@ class App(Toplevel):
 		self.sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.sckt.bind((host, port))
 		self.sckt.listen(1)
+		self.socketOpened = True
 
 
 	
@@ -60,6 +62,7 @@ class App(Toplevel):
 
 		self.conn.shutdown(socket.SHUT_RDWR)
 		self.sckt.close()
+		self.socketOpened = False
 
 
 
