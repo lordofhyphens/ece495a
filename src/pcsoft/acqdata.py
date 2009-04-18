@@ -1,12 +1,11 @@
 # acqdata.py - acquires data over serial port
 
-import os, sys, struct
+import os, sys, struct, socket
 from time import localtime, strftime
-from socket import *
 
 
 # Setup global variables
-global pathto, fsuffix, filepart, fileinc;
+global pathto, fsuffix, filepart, fileinc
 pathto = 'data\\'
 fsuffix = '.dat'
 filepart = 'a'
@@ -133,27 +132,31 @@ def main():
 
 	# Socket params
 	host = "localhost"
-	port = 19367
-	addr = (host,port)
-	buff = 4096
+	port = 19363
 
-	# Create socket and bind
-	sock = socket(AF_INET, SOCK_DGRAM)
-	sock.bind(addr)
+
+	sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sckt.connect((host, port))
+	sckt.send('init')
 
 
 	while(1):
-		data = sock.recv(buff)
+		data = sckt.recv(1024)
 		
 		if data == "begin":
 			print "Beginning acquisition"
 
-			#
-			writeF, acqName = openNewOut(filepart, pref, acqnum)
-			conf = acqFileConfig(acqName)
+			# Open acqfile, first output file & initialize acqFileConfig class
+			# writeF, acqName = openNewOut(filepart, pref, acqnum)
+			# conf = acqFileConfig(acqName)
 
 		elif data == "end":
-			print "Ending acquisition (word is bond)"
+			print "Ending acquisition"
+			break
+
+	# Close socket
+	sckt.shutdown(socket.SHUT_RDWR)
+	sckt.close()
 
 	
 if __name__ == "__main__":

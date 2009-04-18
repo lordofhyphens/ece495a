@@ -1,8 +1,7 @@
 # inter.py - graphical front-end
 
 from Tkinter import *
-from socket import *
-import os, sys, glob 
+import os, sys, glob, socket
 
 global pathto, fsuffix, acqfile
 pathto = 'data\\'
@@ -28,10 +27,6 @@ class App(Toplevel):
 		self.makeDispWidgets()
 		self.makeCtrlWidgets()
 
-		# If no old behavior, initialize socket
-		if self.old == False:
-			self.initSocket()
-
 
 
 
@@ -40,22 +35,31 @@ class App(Toplevel):
 
 		# If no old behavior, close socket
 		if self.old == False:
-			self.sock.close()
+			self.closeSocket()
+			print "\nTerminating PCDiag Interface"
 
 		root.destroy()
 
 
 
 
-	def initSocket(self):
+	def openSocket(self):
 		"""Create socket connection"""
-		# Socket params
-		host = "localhost"
-		port = 19367
-		self.addr = (host,port)
 
-		# Create socket
-		self.sock = socket(AF_INET, SOCK_DGRAM)
+		host = "localhost" 
+		port = 19363
+		self.sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.sckt.bind((host, port))
+		self.sckt.listen(1)
+
+
+	
+
+	def closeSocket(self):
+		"""Close socket connection"""
+
+		self.conn.shutdown(socket.SHUT_RDWR)
+		self.sckt.close()
 
 
 
@@ -319,10 +323,19 @@ class App(Toplevel):
 		self.beginAcq.grid_remove()
 		self.endAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
+		# If old behavior, call acqbin. Otherwise launch acqdata in a subprocess
+		# and send "begin" message over socket
 		if self.old == True:
 			acqdata.acqbin(acqfile)
 		else:
-			self.sock.sendto("begin", self.addr)
+			self.openSocket()
+			self.proc = subprocess.Popen('acqdata.py',shell=True)
+			self.conn, self.addr = self.sckt.accept()
+
+			data = self.conn.recv(1024)
+
+			if data == "init":
+				self.conn.send('begin')
 
 
 
@@ -330,7 +343,9 @@ class App(Toplevel):
 	def endAcqClick(self):
 		"""Replace endAcq button with beginAcq, send end message to acqdata"""
 		if self.old == False:
-			self.sock.sendto("end", self.addr)
+			self.conn.sendto("end", self.addr)
+			self.proc.wait()
+			self.closeSocket()
 
 		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
@@ -342,12 +357,11 @@ class App(Toplevel):
 if len(sys.argv) == 2:
 	acqfile = sys.argv[1]
 
-# If old behavior, import old acqdata. Else launch new acqdata
+# If old behavior, import old acqdata. Else import subprocess
 if acqfile != '':
 	import acqdata
 else:
 	import subprocess
-	proc = subprocess.Popen('acqdata.py',shell=True)
 
 
 
