@@ -4,25 +4,31 @@
 \section[Datapath Control]{Acquisition Unit Datapath Control}
 % Description of function or purpose
 \subsection{Description}
-For the data acquisition hardware, a flexible base was needed to manage the flow of data from the 
-analog or digital input modules to the host PC. It was also desired to allow the host PC to manage 
-the configuration of the input modules themselves. 
-The datapath control subsystem regulates the flow of data from the input modules\index{input modules}
- and serializes it for output to the host PC software. It provides a multiplexed bus for analog and/or 
-digital interface modules and also provides a control interface for those modules. The bus width was 
-set at 10 bits, which was the minimum size for accepting output from the analog input module designed 
-for use with this datapath.
+For the data acquisition hardware, a flexible base was needed to manage the 
+flow of data from the analog or digital input modules to the host PC. It was 
+also desired to allow the host PC to manage the configuration of the input 
+modules themselves. The datapath control subsystem regulates the flow of data 
+from the input modules\index{input modules} and serializes it for output to 
+the host PC software. It provides a multiplexed bus for analog and/or 
+digital interface modules and also provides a control interface for those 
+modules. The bus width was set at 10 bits, which was the minimum size for
+ accepting output from the analog input module designed for use with this 
+datapath.
 \subsection[Tradeoffs]{Design Decisions and Tradeoffs} 
-Table \ref{tab:control comparison} lists an overview of the options considered for the datapath control
- subsystem. Cost refers to the per-unit cost of a given solution, Complexity is the amount of up-front 
-design work that would need to be done to achieve basic functionality. TTL Logic and FPGAs are, for 
-these considerations, similar. Both require much work to achieve some basic functionality but had very 
-few limits in the the types of solutions that could be realized. FPGAs have an additional advantage over
- basic logic gates in that they are able to be relatively easily reconfigured or updating, which would 
-make prottotyping simpler. However, both solutions low-level implementations were considered to be too 
-time-inefficient for this design. A general purpose "bare" microprocessor was also considered, but was 
-quickly dismissed for similar reasons as FPGAs - the infrastructure required to get a general 
-microprocessor functioning was also considered time-inefficient.
+Table \ref{tab:control comparison} lists an overview of the options considered
+ for the datapath control subsystem. Cost refers to the per-unit cost of a 
+given solution, Complexity is the amount of up-front design work that would
+ need to be done to achieve basic functionality. TTL Logic and FPGAs are, for
+ these considerations, similar. Both require much work to achieve some basic
+ functionality but had very few limits in the the types of solutions that
+ could be realized. FPGAs have an additional advantage over basic logic gates
+ in that they are able to be relatively easily reconfigured or updating, which
+ would make prottotyping simpler. However, both solutions low-level
+ implementations were considered to be too time-inefficient for this design.
+ A general purpose "bare" microprocessor was also considered, but was quickly
+ dismissed for similar reasons as FPGAs - the infrastructure required to get
+ a general microprocessor functioning was also considered time-inefficient.
+
 \begin{table}[bp]
 \caption[Controllers]{Comparison of different control methods}
 \begin{tabular}{l| c c c c c c}
@@ -41,14 +47,16 @@ microprocessor functioning was also considered time-inefficient.
 \label{tab:control comparison}
 \end{table}
 
-Microcontrollers, however, are ideal for this type of application: they provide a flexible base and 
-generally come packaged with different interfacing subsystems of their own for a low cost. In addition, 
-many microcontrollers have a C compiler ported for their architecture, as well as the ability to 
-reprogram them in-system. Table \ref{tab:MCU capabilities} outlines some of the capabilties of 
-two microcontrollers that had been under consideration. While the the two devices are very similar, 
-the Atmel MCU was chosen for its more flexible layout, multiple integrated interfaces, and the 
-availability of a mature port of the GNU C Compiler for the device (and its family). The PIC required
-the use of the vendor-supplied compiler and IDE.
+Microcontrollers, however, are ideal for this type of application: they provide
+ a flexible base and generally come packaged with different interfacing 
+subsystems of their own for a low cost. In addition, many microcontrollers 
+have a C compiler ported for their architecture, as well as the ability to
+ reprogram them in-system. Table \ref{tab:MCU capabilities} outlines some of
+ the capabilties of two microcontrollers that had been under consideration.
+ While the the two devices are very similar, the Atmel MCU was chosen for its
+ more flexible layout, multiple integrated interfaces, and the availability
+ of a mature port of the GNU C Compiler for the device (and its family). The 
+PIC required the use of the vendor-supplied compiler and IDE.
 \begin{table}[bhp]
 \caption[Atmel and PIC MCUs]{Comparison of Atmel ATMega8515 and PIC18F1220}
 \begin{tabular}{l| c c c c c c}
@@ -68,10 +76,14 @@ the use of the vendor-supplied compiler and IDE.
 \label{tab:MCU capabilities}
 \end{table}
 
-The bus interface features two input ports and one output port. To effectively switch between the 
-two inputs, those connections must be tri-stated. Three 74-series tri-state buffers were considered: 
-the 74*244, the 74*245, and the 74*621. Table \ref{tab:buffer comparison} outlines the key differences
-with the components considered. Ultimately, a 74*245 chip was selected for its flexibility and that there was a supply already on-site. 74*621s were found to be difficult to source in low quantites for a prototype. 74*244s could be used as well with some minor changes in glue logic, as well as 74*621s.
+The bus interface features two input ports and one output port. To effectively
+ switch between the two inputs, those connections must be tri-stated. Three 
+74-series tri-state buffers were considered: the 74*244, the 74*245, and the 
+74*621. Table \ref{tab:buffer comparison} outlines the key differences with 
+the components considered. Ultimately, a 74*245 chip was selected for its 
+flexibility and that there was a supply already on-site. 74*621s were found 
+to be difficult to source in low quantites for a prototype. 74*244s could be 
+used as well with some minor changes in glue logic, as well as 74*621s.
 
 \begin{table}[bhp]
 \caption[Buffer Comparison]{Comparison of different tri-state buffers}
@@ -87,6 +99,4 @@ with the components considered. Ultimately, a 74*245 chip was selected for its f
 \end{center}
 \label{tab:buffer comparison}
 \end{table}
-
-% Keep this at the end of your sections.
 

@@ -4,7 +4,10 @@ TEX=pdflatex
 index=makeindex
 all: ${INCL_FILES}
 	${TEX} ${FILES}
+	bibtex ${FILES:.tex=}
 	${TEX} ${FILES}
+	${TEX} ${FILES}
+	
 clean: 
 	rm -f *.aux *.log *.pdf *.toc *.idx *.ind
 
