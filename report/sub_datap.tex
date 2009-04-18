@@ -29,7 +29,8 @@ given solution, Complexity is the amount of up-front design work that would
  dismissed for similar reasons as FPGAs - the infrastructure required to get
  a general microprocessor functioning was also considered time-inefficient.
 
-\begin{table}[bp] \caption[Controllers]{Comparison of different control methods}
+\begin{table}[bp]
+\caption[Controllers]{Comparison of different control methods}
 \begin{tabular}{l| c c c c c c}
 		\multirow{2}{*}{\small{Control Type}} & \multirow{2}{*}{\small{Cost}} 
 		& \multirow{2}{*}{\small{Complexity}} & \multirow{2}{*}{\small{Flexibility}} 
@@ -46,14 +47,16 @@ given solution, Complexity is the amount of up-front design work that would
 \label{tab:control comparison}
 \end{table}
 
-Microcontrollers, however, are ideal for this type of application: they provide a flexible base and 
-generally come packaged with different interfacing subsystems of their own for a low cost. In addition, 
-many microcontrollers have a C compiler ported for their architecture, as well as the ability to 
-reprogram them in-system. Table \ref{tab:MCU capabilities} outlines some of the capabilties of 
-two microcontrollers that had been under consideration. While the the two devices are very similar, 
-the Atmel MCU was chosen for its more flexible layout, multiple integrated interfaces, and the 
-availability of a mature port of the GNU C Compiler for the device (and its family). The PIC required
-the use of the vendor-supplied compiler and IDE.
+Microcontrollers, however, are ideal for this type of application: they provide
+ a flexible base and generally come packaged with different interfacing 
+subsystems of their own for a low cost. In addition, many microcontrollers 
+have a C compiler ported for their architecture, as well as the ability to
+ reprogram them in-system. Table \ref{tab:MCU capabilities} outlines some of
+ the capabilties of two microcontrollers that had been under consideration.
+ While the the two devices are very similar, the Atmel MCU was chosen for its
+ more flexible layout, multiple integrated interfaces, and the availability
+ of a mature port of the GNU C Compiler for the device (and its family). The 
+PIC required the use of the vendor-supplied compiler and IDE.
 \begin{table}[bhp]
 \caption[Atmel and PIC MCUs]{Comparison of Atmel ATMega8515 and PIC18F1220}
 \begin{tabular}{l| c c c c c c}
@@ -73,10 +76,14 @@ the use of the vendor-supplied compiler and IDE.
 \label{tab:MCU capabilities}
 \end{table}
 
-The bus interface features two input ports and one output port. To effectively switch between the 
-two inputs, those connections must be tri-stated. Three 74-series tri-state buffers were considered: 
-the 74*244, the 74*245, and the 74*621. Table \ref{tab:buffer comparison} outlines the key differences
-with the components considered. Ultimately, a 74*245 chip was selected for its flexibility and that there was a supply already on-site. 74*621s were found to be difficult to source in low quantites for a prototype. 74*244s could be used as well with some minor changes in glue logic, as well as 74*621s.
+The bus interface features two input ports and one output port. To effectively
+ switch between the two inputs, those connections must be tri-stated. Three 
+74-series tri-state buffers were considered: the 74*244, the 74*245, and the 
+74*621. Table \ref{tab:buffer comparison} outlines the key differences with 
+the components considered. Ultimately, a 74*245 chip was selected for its 
+flexibility and that there was a supply already on-site. 74*621s were found 
+to be difficult to source in low quantites for a prototype. 74*244s could be 
+used as well with some minor changes in glue logic, as well as 74*621s.
 
 \begin{table}[bhp]
 \caption[Buffer Comparison]{Comparison of different tri-state buffers}
@@ -93,5 +100,4 @@ with the components considered. Ultimately, a 74*245 chip was selected for its f
 \label{tab:buffer comparison}
 \end{table}
 
-% Keep this at the end of your sections.
-
+\cite{ds:ATMEGA8515}
