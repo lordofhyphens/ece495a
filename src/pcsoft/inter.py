@@ -291,7 +291,7 @@ class App(Toplevel):
 
 		# Delete acq files
 		for i in range(len(acqsToDel)):
-			acq = self.getPreFromSel(self.acqlist.get(acqsToDel[i]))
+			acq = self.getAcqFromSel(acqsToDel[i])
 			for acqfile in glob.glob(pathto+acq+'*'+fsuffix):
 				os.remove(acqfile)
 
@@ -331,6 +331,7 @@ class App(Toplevel):
 		# If more than one selected, get first
 		if len(sel) != 1:
 			sel = sel[0]
+			print "Can only display one acquisition at a time. First selection has been used."
 
 		# Open acqinfo and read first line
 		infofile = open("acqinfo.txt", "r")
@@ -356,7 +357,7 @@ class App(Toplevel):
 			# acquisition, which does not include the last part. The only purpose
 			# of this loop is to determine the last part of the acquisition, which we
 			# cannot determine from the list selection alone.
-			if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
+			if nextLine.split(":")[0] == getAcqFromSel(int(sel[0])):
 				toWrite = nextLine
 				break
 
@@ -414,11 +415,12 @@ class App(Toplevel):
 
 
 	
-	def getPreFromSel(self, sel):
-		""" Given the value of a selection from the acquisition list, re-build
-		the file prefix"""
-	
-		return sel[4:6]+sel[0:3]+sel[8:12]+'_'+sel[14]
+	def getAcqFromSel(self, sel):
+		""" Given the selection number, return the acquisition name as
+		used in the file name (i.e. DDMonYYYY_N)"""
+
+		acqval = self.acqlist.get(sel)
+		return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14]
 
 		
 
