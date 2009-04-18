@@ -1,13 +1,14 @@
 # inter.py - graphical front-end
 
 from Tkinter import *
-from socket import *
-import os, sys, glob 
+import os, sys, glob, socket
 
-global pathto, fsuffix
+global pathto, fsuffix, acqfile
 pathto = 'data\\'
 fsuffix = '.dat'
+acqfile = ''
 
+			
 
 class App(Toplevel):
 	def __init__(self):
@@ -15,33 +16,53 @@ class App(Toplevel):
 		Toplevel.__init__(self)
 		self.protocol("WM_DELETE_WINDOW", self.newClose)
 
+		# Set old behavior flag & init socketOpened
+		self.socketOpened = False
+		if acqfile != "":
+			self.old = True
+		else:
+			self.old = False
+
 		# Draw interface widgets
 		self.makeAcqWidgets()
 		self.makeDispWidgets()
 		self.makeCtrlWidgets()
-
-		self.initSocket()
 
 
 
 
 	def newClose(self):
 		"""Close socket connection and destroy the root window"""
-		self.sock.close()
+
+		# If socket is open, close it
+		if self.socketOpened == True:
+			self.closeSocket()
+		
+		print "\nTerminating PCDiag Interface"
 		root.destroy()
 
 
 
 
-	def initSocket(self):
+	def openSocket(self):
 		"""Create socket connection"""
-		# Socket params
-		host = "localhost"
-		port = 19367
-		self.addr = (host,port)
 
-		# Create socket
-		self.sock = socket(AF_INET, SOCK_DGRAM)
+		host = "localhost" 
+		port = 19363
+		self.sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.sckt.bind((host, port))
+		self.sckt.listen(1)
+		self.socketOpened = True
+
+
+	
+
+	def closeSocket(self):
+		"""Close socket connection"""
+
+		self.conn.shutdown(socket.SHUT_RDWR)
+		self.sckt.close()
+		self.socketOpened = False
 
 
 
@@ -94,10 +115,10 @@ class App(Toplevel):
 		self.refreshListBox()
 
 		# Refresh/Clear/Delete/Display buttons
-		refreshList = Button(self.dispfrm, text="Rfrsh", width=5, command=self.refreshListBox)
-		clearList = Button(self.dispfrm, text="Clr", width=5, command=self.clearAcqs)
-		deleteItem = Button(self.dispfrm, text="Del", width=5, command=self.deleteAcq)
-		displayData = Button(self.dispfrm, text="Disp", width=5, command=self.displayAcq)
+		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.refreshListBox)
+		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
+		deleteItem = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
+		displayData = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
 
 		refreshList.grid(row=4, column=0, in_=self.dispfrm, sticky=W)
 		clearList.grid(row=4, column=1, in_=self.dispfrm)
@@ -112,24 +133,46 @@ class App(Toplevel):
 		self.ctrlfrm = LabelFrame(self, text="Control Interface")
 		self.ctrlfrm.grid(row=1, column=0, in_=self, columnspan=2, sticky=E+W)
 
+		# "CONFIG 1-6" label
+		config16Lbl = Label(self.ctrlfrm, text="Config. 1-6:")
+		config16Lbl.grid(row=0, column=0, columnspan=6, sticky=W)
 
 		# Generate and draw checkboxes, do some column resizing while we're at it
-		c = [0, 0, 0, 0, 0, 0]
-		chcks = []
+		c = []
+		cnfgChck = []
 
 		for i in range(0, 6):
-			chcks.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
-			chcks[i].grid(row=0, column=i, in_=self.ctrlfrm)
-			self.ctrlfrm.columnconfigure(0, weight=0, minsize=20)
+			c.append(IntVar())
+			cnfgChck.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
+			cnfgChck[i].grid(row=1, column=i, in_=self.ctrlfrm)
+			self.ctrlfrm.columnconfigure(i, weight=0, minsize=15)
 
-		# Radio buttons
+
+		# Active Input radio label
+		activeinLbl = Label(self.ctrlfrm, text="Active Input Type:")
+		activeinLbl.grid(row=0, column=7, in_=self.ctrlfrm, columnspan=2, sticky=W)
+
+		# Active Input analog/digital buttons
 		r = IntVar()
-		self.rad1 = Radiobutton(self.ctrlfrm, text="One", variable=r, value=1)
-		self.rad2 = Radiobutton(self.ctrlfrm, text="Two", variable=r, value=2)
+		self.rad1 = Radiobutton(self.ctrlfrm, text="Analog", variable=r, value=1)
+		self.rad2 = Radiobutton(self.ctrlfrm, text="Digital", variable=r, value=2)
+		self.rad1.grid(row=1, column=7, in_=self.ctrlfrm, columnspan=1)
+		self.rad2.grid(row=1, column=8, in_=self.ctrlfrm, columnspan=1)
 
-		self.rad1.grid(row=1, column=0, columnspan=6)
-		self.rad2.grid(row=2, column=0, columnspan=6)
 
+		# Output enable label
+		outen = IntVar()
+		outenChck = Checkbutton(self.ctrlfrm, text="Output Enable", variable=outen)
+		outenChck.grid(row=1, column=10, in_=self.ctrlfrm, sticky=W)
+
+
+		# Put blank labels in columns for spacing
+		blnkLbl = Label(self.ctrlfrm, text=" ")
+		blnkLbl.grid(row=0, column=6, in_=self.ctrlfrm, rowspan=2)
+		blnkLbl.grid(row=0, column=9, in_=self.ctrlfrm, rowspan=2)
+		self.ctrlfrm.columnconfigure(6, weight=0, minsize=20)
+		self.ctrlfrm.columnconfigure(9, weight=0, minsize=20)
+		
 
 
 
@@ -304,28 +347,47 @@ class App(Toplevel):
 
 		self.beginAcq.grid_remove()
 		self.endAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
-		self.sock.sendto("begin", self.addr)
+
+		# If old behavior, call acqbin. Otherwise launch acqdata in a subprocess
+		# and send "begin" message over socket
+		if self.old == True:
+			acqdata.acqbin(acqfile)
+		else:
+			self.openSocket()
+			self.proc = subprocess.Popen('acqdata.py',shell=True)
+			self.conn, self.addr = self.sckt.accept()
+
+			data = self.conn.recv(1024)
+
+			if data == "init":
+				self.conn.send('begin')
 
 
 
 
 	def endAcqClick(self):
 		"""Replace endAcq button with beginAcq, send end message to acqdata"""
+		if self.old == False:
+			self.conn.sendto("end", self.addr)
+			self.proc.wait()
+			self.closeSocket()
 
-		self.sock.sendto("end", self.addr)
 		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.refreshListBox()
 		
 
 
+# If command line arg present, invoke binary input file behavior
+if len(sys.argv) == 2:
+	acqfile = sys.argv[1]
 
+# If old behavior, import old acqdata. Else import subprocess
+if acqfile != '':
+	import acqdata
+else:
+	import subprocess
 
-
-
-# Launch acqdata.py
-import subprocess
-proc = subprocess.Popen('acqdata.py',shell=True)
 
 
 # Create main window and hide

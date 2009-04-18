@@ -1,12 +1,11 @@
 # acqdata.py - acquires data over serial port
 
-import os, sys, struct
+import os, sys, struct, socket
 from time import localtime, strftime
-from socket import *
 
 
 # Setup global variables
-global pathto, fsuffix, filepart, fileinc;
+global pathto, fsuffix, filepart, fileinc
 pathto = 'data\\'
 fsuffix = '.dat'
 filepart = 'a'
@@ -18,11 +17,11 @@ def getPre():
 	# Get prefix, in ddMonYYYY format
 	pref = strftime("%d%b%Y", localtime());
 
-	# Using pathTo, find list of all files with above prefix
+	# Using pathto, find list of all files with above prefix
 	# and get the last acqnum with split()
 	max = 0;
 	undsplit = []
-	for root, dirs, files in os.walk(pathTo):
+	for root, dirs, files in os.walk(pathto):
 		for name in files:
 			name = name.split('.')[0]
 			undsplit = name.split('_')
@@ -43,7 +42,7 @@ def openNewOut(filepart, pref, acqnum):
 
 	filename = pref+'_'+str(acqnum)+filepart+fsuffix
 	acqname = pref+'_'+str(acqnum)
-	return open(pathTo+filename, "wb"), acqname
+	return open(pathto+filename, "wb"), acqname
 
 
 
@@ -62,6 +61,67 @@ class acqFileConfig:
 		self.writetext = self.prefix+':'+self.lastCh+'\n'
 		self.infoF = open("acqinfo.txt", "a")
 		self.infoF.write(self.writetext)
+
+
+
+
+def parseBin(chunk):
+	"""Parse a chunk of binary data into a string"""
+
+	parsed = []
+	for i in range(0, len(chunk)):
+		parsed.append(struct.unpack('b', chunk[i]))
+
+	return parsed
+
+
+
+
+def acqbin(acqfile):
+	"""Acquire data from binary input file. Used to test interface
+	in the event that real serial input tests are never performed."""
+
+	# Setup global variables
+	global pathto, fsuffix, filepart, fileinc;
+	pathto = 'data\\'
+	fsuffix = '.dat'
+	filepart = 'a'
+	fileinc = 0
+
+	# Get date-based file prefix
+	acqnum, pref = getPre()
+
+	# Open acqfile, first output file & initialize acqFileConfig class
+	f = open(acqfile, "rb")
+	writeF, acqName = openNewOut(filepart, pref, acqnum)
+	conf = acqFileConfig(acqName)
+
+	# Read 4096-byte chunks from file and convert each char to integer
+	while 1:
+		thisChunk = f.read(4096).rstrip('\n')
+
+		# Open a new binary file if the old file is 100 kb in size
+		if fileinc > 24:
+			filepart = chr(ord(filepart) + 1)
+			fileinc = 0;
+			writeF.close()
+			writeF, writeFileName = openNewOut(filepart, pref, acqnum)
+			conf.setLast(filepart)
+	
+		# If read data is empty, break loop
+		# Otherwise keep processing data
+		if len(thisChunk) == 0: 
+			break
+		else:
+			parseNums = parseBin(thisChunk)
+
+			for i in range(0, len(parseNums)):
+				writeF.write(struct.pack('b', parseNums[i][0]))
+	
+		fileinc += 1
+	
+
+	conf.updateInfo()
 		
 
 
@@ -72,27 +132,31 @@ def main():
 
 	# Socket params
 	host = "localhost"
-	port = 19367
-	addr = (host,port)
-	buff = 4096
+	port = 19363
 
-	# Create socket and bind
-	sock = socket(AF_INET, SOCK_DGRAM)
-	sock.bind(addr)
+
+	sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sckt.connect((host, port))
+	sckt.send('init')
 
 
 	while(1):
-		data = sock.recv(buff)
+		data = sckt.recv(1024)
 		
 		if data == "begin":
 			print "Beginning acquisition"
 
-			#
-			writeF, acqName = openNewOut(filepart, pref, acqnum)
-			conf = acqFileConfig(acqName)
+			# Open acqfile, first output file & initialize acqFileConfig class
+			# writeF, acqName = openNewOut(filepart, pref, acqnum)
+			# conf = acqFileConfig(acqName)
 
 		elif data == "end":
-			print "Ending acquisition (word is bond)"
+			print "Ending acquisition"
+			break
+
+	# Close socket
+	sckt.shutdown(socket.SHUT_RDWR)
+	sckt.close()
 
 	
 if __name__ == "__main__":
