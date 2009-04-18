@@ -122,7 +122,7 @@ class App(Toplevel):
 		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
 		self.dispfrm.grid(row=0, column=1, in_=self)
 
-		self.acqlist = Listbox(self.dispfrm)
+		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
 		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
 		self.fillListBox()
 
@@ -219,10 +219,17 @@ class App(Toplevel):
 		acqdisp.txt, clears acquisition list."""
 
 		# Get acquisition names
-		acqnames = self.acqlist.get(0, END)
+		acqnames = []
+		infofile = open("acqinfo.txt", "r")
+		rln = infofile.readline()
+		while rln != "":
+			acqnames.append(rln.split(':')[0])
+			rln = infofile.readline()
+
 		
 		# Delete acq files
 		for i in range(len(acqnames)):
+			# reconstruct acq filename
 			for acqfile in glob.glob(pathto+acqnames[i]+'*'+fsuffix):
 				os.remove(acqfile)
 
@@ -284,7 +291,8 @@ class App(Toplevel):
 
 		# Delete acq files
 		for i in range(len(acqsToDel)):
-			for acqfile in glob.glob(pathto+self.acqlist.get(acqsToDel[i])+'*'+fsuffix):
+			acq = self.getPreFromSel(self.acqlist.get(acqsToDel[i]))
+			for acqfile in glob.glob(pathto+acq+'*'+fsuffix):
 				os.remove(acqfile)
 
 
@@ -320,44 +328,47 @@ class App(Toplevel):
 		# Get current selection
 		sel = self.acqlist.curselection()
 
-		# Can only display one acquisition at a time. Not unreasonable.
-		if len(sel) == 1:
-			# Open acqinfo and read first line
-			infofile = open("acqinfo.txt", "r")
+		# If more than one selected, get first
+		if len(sel) != 1:
+			sel = sel[0]
+
+		# Open acqinfo and read first line
+		infofile = open("acqinfo.txt", "r")
+		nextLine = infofile.readline()
+
+		# While last read line is not empty (i.e. no EOF)
+		while nextLine != "":
+			# Strip off newline
+			nextLine = nextLine.rstrip("\r\n")
+
+			# acqinfo stores acquisitions one per line in the following format:
+			#
+			# DDMonYYYY_P:c
+			#
+			# "DD"   - two-digit date of acquisition 
+			# "Mon"  - 3-letter abbreviation of the month of the acquisition
+			# "YYYY" - four digit year of the acquisition
+			# "P"    - denotes the Pth acquisition on said day
+			# "c"    - character of the last part of the acquisition
+			#
+			# The acquisition itself is fully described by everything before the colon,
+			# so split string at the colon and compare with the name of the selected
+			# acquisition, which does not include the last part. The only purpose
+			# of this loop is to determine the last part of the acquisition, which we
+			# cannot determine from the list selection alone.
+			if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
+				toWrite = nextLine
+				break
+
+			# Read next line
 			nextLine = infofile.readline()
 
-			# While last read line is not empty (i.e. no EOF)
-			while nextLine != "":
-				# Strip off newline
-				nextLine = nextLine.rstrip("\r\n")
 
-				# acqinfo stores acquisitions one per line in the following format:
-				#
-				# DDMonYYYY_P:c
-				#
-				# "DD"   - two-digit date of acquisition 
-				# "Mon"  - 3-letter abbreviation of the month of the acquisition
-				# "YYYY" - four digit year of the acquisition
-				# "P"    - denotes the Pth acquisition on said day
-				# "c"    - character of the last part of the acquisition
-				#
-				# The acquisition itself is fully described by everything before the colon,
-				# so split string at the colon and compare with the name of the selected
-				# acquisition, which does not include the last part. The only purpose
-				# of this loop is to determine the last part of the acquisition, which we
-				# cannot determine from the list selection alone.
-				if nextLine.split(":")[0] == self.acqlist.get(int(sel[0])):
-					toWrite = nextLine
-					break
-
-				# Read next line
-				nextLine = infofile.readline()
-
-			# Close acqinfo, write to acqdisp
-			infofile.close()
-			dispfile = open("acqdisp.txt", "w")
-			dispfile.write(toWrite)
-			dispfile.close()
+		# Close acqinfo, write to acqdisp
+		infofile.close()
+		dispfile = open("acqdisp.txt", "w")
+		dispfile.write(toWrite)
+		dispfile.close()
 
 
 		
@@ -399,6 +410,16 @@ class App(Toplevel):
 		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.fillListBox()
+
+
+
+	
+	def getPreFromSel(self, sel):
+		""" Given the value of a selection from the acquisition list, re-build
+		the file prefix"""
+	
+		return sel[4:6]+sel[0:3]+sel[8:12]+'_'+sel[14]
+
 		
 
 
