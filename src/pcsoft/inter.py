@@ -115,10 +115,10 @@ class App(Toplevel):
 		self.refreshListBox()
 
 		# Refresh/Clear/Delete/Display buttons
-		refreshList = Button(self.dispfrm, text="Rfrsh", width=5, command=self.refreshListBox)
-		clearList = Button(self.dispfrm, text="Clr", width=5, command=self.clearAcqs)
-		deleteItem = Button(self.dispfrm, text="Del", width=5, command=self.deleteAcq)
-		displayData = Button(self.dispfrm, text="Disp", width=5, command=self.displayAcq)
+		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.refreshListBox)
+		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
+		deleteItem = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
+		displayData = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
 
 		refreshList.grid(row=4, column=0, in_=self.dispfrm, sticky=W)
 		clearList.grid(row=4, column=1, in_=self.dispfrm)
@@ -133,24 +133,45 @@ class App(Toplevel):
 		self.ctrlfrm = LabelFrame(self, text="Control Interface")
 		self.ctrlfrm.grid(row=1, column=0, in_=self, columnspan=2, sticky=E+W)
 
+		# "CONFIG 1-6" label
+		config16Lbl = Label(self.ctrlfrm, text="Config. 1-6:")
+		config16Lbl.grid(row=0, column=0, columnspan=6, sticky=W)
 
 		# Generate and draw checkboxes, do some column resizing while we're at it
 		c = [0, 0, 0, 0, 0, 0]
-		chcks = []
+		cnfgChck = []
 
 		for i in range(0, 6):
-			chcks.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
-			chcks[i].grid(row=0, column=i, in_=self.ctrlfrm)
+			cnfgChck.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
+			cnfgChck[i].grid(row=1, column=i, in_=self.ctrlfrm)
 			self.ctrlfrm.columnconfigure(0, weight=0, minsize=20)
 
-		# Radio buttons
+
+		# Active Input radio label
+		activeinLbl = Label(self.ctrlfrm, text="Active Input Type:")
+		activeinLbl.grid(row=0, column=7, in_=self.ctrlfrm, columnspan=2, sticky=W)
+
+		# Active Input analog/digital buttons
 		r = IntVar()
-		self.rad1 = Radiobutton(self.ctrlfrm, text="One", variable=r, value=1)
-		self.rad2 = Radiobutton(self.ctrlfrm, text="Two", variable=r, value=2)
+		self.rad1 = Radiobutton(self.ctrlfrm, text="Analog", variable=r, value=1)
+		self.rad2 = Radiobutton(self.ctrlfrm, text="Digital", variable=r, value=2)
+		self.rad1.grid(row=1, column=7, in_=self.ctrlfrm, columnspan=1)
+		self.rad2.grid(row=1, column=8, in_=self.ctrlfrm, columnspan=1)
 
-		self.rad1.grid(row=1, column=0, columnspan=6)
-		self.rad2.grid(row=2, column=0, columnspan=6)
 
+		# Output enable label
+		outen = IntVar()
+		outenChck = Checkbutton(self.ctrlfrm, text="Output Enable", variable=outen)
+		outenChck.grid(row=1, column=10, in_=self.ctrlfrm, sticky=W)
+
+
+		# Put blank labels in columns for spacing
+		blnkLbl = Label(self.ctrlfrm, text=" ")
+		blnkLbl.grid(row=0, column=6, in_=self.ctrlfrm, rowspan=2)
+		blnkLbl.grid(row=0, column=9, in_=self.ctrlfrm, rowspan=2)
+		self.ctrlfrm.columnconfigure(6, weight=0, minsize=20)
+		self.ctrlfrm.columnconfigure(9, weight=0, minsize=20)
+		
 
 
 
