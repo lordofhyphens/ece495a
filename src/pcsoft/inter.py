@@ -138,13 +138,14 @@ class App(Toplevel):
 		config16Lbl.grid(row=0, column=0, columnspan=6, sticky=W)
 
 		# Generate and draw checkboxes, do some column resizing while we're at it
-		c = [0, 0, 0, 0, 0, 0]
+		c = []
 		cnfgChck = []
 
 		for i in range(0, 6):
+			c.append(IntVar())
 			cnfgChck.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
 			cnfgChck[i].grid(row=1, column=i, in_=self.ctrlfrm)
-			self.ctrlfrm.columnconfigure(0, weight=0, minsize=20)
+			self.ctrlfrm.columnconfigure(i, weight=0, minsize=15)
 
 
 		# Active Input radio label
