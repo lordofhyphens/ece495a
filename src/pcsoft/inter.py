@@ -7,7 +7,6 @@ from pcsoft_cfg import *
 global acqfile
 acqfile = ''
 
-			
 
 class App(Toplevel):
 	def __init__(self):
@@ -216,7 +215,7 @@ class App(Toplevel):
 
 
 	def clearAcqs(self):
-		"""Deletes all acquisition files in pathto, clears contents of acqinfo.txt and
+		"""Deletes all acquisition files in pathtodata, clears contents of acqinfo.txt and
 		acqdisp.txt, clears acquisition list."""
 
 		# Get acquisition names
@@ -231,7 +230,7 @@ class App(Toplevel):
 		# Delete acq files
 		for i in range(len(acqnames)):
 			# reconstruct acq filename
-			for acqfile in glob.glob(pathto+acqnames[i]+'*'+fsuffix):
+			for acqfile in glob.glob(pathtodata+acqnames[i]+'*'+fsuffix):
 				os.remove(acqfile)
 
 		# Clear listbox entries
@@ -252,7 +251,7 @@ class App(Toplevel):
 
 	def deleteAcq(self):
 		"""Deletes currently selected acquisitions, including their related
-		files in pathto and any pertinent entries in acqinfo and acqdisp. Clears
+		files in pathtodata and any pertinent entries in acqinfo and acqdisp. Clears
 		the acquisition(s) from the acquisition list as well."""
 
 		# Get currently selected acquisitions
@@ -293,7 +292,7 @@ class App(Toplevel):
 		# Delete acq files
 		for i in range(len(acqsToDel)):
 			acq = self.getAcqFromSel(acqsToDel[i])
-			for acqfile in glob.glob(pathto+acq+'*'+fsuffix):
+			for acqfile in glob.glob(pathtodata+acq+'*'+fsuffix):
 				os.remove(acqfile)
 
 

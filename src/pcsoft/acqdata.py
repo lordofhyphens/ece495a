@@ -16,17 +16,18 @@ def getPre():
 	# Get prefix, in ddMonYYYY format
 	pref = strftime("%d%b%Y", localtime());
 
-	# Using pathto, find list of all files with above prefix
+	# Using pathtodata, find list of all files with above prefix
 	# and get the last acqnum with split()
 	max = 0;
 	undsplit = []
-	for root, dirs, files in os.walk(pathto):
+	for root, dirs, files in os.walk(pathtodata):
 		for name in files:
 			name = name.split('.')[0]
 			undsplit = name.split('_')
+
 			if undsplit[0] == pref:
-				if int(undsplit[1][0]) > max:
-					max = int(undsplit[1][0])
+				if int(undsplit[1][0:len(undsplit[1])-1]) > max:
+					max = int(undsplit[1][0:len(undsplit[1])-1])
 
 	# Increment acqnum, return acqnum & prefix
 	acqnum = max + 1
@@ -41,7 +42,7 @@ def openNewOut(filepart, pref, acqnum):
 
 	filename = pref+'_'+str(acqnum)+filepart+fsuffix
 	acqname = pref+'_'+str(acqnum)
-	return open(pathto+filename, "wb"), acqname
+	return open(pathtodata+filename, "wb"), acqname
 
 
 
@@ -82,9 +83,7 @@ def acqbin(acqfile, acqlabel):
 	in the event that real serial input tests are never performed."""
 
 	# Setup global variables
-	global pathto, fsuffix, filepart, fileinc;
-	pathto = 'data\\'
-	fsuffix = '.dat'
+	global filepart, fileinc;
 	filepart = 'a'
 	fileinc = 0
 
@@ -101,7 +100,7 @@ def acqbin(acqfile, acqlabel):
 		thisChunk = f.read(4096).rstrip('\n')
 
 		# Open a new binary file if the old file is 100 kb in size
-		if fileinc > 24:
+		if fileinc > (partsize/4) - 1:
 			filepart = chr(ord(filepart) + 1)
 			fileinc = 0;
 			writeF.close()
