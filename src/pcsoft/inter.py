@@ -4,10 +4,12 @@ from Tkinter import *
 from socket import *
 import os, sys, glob 
 
-global pathto, fsuffix
+global pathto, fsuffix, acqfile
 pathto = 'data\\'
 fsuffix = '.dat'
+acqfile = ''
 
+			
 
 class App(Toplevel):
 	def __init__(self):
@@ -15,19 +17,31 @@ class App(Toplevel):
 		Toplevel.__init__(self)
 		self.protocol("WM_DELETE_WINDOW", self.newClose)
 
+		# Set old behavior flag
+		if acqfile != "":
+			self.old = True
+		else:
+			self.old = False
+
 		# Draw interface widgets
 		self.makeAcqWidgets()
 		self.makeDispWidgets()
 		self.makeCtrlWidgets()
 
-		self.initSocket()
+		# If no old behavior, initialize socket
+		if self.old == False:
+			self.initSocket()
 
 
 
 
 	def newClose(self):
 		"""Close socket connection and destroy the root window"""
-		self.sock.close()
+
+		# If no old behavior, close socket
+		if self.old == False:
+			self.sock.close()
+
 		root.destroy()
 
 
@@ -304,28 +318,37 @@ class App(Toplevel):
 
 		self.beginAcq.grid_remove()
 		self.endAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
-		self.sock.sendto("begin", self.addr)
+
+		if self.old == True:
+			acqdata.acqbin(acqfile)
+		else:
+			self.sock.sendto("begin", self.addr)
 
 
 
 
 	def endAcqClick(self):
 		"""Replace endAcq button with beginAcq, send end message to acqdata"""
+		if self.old == False:
+			self.sock.sendto("end", self.addr)
 
-		self.sock.sendto("end", self.addr)
 		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.refreshListBox()
 		
 
 
+# If command line arg present, invoke binary input file behavior
+if len(sys.argv) == 2:
+	acqfile = sys.argv[1]
 
+# If old behavior, import old acqdata. Else launch new acqdata
+if acqfile != '':
+	import acqdata
+else:
+	import subprocess
+	proc = subprocess.Popen('acqdata.py',shell=True)
 
-
-
-# Launch acqdata.py
-import subprocess
-proc = subprocess.Popen('acqdata.py',shell=True)
 
 
 # Create main window and hide
