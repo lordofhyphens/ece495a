@@ -14,6 +14,10 @@ digital interface modules and also provides a control interface for those
 modules. The bus width was set at 10 bits, which was the minimum size for
  accepting output from the analog input module designed for use with this 
 datapath.
+
+Figure \ref{fig:datapath diagram} shows a block diagram of the datapath system.
+The bus interface 
+
 \subsection[Tradeoffs]{Design Decisions and Tradeoffs} 
 Table \ref{tab:control comparison} lists an overview of the options considered
  for the datapath control subsystem. Cost refers to the per-unit cost of a 
@@ -86,7 +90,7 @@ flexibility and that there was a supply already on-site. 74*621s were found
 to be difficult to source in low quantites for a prototype. 74*244s could be 
 used as well with some minor changes in glue logic, as well as 74*621s.
 
-\begin{table}[bh]
+\begin{table}[bhp]
 \caption[Buffer Comparison]{Comparison of different tri-state buffers}
 \small
 \begin{center}
@@ -109,7 +113,17 @@ control to the primary MCU. This secondary MCU is another Atmel ATMega8515. A
 different model of MCU would suffice, but using a second ATMega8515 allows  
 for simpler procurement.
 
-
-\subsection{Performance}
+With the serialization bottleneck in-place, bus width represents a tradeoff 
+between capacity and acquisition performance. The maximum rate of samples per
+second is set by ${Outgoing Baud Rate}/{Sample Width}$. Figure \ref{fig:baud rates and sample} 
+illustrates this relationship. The hardware maximum for the bus width is 16 bits
+per sample (which is the width of two of the transceivers). If the selected
+serial output system is very fast, then more samples can be processed by the
+host PC.
+\begin{figure}[hbp!]
+\caption[Baud Rate and Samples]{Output baud rate vs. Sampling Rate\cite{ds:ATMEGA8515}}
+\includegraphics[width=3in]{baud_rate.png}
+\label{fig:baud rates and sample}
+\end{figure}
 
 
