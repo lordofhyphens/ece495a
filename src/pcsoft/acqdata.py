@@ -48,17 +48,18 @@ def openNewOut(filepart, pref, acqnum):
 
 
 class acqFileConfig:
-	"""configures acqinfo.txt"""
+	"""configures the write to acqinfo.txt"""
 
-	def __init__(self, pref):
+	def __init__(self, pref, label):
 		self.prefix = pref
 		self.lastCh = ""
+		self.acqlabel = label
 
 	def setLast(self, ch):
 		self.lastCh = ch
 
 	def updateInfo(self):
-		self.writetext = self.prefix+':'+self.lastCh+'\n'
+		self.writetext = self.prefix+':'+self.lastCh+'|'+self.acqlabel+'\n'
 		self.infoF = open("acqinfo.txt", "a")
 		self.infoF.write(self.writetext)
 
@@ -77,7 +78,7 @@ def parseBin(chunk):
 
 
 
-def acqbin(acqfile):
+def acqbin(acqfile, acqlabel):
 	"""Acquire data from binary input file. Used to test interface
 	in the event that real serial input tests are never performed."""
 
@@ -94,7 +95,7 @@ def acqbin(acqfile):
 	# Open acqfile, first output file & initialize acqFileConfig class
 	f = open(acqfile, "rb")
 	writeF, acqName = openNewOut(filepart, pref, acqnum)
-	conf = acqFileConfig(acqName)
+	conf = acqFileConfig(acqName, acqlabel)
 
 	# Read 4096-byte chunks from file and convert each char to integer
 	while 1:
@@ -148,7 +149,7 @@ def main():
 
 			# Open acqfile, first output file & initialize acqFileConfig class
 			# writeF, acqName = openNewOut(filepart, pref, acqnum)
-			# conf = acqFileConfig(acqName)
+			# conf = acqFileConfig(acqName, acqlabel)
 
 		elif data == "end":
 			print "Ending acquisition"

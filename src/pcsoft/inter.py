@@ -28,6 +28,9 @@ class App(Toplevel):
 		self.makeDispWidgets()
 		self.makeCtrlWidgets()
 
+		# Fill acquisition list
+		self.fillListBox()
+
 
 
 
@@ -72,9 +75,8 @@ class App(Toplevel):
 		self.acqfrm = LabelFrame(self, text="Data Acquisition", padx=5, pady=5)
 		self.acqfrm.grid(row=0, column=0, in_=self, sticky=N+E+S+W)
 
-		# OptionMenu label
-		typeLabel = Label(self.acqfrm, text="Type: ")
-		typeLabel.grid(row=0, column=0, sticky = W)
+		# "Type" label
+		Label(self.acqfrm, text="Type: ").grid(row=0, column=0, sticky=E)
 
 		# Data type drop-down menu
 		typeOpts = [
@@ -86,21 +88,31 @@ class App(Toplevel):
 			"AC Current"
 			]
 
-		var = StringVar()
-		var.set(typeOpts[0])
+		acqtype = StringVar()
+		acqtype.set(typeOpts[0])
 
-		typeMenu = OptionMenu(self.acqfrm, var, *typeOpts)
-		typeMenu.grid(row=0, column=1, in_=self.acqfrm, sticky = E + W)
+		typeMenu = OptionMenu(self.acqfrm, acqtype, *typeOpts)
+		typeMenu.grid(row=0, column=1, in_=self.acqfrm, sticky=E+W)
+
+
+		# "Label" label
+		Label(self.acqfrm, text="Label (optional): ").grid(row=1, column=0, sticky=E)
+		
+		# "Label" entry
+		self.acqlabel = StringVar()
+		Entry(self.acqfrm, textvariable=self.acqlabel).grid(row=1, column=1, sticky=E+W)
+
+
 
 		# Begin/End Acquisition buttons
 		self.beginAcq = Button(self.acqfrm, text="Begin Acquisition", width=15, command=self.beginAcqClick)
 		self.endAcq = Button(self.acqfrm, text="End Acquisition", width=15, command=self.endAcqClick)
-		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# Do some resizing
 		self.acqfrm.columnconfigure(0, minsize=40)
 		self.acqfrm.columnconfigure(1, minsize=160)
-		self.acqfrm.rowconfigure(1, minsize=15)
+		self.acqfrm.rowconfigure(2, minsize=15)
 
 
 
@@ -112,10 +124,10 @@ class App(Toplevel):
 
 		self.acqlist = Listbox(self.dispfrm)
 		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
-		self.refreshListBox()
+		self.fillListBox()
 
 		# Refresh/Clear/Delete/Display buttons
-		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.refreshListBox)
+		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.fillListBox)
 		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
 		deleteItem = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
 		displayData = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
@@ -166,28 +178,36 @@ class App(Toplevel):
 		outenChck.grid(row=1, column=10, in_=self.ctrlfrm, sticky=W)
 
 
-		# Put blank labels in columns for spacing
-		blnkLbl = Label(self.ctrlfrm, text=" ")
-		blnkLbl.grid(row=0, column=6, in_=self.ctrlfrm, rowspan=2)
-		blnkLbl.grid(row=0, column=9, in_=self.ctrlfrm, rowspan=2)
+		# Resize columns 6 & 9 for spacing
 		self.ctrlfrm.columnconfigure(6, weight=0, minsize=20)
 		self.ctrlfrm.columnconfigure(9, weight=0, minsize=20)
 		
 
 
 
-	def refreshListBox(self):
+	def fillListBox(self):
 		"""Reads acquisition list from acqinfo.txt, clears old contents of acquisition
 		list and re-adds them."""
 
 		infofile = open("acqinfo.txt", "r")
-		nextLine = infofile.readline()
+		rln = infofile.readline()
 
 		self.acqlist.delete(0, END)
 
-		while nextLine != "":
-			self.acqlist.insert(END, nextLine.rstrip(":\r\n"))
-			nextLine = infofile.readline()
+		while rln != "":
+			# Strip trailing newline and return characters
+			rln = rln.strip("\r\n")
+
+			# Prettify the acqlist entry
+			acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10]
+
+			# Add label if it exists
+			rlnsplit = rln.split('|')
+			if rlnsplit[1] != '':
+				acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
+
+			self.acqlist.insert(END, acqlistline)
+			rln = infofile.readline()
 
 		infofile.close()
 
@@ -289,7 +309,7 @@ class App(Toplevel):
 				break
 
 		# Refresh listbox
-		self.refreshListBox()
+		self.fillListBox()
 
 
 
@@ -346,12 +366,16 @@ class App(Toplevel):
 		"""Replace beginAcq button with endAcq, send begin message to acqdata"""
 
 		self.beginAcq.grid_remove()
-		self.endAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+		self.endAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# If old behavior, call acqbin. Otherwise launch acqdata in a subprocess
 		# and send "begin" message over socket
 		if self.old == True:
-			acqdata.acqbin(acqfile)
+			# get acqlabel
+			theacqlabel = self.acqlabel.get()
+			# pipes used to delimit label so replace all instances
+			theacqlabel = theacqlabel.replace('|', '(>$%pipe%$<)')
+			acqdata.acqbin(acqfile, theacqlabel)
 		else:
 			self.openSocket()
 			self.proc = subprocess.Popen('acqdata.py',shell=True)
@@ -373,8 +397,8 @@ class App(Toplevel):
 			self.closeSocket()
 
 		self.endAcq.grid_remove()
-		self.beginAcq.grid(row=2, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
-		self.refreshListBox()
+		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+		self.fillListBox()
 		
 
 
