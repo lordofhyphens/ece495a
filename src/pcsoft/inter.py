@@ -28,9 +28,6 @@ class App(Toplevel):
 		self.makeDispWidgets()
 		self.makeCtrlWidgets()
 
-		# Fill acquisition list
-		self.fillListBox()
-
 
 
 
@@ -122,8 +119,14 @@ class App(Toplevel):
 		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
 		self.dispfrm.grid(row=0, column=1, in_=self)
 
+		## Make acq listbox
 		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
 		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
+
+		# Make acq listbox scrollbar
+		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL)
+		listscroll.config(command=self.acqlist.yview)
+		listscroll.grid(row=0, column=4, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
 		self.fillListBox()
 
 		# Refresh/Clear/Delete/Display buttons
@@ -132,7 +135,7 @@ class App(Toplevel):
 		deleteItem = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
 		displayData = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
 
-		refreshList.grid(row=4, column=0, in_=self.dispfrm, sticky=W)
+		refreshList.grid(row=4, column=0, in_=self.dispfrm)
 		clearList.grid(row=4, column=1, in_=self.dispfrm)
 		deleteItem.grid(row=4, column=2, in_=self.dispfrm)
 		displayData.grid(row=4, column=3, in_=self.dispfrm)
@@ -197,12 +200,12 @@ class App(Toplevel):
 		while rln != "":
 			# Strip trailing newline and return characters
 			rln = rln.strip("\r\n")
+			rlnsplit = rln.split('|')
 
 			# Prettify the acqlist entry
-			acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10]
+			acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10:len(rlnsplit[0])-1]
 
 			# Add label if it exists
-			rlnsplit = rln.split('|')
 			if rlnsplit[1] != '':
 				acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
 
@@ -420,7 +423,7 @@ class App(Toplevel):
 		used in the file name (i.e. DDMonYYYY_N)"""
 
 		acqval = self.acqlist.get(sel)
-		return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14]
+		return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14:len(acqval)+1]
 
 		
 
