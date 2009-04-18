@@ -131,17 +131,18 @@ class App(Toplevel):
 		# Refresh/Clear/Delete/Display buttons
 		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.fillListBox)
 		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
-		deleteItem = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
+		self.deleteB = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
 		self.displayB = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
 
 		# Add all four buttons to grid
 		refreshList.grid(row=4, column=0, in_=self.dispfrm)
 		clearList.grid(row=4, column=1, in_=self.dispfrm)
-		deleteItem.grid(row=4, column=2, in_=self.dispfrm)
+		self.deleteB.grid(row=4, column=2, in_=self.dispfrm)
 		self.displayB.grid(row=4, column=3, in_=self.dispfrm)
 
-		# Disable display button by default	
+		# Disable display&delete buttons to begin
 		self.displayB.configure(state=DISABLED)
+		self.deleteB.configure(state=DISABLED)
 
 
 
@@ -192,10 +193,19 @@ class App(Toplevel):
 
 	def checkSel(self, evt):
 		"""Handles Listbox Select events"""
-		if len(self.acqlist.curselection()) > 1:
+
+		# Get number of selections
+		sellen = len(self.acqlist.curselection())
+
+		if sellen > 1:
 			self.displayB.configure(state=DISABLED)
+			self.deleteB.configure(state=NORMAL)	
+		elif sellen == 0:
+			self.displayB.configure(state=DISABLED)
+			self.deleteB.configure(state=DISABLED)	
 		else:
 			self.displayB.configure(state=NORMAL)
+			self.deleteB.configure(state=NORMAL)	
 
 
 
