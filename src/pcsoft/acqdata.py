@@ -2,12 +2,11 @@
 
 import os, sys, struct, socket
 from time import localtime, strftime
+from pcsoft_cfg import *
 
 
 # Setup global variables
-global pathto, fsuffix, filepart, fileinc
-pathto = 'data\\'
-fsuffix = '.dat'
+global filepart, fileinc
 filepart = 'a'
 fileinc = 0
 
@@ -130,14 +129,10 @@ def acqbin(acqfile, acqlabel):
 def main():
 	# Get date-based file prefix
 	acqnum, pref = getPre()
-
-	# Socket params
-	host = "localhost"
-	port = 19363
-
-
+	
+	# Establish socket
 	sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sckt.connect((host, port))
+	sckt.connect((sckhost, sckport))
 	sckt.send('init')
 
 

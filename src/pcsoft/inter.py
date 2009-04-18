@@ -2,10 +2,9 @@
 
 from Tkinter import *
 import os, sys, glob, socket
+from pcsoft_cfg import *
 
-global pathto, fsuffix, acqfile
-pathto = 'data\\'
-fsuffix = '.dat'
+global acqfile
 acqfile = ''
 
 			
@@ -47,10 +46,9 @@ class App(Toplevel):
 	def openSocket(self):
 		"""Create socket connection"""
 
-		host = "localhost" 
-		port = 19363
+		# Establish socket
 		self.sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.sckt.bind((host, port))
+		self.sckt.bind((sckhost, sckport))
 		self.sckt.listen(1)
 		self.socketOpened = True
 
