@@ -204,7 +204,7 @@ class App(Toplevel):
 			# Add label if it exists
 			rlnsplit = rln.split('|')
 			if rlnsplit[1] != '':
-				acqlistline += '  -  '+rlnsplit[1]
+				acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
 
 			self.acqlist.insert(END, acqlistline)
 			rln = infofile.readline()
