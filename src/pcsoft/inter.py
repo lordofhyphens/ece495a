@@ -116,9 +116,11 @@ class App(Toplevel):
 		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
 		self.dispfrm.grid(row=0, column=1, in_=self)
 
-		## Make acq listbox
+		## Make acq listbox, bind select event
 		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
 		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
+		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
+
 
 		# Make acq listbox scrollbar
 		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL)
@@ -130,13 +132,16 @@ class App(Toplevel):
 		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.fillListBox)
 		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
 		deleteItem = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
-		displayData = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
+		self.displayB = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
 
+		# Add all four buttons to grid
 		refreshList.grid(row=4, column=0, in_=self.dispfrm)
 		clearList.grid(row=4, column=1, in_=self.dispfrm)
 		deleteItem.grid(row=4, column=2, in_=self.dispfrm)
-		displayData.grid(row=4, column=3, in_=self.dispfrm)
+		self.displayB.grid(row=4, column=3, in_=self.dispfrm)
 
+		# Disable display button by default	
+		self.displayB.configure(state=DISABLED)
 
 
 
@@ -181,7 +186,16 @@ class App(Toplevel):
 		# Resize columns 6 & 9 for spacing
 		self.ctrlfrm.columnconfigure(6, weight=0, minsize=20)
 		self.ctrlfrm.columnconfigure(9, weight=0, minsize=20)
-		
+
+
+
+
+	def checkSel(self, evt):
+		"""Handles Listbox Select events"""
+		if len(self.acqlist.curselection()) > 1:
+			self.displayB.configure(state=DISABLED)
+		else:
+			self.displayB.configure(state=NORMAL)
 
 
 
@@ -328,11 +342,6 @@ class App(Toplevel):
 		# Get current selection
 		sel = self.acqlist.curselection()
 
-		# If more than one selected, get first
-		if len(sel) != 1:
-			sel = sel[0]
-			print "Can only display one acquisition at a time. First selection has been used."
-
 		# Open acqinfo and read first line
 		infofile = open("acqinfo.txt", "r")
 		nextLine = infofile.readline()
@@ -411,6 +420,7 @@ class App(Toplevel):
 		self.endAcq.grid_remove()
 		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 		self.fillListBox()
+		self.setListToEnd()
 
 
 
@@ -422,7 +432,11 @@ class App(Toplevel):
 		acqval = self.acqlist.get(sel)
 		return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14:len(acqval)+1]
 
-		
+
+
+
+	def setListToEnd(self):
+		"""Sets listbox to display the end of the list. Used after endAcq."""
 
 
 # If command line arg present, invoke binary input file behavior
