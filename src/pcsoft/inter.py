@@ -437,6 +437,14 @@ class App(Toplevel):
 
 	def setListToEnd(self):
 		"""Sets listbox to display the end of the list. Used after endAcq."""
+		
+		# Get size of acqlist
+		listlen = self.acqlist.size()
+		
+		# Set acqlist yview to bottom
+		self.acqlist.yview(listlen - 10)
+
+		
 
 
 # If command line arg present, invoke binary input file behavior
