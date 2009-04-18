@@ -57,8 +57,9 @@ have a C compiler ported for their architecture, as well as the ability to
  more flexible layout, multiple integrated interfaces, and the availability
  of a mature port of the GNU C Compiler for the device (and its family). The 
 PIC required the use of the vendor-supplied compiler and IDE.
-\begin{table}[bhp]
-\caption[Atmel and PIC MCUs]{Comparison of Atmel ATMega8515 and PIC18F1220}
+\begin{table}[bp]
+\caption[Atmel and PIC MCUs]{Comparison of Atmel ATMega8515\cite{ds:ATMEGA8515
+} and PIC18F1220\cite{ds:pic18f1220}\cite{web:pic18f1220}}
 \begin{tabular}{l| c c c c c c}
 \setlength{\tabcolsep}{1pt}
 	       &      & \small{Pin}  & \small{Maximum} & \small{Ease}   &            &         \\
@@ -77,7 +78,7 @@ PIC required the use of the vendor-supplied compiler and IDE.
 \end{table}
 
 The bus interface features two input ports and one output port. To effectively
- switch between the two inputs, those connections must be tri-stated. Three 
+ switch between the two inputs, those connections must be tri-stated. Thus, three 
 74-series tri-state buffers were considered: the 74*244, the 74*245, and the 
 74*621. Table \ref{tab:buffer comparison} outlines the key differences with 
 the components considered. Ultimately, a 74*245 chip was selected for its 
@@ -85,7 +86,7 @@ flexibility and that there was a supply already on-site. 74*621s were found
 to be difficult to source in low quantites for a prototype. 74*244s could be 
 used as well with some minor changes in glue logic, as well as 74*621s.
 
-\begin{table}[bhp]
+\begin{table}[bh]
 \caption[Buffer Comparison]{Comparison of different tri-state buffers}
 \small
 \begin{center}
@@ -99,4 +100,16 @@ used as well with some minor changes in glue logic, as well as 74*621s.
 \end{center}
 \label{tab:buffer comparison}
 \end{table}
+
+Because the datapath control must serialize outgoing data, the performance
+of the overall system contains a bottleneck at the point of the 
+parallel-to-serial shift. Therefore, a secondary MCU is dedicated to
+the operation of the parallel-to-serial operation, leaving actual datapath 
+control to the primary MCU. This secondary MCU is another Atmel ATMega8515. A
+different model of MCU would suffice, but using a second ATMega8515 allows  
+for simpler procurement.
+
+
+\subsection{Performance}
+
 
