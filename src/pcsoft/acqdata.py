@@ -1,4 +1,5 @@
-# acqdata.py - acquires data over serial port
+# acqdata.py - acquires data over serial port or binary input file (for debugging)
+
 
 import os, sys, struct, socket
 from time import localtime, strftime
@@ -40,7 +41,7 @@ def openNewOut(filepart, pref, acqnum):
 	"""Opens a data acquisition file, returns a) the file handle 
 	and b) the name of acquisition file (excluding extension)"""
 
-	filename = pref+'_'+str(acqnum)+filepart+fsuffix
+	filename = pref+'_'+str(acqnum)+filepart+fext
 	acqname = pref+'_'+str(acqnum)
 	return open(pathtodata+filename, "wb"), acqname
 

@@ -306,7 +306,7 @@ class App(Toplevel):
 		# Delete acq files
 		for i in range(len(acqnames)):
 			# reconstruct acq filename
-			for acqfile in glob.glob(pathtodata+acqnames[i]+'*'+fsuffix):
+			for acqfile in glob.glob(pathtodata+acqnames[i]+'*'+fext):
 				os.remove(acqfile)
 
 		# Clear listbox entries
@@ -373,7 +373,7 @@ class App(Toplevel):
 		# Delete acq files
 		for i in range(len(acqsToDel)):
 			acq = self.getAcqFromSel(acqsToDel[i])
-			for acqfile in glob.glob(pathtodata+acq+'*'+fsuffix):
+			for acqfile in glob.glob(pathtodata+acq+'*'+fext):
 				os.remove(acqfile)
 
 
@@ -634,6 +634,4 @@ root.withdraw()
 app = App()
 app.title("PCDiag Control/Display Interface")
 root.mainloop() 
-
-
 
