@@ -136,9 +136,10 @@ class App(Toplevel):
 		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=6, rowspan=3, sticky=E+W)
 		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
 
-		# Make acq listbox scrollbar
-		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL)
+		# Make acq list scrollbar
+		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL, relief=SUNKEN)
 		listscroll.config(command=self.acqlist.yview)
+		self.acqlist.config(yscrollcommand=listscroll.set)
 		listscroll.grid(row=1, column=6, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
 
 		# Init acqlpg
