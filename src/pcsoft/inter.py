@@ -4,6 +4,7 @@ import os, sys, glob, socket
 from Tkinter import *
 from pcsoft_cfg import *
 from math import ceil
+from time import sleep
 
 global acqfile
 acqfile = ''
@@ -71,46 +72,25 @@ class App(Toplevel):
 		self.acqfrm.grid(row=0, column=0, in_=self, sticky=N+E+S+W)
 
 
-		# "Type" label
-		Label(self.acqfrm, text="Type: ").grid(row=1, column=0, sticky=E)
-
-		# Data type drop-down menu
-		typeOpts = [
-			" ",
-			"Oscilloscope Waveform",
-			"DC Voltage",
-			"DC Current",
-			"AC Voltage",
-			"AC Current"
-			]
-
-		acqtype = StringVar()
-		acqtype.set(typeOpts[0])
-
-		typeMenu = OptionMenu(self.acqfrm, acqtype, *typeOpts)
-		typeMenu.grid(row=1, column=1, in_=self.acqfrm, sticky=E+W)
-
-
 		# "Label" label
-		Label(self.acqfrm, text="Label (optional): ").grid(row=2, column=0, sticky=E)
+		Label(self.acqfrm, text="Label (optional): ").grid(row=1, column=0, sticky=E)
 		
 		# "Label" entry box
 		self.acqlabel = StringVar()
 		self.labelentry = Entry(self.acqfrm, textvariable=self.acqlabel)
-		self.labelentry.grid(row=2, column=1, sticky=E+W)
+		self.labelentry.grid(row=1, column=1, sticky=E+W)
 
 
 
 		# Begin/End Acquisition buttons
-		self.beginAcq = Button(self.acqfrm, text="Begin Acquisition", width=15, command=self.beginAcqClick)
-		self.endAcq = Button(self.acqfrm, text="End Acquisition", width=15, command=self.endAcqClick)
+		self.beginAcq = Button(self.acqfrm, text="Begin Acquisition", width=15, command=self.performAcq)
 		self.beginAcq.grid(row=4, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# Do some resizing
 		self.acqfrm.columnconfigure(0, minsize=40)
 		self.acqfrm.columnconfigure(1, minsize=160)
 		self.acqfrm.rowconfigure(0, minsize=20)
-		self.acqfrm.rowconfigure(3, minsize=20)
+		self.acqfrm.rowconfigure(2, minsize=20)
 
 
 
@@ -453,21 +433,27 @@ class App(Toplevel):
 
 		
 
-	def beginAcqClick(self):
-		"""Replace beginAcq button with endAcq, send begin message to acqdata"""
+	def performAcq(self):
+		"""Begin performing data acquisition"""
 
-		# Remove beginAcq, disable labelentry, add endAcq
-		self.beginAcq.grid_remove()
+		# Disable beginAcq, disable labelentry 
+		self.beginAcq.configure(state=DISABLED)
 		self.labelentry.configure(state=DISABLED)
-		self.endAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+
+		# Force a re-draw
+		self.beginAcq.update_idletasks()
+		self.labelentry.update_idletasks()
 
 		# If old behavior, call acqbin. Otherwise launch acqdata in a subprocess
 		# and send "begin" message over socket
 		if self.old == True:
 			# get acqlabel
 			theacqlabel = self.acqlabel.get()
+
 			# pipes used to delimit label so replace all instances
 			theacqlabel = theacqlabel.replace('|', '(>$%pipe%$<)')
+
+			# Acquire data
 			acqdata.acqbin(acqfile, theacqlabel)
 		else:
 			# Open socket, launch subprocess & accept sock connection
@@ -480,22 +466,19 @@ class App(Toplevel):
 			if data == "init":
 				self.conn.send('begin')
 
+				# If no old behavior, send a terminate message, wait for child and close socket
+				if self.old == False:
+					self.conn.sendto("end", self.addr)
+					self.proc.wait()
+					self.closeSocket()
+				
+		
+		# Pause for 1 second, give acquisition time to do its thang
+		sleep(1)
 
-
-
-	def endAcqClick(self):
-		"""Replace endAcq button with beginAcq, send end message to acqdata"""
-
-		# If no old behavior, send a terminate message, wait for child and close socket
-		if self.old == False:
-			self.conn.sendto("end", self.addr)
-			self.proc.wait()
-			self.closeSocket()
-
-		# Remove endAcq, enable labelentry, add beginAcq
-		self.endAcq.grid_remove()
+		# Enable labelentry and beginAcq
+		self.beginAcq.configure(state=NORMAL)
 		self.labelentry.configure(state=NORMAL)
-		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# Update acqlnum
 		self.acqlnum = self.acqlnum + 1
@@ -522,11 +505,10 @@ class App(Toplevel):
 			pglen = self.acqlnum % acqpgsize
 			if pglen > 10:
 				self.acqlist.yview(pglen - 10)
+
+
 			
 
-
-
-	
 	def getAcqFromSel(self, sel):
 		""" Given the selection number, return the acquisition name as
 		used in the file name (i.e. DDMonYYYY_N)"""

@@ -2,7 +2,7 @@
 
 
 import os, sys, struct, socket, serial
-from time import localtime, strftime
+from time import localtime, strftime, sleep
 from pcsoft_cfg import *
 
 
@@ -66,6 +66,11 @@ class acqFileConfig:
 
 
 
+def parseSerial(chunk):
+	"""Parse a chunk from the serial port"""
+	pass
+
+
 
 def parseBin(chunk):
 	"""Parse a chunk of binary data into a string"""
@@ -115,7 +120,7 @@ def acqbin(acqfile, acqlabel):
 		else:
 			parsed = parseBin(rdchunk)
 
-			for i in range(0, len(parseNums)):
+			for i in range(0, len(parsed)):
 				writeF.write(struct.pack('b', parsed[i][0]))
 	
 		fileinc += 1
@@ -178,6 +183,7 @@ def main():
 	conf.updateInfo()
 	"""
 
+	# Sleep 3 seconds to simulate data acq over serial
 	print "Ending acquisition"
 
 
