@@ -501,19 +501,18 @@ class App(Toplevel):
 
 		if self.acqlpg != self.lastpg:
 			# If page is not last and keeponacq is false, change to last.
-			if keeppgonacq == False:
+			if viewnewacq == True:
 				self.lastPage()
+				self.fillListBox()
 			else:
 				# This is in case we were on what was previously the last page
 				# i.e. If page size = 10 and we're at 10 acqs, this acq causes
 				# page 2 to become available
 				self.rarr.configure(state=NORMAL)
 				self.rrarr.configure(state=NORMAL)
-
-
-		# Re-fill listbox
-		if keeppgonacq == False:
+		else:
 			self.fillListBox()
+
 
 		# Set display to end of page if past visible threshhold
 		if self.acqlpg == self.lastpg:
