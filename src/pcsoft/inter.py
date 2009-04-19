@@ -75,11 +75,11 @@ class App(Toplevel):
 		# "Label" label
 		Label(self.acqfrm, text="Label (optional): ").grid(row=1, column=0, sticky=E)
 		
-		# "Label" entry box
+		# "Label" entry box, init searchlbl
 		self.acqlabel = StringVar()
 		self.labelentry = Entry(self.acqfrm, textvariable=self.acqlabel)
 		self.labelentry.grid(row=1, column=1, sticky=E+W)
-
+		self.searchlbl = ''
 
 
 		# Begin/End Acquisition buttons
@@ -100,29 +100,37 @@ class App(Toplevel):
 		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
 		self.dispfrm.grid(row=0, column=1, in_=self)
 
+
+		# Search entry box & button
+		self.searchentry = Entry(self.dispfrm, width=7)
+		self.searchentry.grid(row=0, column=0, in_=self.dispfrm, sticky=E+W)
+		
+		gobutton = Button(self.dispfrm, text="Go", width=2, command=self.searchLabel)
+		gobutton.grid(row=0, column=1, sticky=W)
+
 		
 		# Make arrow buttons
 		self.llarr = Button(self.dispfrm, text="<<", width=1, command=self.firstPage)
-		self.llarr.grid(row=0, column=2, in_=self.dispfrm, sticky=E+W)
+		self.llarr.grid(row=0, column=3, in_=self.dispfrm, sticky=E+W)
 		self.larr = Button(self.dispfrm, text="<", width=1, command=self.backPage)
-		self.larr.grid(row=0, column=3, in_=self.dispfrm, sticky=E+W)
+		self.larr.grid(row=0, column=4, in_=self.dispfrm, sticky=E+W)
 
 		self.rarr = Button(self.dispfrm, text=">", width=1, command=self.forwardPage)
-		self.rarr.grid(row=0, column=4, in_=self.dispfrm, sticky=E+W)
+		self.rarr.grid(row=0, column=5, in_=self.dispfrm, sticky=E+W)
 		self.rrarr = Button(self.dispfrm, text=">>", width=1, command=self.lastPage)
-		self.rrarr.grid(row=0, column=5, in_=self.dispfrm, sticky=E+W)
+		self.rrarr.grid(row=0, column=6, in_=self.dispfrm, sticky=E+W)
 
 
 		# Make acq listbox, bind select event
 		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
-		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=6, rowspan=3, sticky=E+W)
+		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=7, rowspan=3, sticky=E+W)
 		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
 
 		# Make acq list scrollbar
 		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL, relief=SUNKEN)
 		listscroll.config(command=self.acqlist.yview)
 		self.acqlist.config(yscrollcommand=listscroll.set)
-		listscroll.grid(row=1, column=6, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
+		listscroll.grid(row=1, column=7, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
 
 		# Init acqlpg
 		self.acqlpg = 0 # Current page
@@ -142,7 +150,7 @@ class App(Toplevel):
 		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
 		
 		# If page is last page, disable rarr & rrarr
-		if self.acqlpg == self.lastpg:
+		if self.acqlpg == self.lastpg or self.lastpg == -1:
 			self.rarr.configure(state=DISABLED)
 			self.rrarr.configure(state=DISABLED)
 
@@ -159,8 +167,8 @@ class App(Toplevel):
 		# Add all four buttons to grid
 		refreshList.grid(row=4, column=0, in_=self.dispfrm, columnspan=1)
 		clearList.grid(row=4, column=1, in_=self.dispfrm, columnspan=1)
-		self.deleteB.grid(row=4, column=2, in_=self.dispfrm, columnspan=2)
-		self.displayB.grid(row=4, column=4, in_=self.dispfrm, columnspan=2)
+		self.deleteB.grid(row=4, column=3, in_=self.dispfrm, columnspan=2)
+		self.displayB.grid(row=4, column=5, in_=self.dispfrm, columnspan=2)
 
 		# Disable display&delete buttons to begin
 		self.displayB.configure(state=DISABLED)
@@ -233,7 +241,7 @@ class App(Toplevel):
 
 
 
-	def fillListBox(self):
+	def fillListBox(self, srchlbl=None):
 		"""Reads acquisition list from acqinfo.txt, clears old contents of acquisition
 		list and re-adds them."""
 
@@ -251,21 +259,23 @@ class App(Toplevel):
 			rln = rln.strip("\r\n")
 			rlnsplit = rln.split('|')
 
-			if i >= self.acqlpg*acqpgsize and i < (self.acqlpg+1)*acqpgsize:
-				# Prettify the acqlist entry
-				acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10:len(rlnsplit[0])-1]
+			if srchlbl == None or rlnsplit[1].find(srchlbl) != -1:
+				if i >= self.acqlpg*acqpgsize and i < (self.acqlpg+1)*acqpgsize:
+					# Prettify the acqlist entry
+					acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10:len(rlnsplit[0])-1]
 
-				# Add label if it exists
-				if rlnsplit[1] != '':
-					acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
+					# Add label if it exists
+					if rlnsplit[1] != '':
+						acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
 
-				# Add entry to acqlist, increment lcount
-				self.acqlist.insert(END, acqlistline)
-				lcount = lcount+1
+					# Add entry to acqlist, increment lcount
+					self.acqlist.insert(END, acqlistline)
+					lcount = lcount+1
 
-			# Read next line, increment i
+				i = i+1
+
+			# Read next line
 			rln = infofile.readline()
-			i = i+1
 
 		# Close acqinfo
 		infofile.close()
@@ -515,6 +525,15 @@ class App(Toplevel):
 
 		acqval = self.acqlist.get(sel)
 		return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14:len(acqval)+1]
+
+
+
+
+	def searchLabel(self):
+		"""Returns acqlist matching search label"""
+
+		self.fillListBox(self.searchentry.get())
+
 
 
 
