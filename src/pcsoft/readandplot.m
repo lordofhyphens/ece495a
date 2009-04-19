@@ -1,4 +1,6 @@
-function readandplot(file, pathto)
+function readandplot(file, pathto, label)
+	file
+	pathto
 	path = strcat(pathto, file);
 	dfid = fopen(path, "r");
 	[val, count] = fread(dfid, 100, "int8");
@@ -15,5 +17,6 @@ function readandplot(file, pathto)
 	fnum = substr(path, undloc+1, dotloc - (undloc+1));
 
 	title(['Plot of ', fdate, ' - ', fnum]);
+	legend(label)
 endfunction
 

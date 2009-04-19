@@ -24,6 +24,9 @@ function dispd
 
 			if(strcmp(thispoll, "-1") != 1)
 				colpos = index(thispoll, ":");
+				pipepos = index(thispoll, "|");
+				thislabel = substr(thispoll, pipepos+1);
+				thispoll = substr(thispoll, 1, pipepos-1);
 				pref = substr(thispoll, 1, colpos-1);
 				startfile = strcat(pref, 'a.dat');
 
@@ -34,7 +37,7 @@ function dispd
 				endif
 
 				# Plot the (first) data.
-				readandplot(startfile, pathto);
+				readandplot(startfile, pathto, thislabel);
 
 				if(strcmp(endfile, "") != 1)
 					nextfile = getnextfile(startfile);

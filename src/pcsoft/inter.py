@@ -507,7 +507,7 @@ class App(Toplevel):
 			# acquisition, which does not include the last part. The only purpose
 			# of this loop is to determine the last part of the acquisition, which we
 			# cannot determine from the list selection alone.
-			if nextLine.split(":")[0] == getAcqFromSel(int(sel[0])):
+			if nextLine.split(":")[0] == self.getAcqFromSel(int(sel[0])):
 				toWrite = nextLine
 				break
 
@@ -595,7 +595,12 @@ class App(Toplevel):
 		used in the file name (i.e. DDMonYYYY_N)"""
 
 		acqval = self.acqlist.get(sel)
-		return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14:len(acqval)+1]
+		acqvalsplit = acqval.split('  -  ')
+
+		if len(acqvalsplit) == 1:
+			return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14:len(acqval)+1]
+		else:
+			return acqval[4:6]+acqval[0:3]+acqval[8:12]+'_'+acqval[14:len(acqvalsplit[0])]
 
 
 
