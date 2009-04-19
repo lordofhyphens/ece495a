@@ -101,12 +101,13 @@ class App(Toplevel):
 		self.dispfrm.grid(row=0, column=1, in_=self)
 
 
-		# Search entry box & button
+		# Search entry box
 		self.searchentry = Entry(self.dispfrm, width=7)
 		self.searchentry.grid(row=0, column=0, in_=self.dispfrm, sticky=E+W)
-		
-		gobutton = Button(self.dispfrm, text="Go", width=2, command=self.searchLabel)
-		gobutton.grid(row=0, column=1, sticky=W)
+		self.searchentry.insert(0, "Search...")
+		self.searchentry.bind("<Button-1>", self.searchClick)
+		self.searchentry.bind("<Double-Button-1>", self.searchDClick)
+		self.searchentry.bind("<Return>", self.refreshListBox)
 
 		
 		# Make arrow buttons
@@ -132,34 +133,28 @@ class App(Toplevel):
 		self.acqlist.config(yscrollcommand=listscroll.set)
 		listscroll.grid(row=1, column=7, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
 
-		# Init acqlpg
+		# Init acqlpg, slbl
 		self.acqlpg = 0 # Current page
+		self.slbl = ''
 
-		# Configure larr & llarr to be disabled by default
-		self.larr.configure(state=DISABLED)
-		self.llarr.configure(state=DISABLED)
-
-		# Get acqlnum
-		self.acqlnum = 0 # Number of acqs
+		# Get acqtotalnum & acqlnum
+		self.acqtotalnum = 0 # Number of acqs
 		f = open("acqinfo.txt", "r")
 		for line in f:
-			self.acqlnum = self.acqlnum + 1
+			self.acqtotalnum = self.acqtotalnum + 1
 		f.close()
 
-		# Set lastpg
+		# Set acqlnum & lastpg
+		self.acqlnum = self.acqtotalnum
 		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
 		
-		# If page is last page, disable rarr & rrarr
-		if self.acqlpg == self.lastpg or self.lastpg == -1:
-			self.rarr.configure(state=DISABLED)
-			self.rrarr.configure(state=DISABLED)
-
-		# Put acqs in list
+		# Put acqs in list and update arrows
 		self.fillListBox()
+		self.updateArrows()
 
 
 		# Refresh/Clear/Delete/Display buttons
-		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.fillListBox)
+		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.refreshListBox)
 		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
 		self.deleteB = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
 		self.displayB = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
@@ -241,11 +236,66 @@ class App(Toplevel):
 
 
 
-	def fillListBox(self, srchlbl=None):
+
+	def searchClick(self, event):
+		"""If search entry box is clicked on with default value, clear it"""
+
+		if self.searchentry.get() == "Search...":
+			self.searchentry.delete(0, END)
+			self.searchentry.insert(0, '')
+
+
+
+
+	def searchDClick(self, event):
+		"""If search entry box is double clicked, clear value"""
+
+		self.searchentry.delete(0, END)
+		self.searchentry.insert(0, '')
+
+
+
+	
+	def updatePageParams(self):
+		"""Update acqlnum, lastpg"""
+
+		# Get current label search entry
+		searchterm = self.searchentry.get()
+
+		# If search term is new, set page to first
+		if searchterm != self.slbl:
+			self.acqlpg = 0
+
+		self.slbl = searchterm
+		if self.slbl == "Search...":
+			self.slbl = ''
+
+		# First acqinfo open, get number of search matches
+		self.acqsrchnum = 0
+
+		if self.slbl != '':
+			infofile = open("acqinfo.txt", "r")
+			for line in infofile:
+				if line.split('|')[1].find(self.slbl) != -1:
+					self.acqsrchnum += 1
+			infofile.close()
+
+		# Update acqlnum & lastpg
+		if self.acqsrchnum == 0:
+			self.acqlnum = self.acqtotalnum
+		else:
+			self.acqlnum = self.acqsrchnum
+
+		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+		
+
+	
+
+	def fillListBox(self):
 		"""Reads acquisition list from acqinfo.txt, clears old contents of acquisition
 		list and re-adds them."""
-
-		# Open acqinfo, read first line
+		
+		# Re-open acqinfo, read first line
 		infofile = open("acqinfo.txt", "r")
 		rln = infofile.readline()
 
@@ -259,7 +309,7 @@ class App(Toplevel):
 			rln = rln.strip("\r\n")
 			rlnsplit = rln.split('|')
 
-			if srchlbl == None or rlnsplit[1].find(srchlbl) != -1:
+			if self.slbl == '' or rlnsplit[1].find(self.slbl) != -1:
 				if i >= self.acqlpg*acqpgsize and i < (self.acqlpg+1)*acqpgsize:
 					# Prettify the acqlist entry
 					acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10:len(rlnsplit[0])-1]
@@ -277,8 +327,18 @@ class App(Toplevel):
 			# Read next line
 			rln = infofile.readline()
 
-		# Close acqinfo
+		# Close acqinfo, update arrows
 		infofile.close()
+		self.updateArrows()
+
+
+
+
+	def refreshListBox(self, event=None):
+		"""Refresh acqisition list"""
+
+		self.updatePageParams()
+		self.fillListBox()
 
 
 
@@ -316,6 +376,8 @@ class App(Toplevel):
 		dispfile.close()
 
 		# Reset paging vars
+		self.acqtotalnum = 0
+		self.acqsrchnum = 0
 		self.acqlnum = 0
 		self.acqlpg = 0
 		self.lastpg = 0
@@ -391,6 +453,7 @@ class App(Toplevel):
 				break
 
 		# Refresh listbox
+		self.updatePageParams()
 		self.fillListBox()
 
 
@@ -483,38 +546,28 @@ class App(Toplevel):
 					self.closeSocket()
 				
 		
-		# Pause for 1 second, give acquisition time to do its thang
-		sleep(1)
+		# Pause for half a second, give acquisition time to do its thang
+		sleep(0.5)
 
 		# Enable labelentry and beginAcq
 		self.beginAcq.configure(state=NORMAL)
 		self.labelentry.configure(state=NORMAL)
 
-		# Update acqlnum
-		self.acqlnum = self.acqlnum + 1
-		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+		# Update acqtotalnum, update page params
+		self.acqtotalnum = self.acqtotalnum + 1
+		self.updatePageParams()
+	
+		# If viewnewacq is true and page isn't last, change to last
+		if viewnewacq == True and self.acqlpg != self.lastpg:
+			self.acqlpg = self.lastpg
 
-
-		if self.acqlpg != self.lastpg:
-			# If page is not last and keeponacq is false, change to last.
-			if viewnewacq == True:
-				self.lastPage()
-				self.fillListBox()
-			else:
-				# This is in case we were on what was previously the last page
-				# i.e. If page size = 10 and we're at 10 acqs, this acq causes
-				# page 2 to become available
-				self.rarr.configure(state=NORMAL)
-				self.rrarr.configure(state=NORMAL)
-		else:
-			self.fillListBox()
-
+		self.fillListBox()
 
 		# Set display to end of page if past visible threshhold
 		if self.acqlpg == self.lastpg:
-			pglen = self.acqlnum % acqpgsize
-			if pglen > 10:
-				self.acqlist.yview(pglen - 10)
+			pglen = (self.acqlnum - 1) % acqpgsize
+			if pglen >= 10:
+				self.acqlist.yview(pglen - 10 + 1)
 
 
 			
@@ -529,31 +582,12 @@ class App(Toplevel):
 
 
 
-	def searchLabel(self):
-		"""Returns acqlist matching search label"""
-
-		self.fillListBox(self.searchentry.get())
-
-
-
-
-
 	def backPage(self):
 		"""Sends acqlist back one page"""
 		
-		# If current page is last page, re-enable rarr & rrarr
-		if self.acqlpg == self.lastpg:
-			self.rarr.configure(state=NORMAL)
-			self.rrarr.configure(state=NORMAL)
-
-		# Decrement acqlpg and re-fill listbox
+		# Decrement acqlpg, re-fill listbox & update arrows
 		self.acqlpg = self.acqlpg - 1
 		self.fillListBox()
-
-		# If page is now first, disable larr & llarr
-		if self.acqlpg == 0:
-			self.larr.configure(state=DISABLED)
-			self.llarr.configure(state=DISABLED)
 
 
 
@@ -561,19 +595,9 @@ class App(Toplevel):
 	def firstPage(self):
 		"""Sends acqlist to last page"""
 		
-		# If current page is last page, re-enable rarr & rrarr
-		if self.acqlpg == self.lastpg:
-			self.rarr.configure(state=NORMAL)
-			self.rrarr.configure(state=NORMAL)
-
-		# Set acqlpg to 0 and re-fill listbox
+		# Set acqlpg to 0, re-fill listbox & update arrows
 		self.acqlpg = 0
 		self.fillListBox()
-
-		# If page is now first, disable larr & llarr
-		if self.acqlpg == 0:
-			self.larr.configure(state=DISABLED)
-			self.llarr.configure(state=DISABLED)
 
 
 		
@@ -581,19 +605,10 @@ class App(Toplevel):
 	def forwardPage(self):
 		"""Sends acqlist forward one page"""
 
-		# If current page is first, re-enable larr & llarr
-		if self.acqlpg == 0:
-			self.larr.configure(state=NORMAL)
-			self.llarr.configure(state=NORMAL)
-
-		# Increment acqlpg and re-fill listbox
+		# Increment acqlpg, re-fill listbox & update arrows
 		self.acqlpg = self.acqlpg + 1
 		self.fillListBox()
 			
-		# If page is now last, disable rarr & rrarr
-		if self.acqlpg == self.lastpg:
-			self.rarr.configure(state=DISABLED)
-			self.rrarr.configure(state=DISABLED)
 
 
 
@@ -601,19 +616,29 @@ class App(Toplevel):
 	def lastPage(self):
 		"""Sends acqlist to last page"""
 
-		# If current page is first, re-enable larr & llarr
-		if self.acqlpg == 0:
-			self.larr.configure(state=NORMAL)
-			self.llarr.configure(state=NORMAL)
-
-		# Set acqlpg to last and re-fill listbox
+		# Set acqlpg to last. re-fill listbox and update arrows
 		self.acqlpg = self.lastpg
 		self.fillListBox()
-			
-		# If page is now last, disable rarr & rrarr
+
+
+	
+	def updateArrows(self):
+		"""Enable/disable arrows based on current page"""
+
+		self.larr.configure(state=NORMAL)
+		self.llarr.configure(state=NORMAL)
+		self.rarr.configure(state=NORMAL)
+		self.rrarr.configure(state=NORMAL)
+
+		if self.acqlpg == 0:
+			self.larr.configure(state=DISABLED)
+			self.llarr.configure(state=DISABLED)
+		
 		if self.acqlpg == self.lastpg:
 			self.rarr.configure(state=DISABLED)
 			self.rrarr.configure(state=DISABLED)
+
+
 
 
 
