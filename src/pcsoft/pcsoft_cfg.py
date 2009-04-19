@@ -26,6 +26,10 @@ acqpgsize  - number of acquisitions per "page" for the acquisition display
 viewnewacq - value of True causes inter.py to set current display page to
              the last page when an acquisition completes. False results in
 			 inter.py staying on the same page
+
+serialport - number of the serial port
+
+serialbaud - baudrate of serial port transfer
 """
 
 sckhost = 'localhost'
@@ -35,4 +39,6 @@ fext = '.dat'
 partsize = 100
 acqpgsize = 30
 viewnewacq = True
+serialport = 0
+serialbaud = 921600
 

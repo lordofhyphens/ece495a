@@ -98,9 +98,9 @@ def acqbin(acqfile, acqlabel):
 
 	# Read 4096-byte chunks from file and convert each char to integer
 	while 1:
-		thisChunk = f.read(4096).rstrip('\n')
+		rdchunk = f.read(4096).rstrip('\n')
 
-		# Open a new binary file if the old file is 100 kb in size
+		# Open a new binary file if current file exceeds partsize global
 		if fileinc > (partsize/4) - 1:
 			filepart = chr(ord(filepart) + 1)
 			fileinc = 0;
@@ -110,17 +110,18 @@ def acqbin(acqfile, acqlabel):
 	
 		# If read data is empty, break loop
 		# Otherwise keep processing data
-		if len(thisChunk) == 0: 
+		if len(rdchunk) == 0: 
 			break
 		else:
-			parseNums = parseBin(thisChunk)
+			parsed = parseBin(rdchunk)
 
 			for i in range(0, len(parseNums)):
-				writeF.write(struct.pack('b', parseNums[i][0]))
+				writeF.write(struct.pack('b', parsed[i][0]))
 	
 		fileinc += 1
 	
 
+	# write to acqinfo
 	conf.updateInfo()
 		
 
@@ -135,21 +136,50 @@ def main():
 	sckt.connect((sckhost, sckport))
 	sckt.send('init')
 
+	termseq = ''
+	
+	if sckt.recv(1024) == 'begin':
+		print "Beginning acquisition"
 
-	while(1):
-		data = sckt.recv(1024)
-		print '.',
-		
-		if data == "begin":
-			print "Beginning acquisition"
+	"""
+	# Open acqfile, first output file & initialize acqFileConfig class
+	writeF, acqName = openNewOut(filepart, pref, acqnum)
+	conf = acqFileConfig(acqName, acqlabel)
+	
+	# Open serial port
+	ser = serial.Serial(serialport, baudrate=serialbaud)
 
-			# Open acqfile, first output file & initialize acqFileConfig class
-			# writeF, acqName = openNewOut(filepart, pref, acqnum)
-			# conf = acqFileConfig(acqName, acqlabel)
+	while 1:
+		rdchunk = ser.read(5000)
 
-		elif data == "end":
-			print "Ending acquisition"
+		# Open a new binary file if current file exceeds partsize global
+		if fileinc > (partsize/4) - 1:
+			filepart = chr(ord(filepart) + 1)
+			fileinc = 0;
+			writeF.close()
+			writeF, writeFileName = openNewOut(filepart, pref, acqnum)
+			conf.setLast(filepart)
+	
+		# If read data is empty, break loop
+		# Otherwise keep processing data
+		if len(rdchunk) == 0: 
 			break
+		else:
+			parsed = parseSerial(rdchunk)
+
+			for i in range(0, len(parsed)):
+				writeF.write(struct.pack('b', parsed[i][0]))
+	
+		fileinc += 1
+	
+
+	# close serial port, write to acqinfo
+	ser.close()
+	conf.updateInfo()
+	"""
+
+	print "Ending acquisition"
+
 
 	# Close socket
 	sckt.shutdown(socket.SHUT_RDWR)
