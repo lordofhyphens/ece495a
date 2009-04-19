@@ -108,6 +108,7 @@ class App(Toplevel):
 		self.searchentry.bind("<Button-1>", self.searchClick)
 		self.searchentry.bind("<Double-Button-1>", self.searchDClick)
 		self.searchentry.bind("<Return>", self.refreshListBox)
+		self.searchentry.bind("<Key>", self.searchChanged)
 
 		
 		# Make arrow buttons
@@ -250,8 +251,25 @@ class App(Toplevel):
 	def searchDClick(self, event):
 		"""If search entry box is double clicked, clear value"""
 
+		# If double click occurs when search box has content, disable arrow buttons
+		if self.searchentry.get() != '' or self.searchentry.get() != "Search...":
+			self.searchChanged()
+
+		# Clear it
 		self.searchentry.delete(0, END)
 		self.searchentry.insert(0, '')
+
+
+
+	
+	def searchChanged(self, event=None):
+		"""If search term has been changed, disable arrow buttons until
+		search term is submitted"""
+
+		self.larr.configure(state=DISABLED)
+		self.llarr.configure(state=DISABLED)
+		self.rarr.configure(state=DISABLED)
+		self.rrarr.configure(state=DISABLED)
 
 
 
