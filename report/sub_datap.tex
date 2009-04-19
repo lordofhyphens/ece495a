@@ -16,7 +16,7 @@ modules. The bus width was set at 10 bits, which was the minimum size for
 datapath.
 
 Figure \ref{fig:datapath diagram} shows a block diagram of the datapath system.
-The bus interface 
+ 
 
 \subsection[Tradeoffs]{Design Decisions and Tradeoffs} 
 Table \ref{tab:control comparison} lists an overview of the options considered
@@ -117,13 +117,16 @@ With the serialization bottleneck in-place, bus width represents a tradeoff
 between capacity and acquisition performance. The maximum rate of samples per
 second is set by ${Outgoing Baud Rate}/{Sample Width}$. Figure \ref{fig:baud rates and sample} 
 illustrates this relationship. The hardware maximum for the bus width is 16 bits
-per sample (which is the width of two of the transceivers). If the selected
-serial output system is very fast, then more samples can be processed by the
-host PC.
-\begin{figure}[hbp!]
+per sample (which is the width of two of the transceivers). The 10-bit samples
+are packed tightly before serialization to reduce wasted space. If the 
+selected serial output system is very fast, then more samples 
+can be processed by the host PC. Due to restrictions on the communications 
+interface with the host PC, the USART \index{usart} interface is used 
+asynchronously, which is included as part of the ATMega8515 MCU
+\cite{ds:ATMEGA8515}.
+
+\begin{figure}[hbp]
 \caption[Baud Rate and Samples]{Output baud rate vs. Sampling Rate\cite{ds:ATMEGA8515}}
 \includegraphics[width=3in]{baud_rate.png}
 \label{fig:baud rates and sample}
 \end{figure}
-
-
