@@ -1,4 +1,4 @@
-global sckhost, sckport, pathto, fsuffix, partsize
+global sckhost, sckport, pathto, fext, partsize
 """
 This file contains global variables used by both acqdata.py and 
 inter.py. An explanation of each variable is provided.

@@ -70,8 +70,9 @@ class App(Toplevel):
 		self.acqfrm = LabelFrame(self, text="Data Acquisition", padx=5, pady=5)
 		self.acqfrm.grid(row=0, column=0, in_=self, sticky=N+E+S+W)
 
+
 		# "Type" label
-		Label(self.acqfrm, text="Type: ").grid(row=0, column=0, sticky=E)
+		Label(self.acqfrm, text="Type: ").grid(row=1, column=0, sticky=E)
 
 		# Data type drop-down menu
 		typeOpts = [
@@ -87,28 +88,29 @@ class App(Toplevel):
 		acqtype.set(typeOpts[0])
 
 		typeMenu = OptionMenu(self.acqfrm, acqtype, *typeOpts)
-		typeMenu.grid(row=0, column=1, in_=self.acqfrm, sticky=E+W)
+		typeMenu.grid(row=1, column=1, in_=self.acqfrm, sticky=E+W)
 
 
 		# "Label" label
-		Label(self.acqfrm, text="Label (optional): ").grid(row=1, column=0, sticky=E)
+		Label(self.acqfrm, text="Label (optional): ").grid(row=2, column=0, sticky=E)
 		
 		# "Label" entry box
 		self.acqlabel = StringVar()
 		self.labelentry = Entry(self.acqfrm, textvariable=self.acqlabel)
-		self.labelentry.grid(row=1, column=1, sticky=E+W)
+		self.labelentry.grid(row=2, column=1, sticky=E+W)
 
 
 
 		# Begin/End Acquisition buttons
 		self.beginAcq = Button(self.acqfrm, text="Begin Acquisition", width=15, command=self.beginAcqClick)
 		self.endAcq = Button(self.acqfrm, text="End Acquisition", width=15, command=self.endAcqClick)
-		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+		self.beginAcq.grid(row=4, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# Do some resizing
 		self.acqfrm.columnconfigure(0, minsize=40)
 		self.acqfrm.columnconfigure(1, minsize=160)
-		self.acqfrm.rowconfigure(2, minsize=15)
+		self.acqfrm.rowconfigure(0, minsize=20)
+		self.acqfrm.rowconfigure(3, minsize=20)
 
 
 
@@ -194,7 +196,7 @@ class App(Toplevel):
 
 		# "CONFIG 1-6" label
 		config16Lbl = Label(self.ctrlfrm, text="Config. 1-6:")
-		config16Lbl.grid(row=0, column=0, columnspan=6, sticky=W)
+		config16Lbl.grid(row=1, column=0, columnspan=6, sticky=W)
 
 		# Generate and draw checkboxes, do some column resizing while we're at it
 		c = []
@@ -203,29 +205,30 @@ class App(Toplevel):
 		for i in range(0, 6):
 			c.append(IntVar())
 			cnfgChck.append(Checkbutton(self.ctrlfrm, text="", variable=c[i]))
-			cnfgChck[i].grid(row=1, column=i, in_=self.ctrlfrm)
+			cnfgChck[i].grid(row=2, column=i, in_=self.ctrlfrm)
 			self.ctrlfrm.columnconfigure(i, weight=0, minsize=15)
 
 
 		# Active Input radio label
 		activeinLbl = Label(self.ctrlfrm, text="Active Input Type:")
-		activeinLbl.grid(row=0, column=7, in_=self.ctrlfrm, columnspan=2, sticky=W)
+		activeinLbl.grid(row=1, column=7, in_=self.ctrlfrm, columnspan=2, sticky=W)
 
 		# Active Input analog/digital buttons
 		r = IntVar()
 		self.rad1 = Radiobutton(self.ctrlfrm, text="Analog", variable=r, value=1)
 		self.rad2 = Radiobutton(self.ctrlfrm, text="Digital", variable=r, value=2)
-		self.rad1.grid(row=1, column=7, in_=self.ctrlfrm, columnspan=1)
-		self.rad2.grid(row=1, column=8, in_=self.ctrlfrm, columnspan=1)
+		self.rad1.grid(row=2, column=7, in_=self.ctrlfrm, columnspan=1)
+		self.rad2.grid(row=2, column=8, in_=self.ctrlfrm, columnspan=1)
 
 
 		# Output enable label
 		outen = IntVar()
 		outenChck = Checkbutton(self.ctrlfrm, text="Output Enable", variable=outen)
-		outenChck.grid(row=1, column=10, in_=self.ctrlfrm, sticky=W)
+		outenChck.grid(row=2, column=10, in_=self.ctrlfrm, sticky=W)
 
 
-		# Resize columns 6 & 9 for spacing
+		# Resize for prettiness
+		self.ctrlfrm.rowconfigure(3, weight=0, minsize=10)
 		self.ctrlfrm.columnconfigure(6, weight=0, minsize=20)
 		self.ctrlfrm.columnconfigure(9, weight=0, minsize=20)
 

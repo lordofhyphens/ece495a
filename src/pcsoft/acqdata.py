@@ -1,7 +1,7 @@
 # acqdata.py - acquires data over serial port or binary input file (for debugging)
 
 
-import os, sys, struct, socket
+import os, sys, struct, socket, serial
 from time import localtime, strftime
 from pcsoft_cfg import *
 
@@ -138,6 +138,7 @@ def main():
 
 	while(1):
 		data = sckt.recv(1024)
+		print '.',
 		
 		if data == "begin":
 			print "Beginning acquisition"
