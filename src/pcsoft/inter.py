@@ -120,35 +120,48 @@ class App(Toplevel):
 
 		
 		# Make arrow buttons
+		self.llarr = Button(self.dispfrm, text="<<", width=1, command=self.firstPage)
+		self.llarr.grid(row=0, column=2, in_=self.dispfrm, sticky=E+W)
 		self.larr = Button(self.dispfrm, text="<", width=1, command=self.backPage)
 		self.larr.grid(row=0, column=3, in_=self.dispfrm, sticky=E+W)
+
 		self.rarr = Button(self.dispfrm, text=">", width=1, command=self.forwardPage)
 		self.rarr.grid(row=0, column=4, in_=self.dispfrm, sticky=E+W)
-
-		# Configure larr to be disabled by default
-		self.larr.configure(state=DISABLED)
+		self.rrarr = Button(self.dispfrm, text=">>", width=1, command=self.lastPage)
+		self.rrarr.grid(row=0, column=5, in_=self.dispfrm, sticky=E+W)
 
 
 		# Make acq listbox, bind select event
 		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
-		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=5, rowspan=3, sticky=E+W)
+		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=6, rowspan=3, sticky=E+W)
 		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
 
 		# Make acq listbox scrollbar
 		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL)
 		listscroll.config(command=self.acqlist.yview)
-		listscroll.grid(row=1, column=5, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
+		listscroll.grid(row=1, column=6, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
 
-		# Set acqlist paging variables
+		# Init acqlpg
 		self.acqlpg = 0 # Current page
 
+		# Configure larr & llarr to be disabled by default
+		self.larr.configure(state=DISABLED)
+		self.llarr.configure(state=DISABLED)
+
+		# Get acqlnum
 		self.acqlnum = 0 # Number of acqs
 		f = open("acqinfo.txt", "r")
 		for line in f:
 			self.acqlnum = self.acqlnum + 1
 		f.close()
 
+		# Set lastpg
 		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+		
+		# If page is last page, disable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=DISABLED)
+			self.rrarr.configure(state=DISABLED)
 
 		# Put acqs in list
 		self.fillListBox()
@@ -163,8 +176,8 @@ class App(Toplevel):
 		# Add all four buttons to grid
 		refreshList.grid(row=4, column=0, in_=self.dispfrm, columnspan=1)
 		clearList.grid(row=4, column=1, in_=self.dispfrm, columnspan=1)
-		self.deleteB.grid(row=4, column=2, in_=self.dispfrm, columnspan=1)
-		self.displayB.grid(row=4, column=3, in_=self.dispfrm, columnspan=2)
+		self.deleteB.grid(row=4, column=2, in_=self.dispfrm, columnspan=2)
+		self.displayB.grid(row=4, column=4, in_=self.dispfrm, columnspan=2)
 
 		# Disable display&delete buttons to begin
 		self.displayB.configure(state=DISABLED)
@@ -496,7 +509,8 @@ class App(Toplevel):
 
 
 		# Re-fill listbox
-		self.fillListBox()
+		if keeppgonacq == False:
+			self.fillListBox()
 
 		# Set display to end of page if past visible threshhold
 		if self.acqlpg == self.lastpg:
@@ -521,35 +535,79 @@ class App(Toplevel):
 	def backPage(self):
 		"""Sends acqlist back one page"""
 		
-		if self.acqlpg >= 1:
-			self.acqlpg = self.acqlpg - 1
+		# If current page is last page, re-enable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=NORMAL)
+			self.rrarr.configure(state=NORMAL)
 
-			# Re-fill listbox
-			self.fillListBox()
+		# Decrement acqlpg and re-fill listbox
+		self.acqlpg = self.acqlpg - 1
+		self.fillListBox()
 
-			if self.acqlpg == 0:
-				self.larr.configure(state=DISABLED)
-			elif self.acqlpg == self.lastpg - 1:
-				self.rarr.configure(state=NORMAL)
+		# If page is now first, disable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=DISABLED)
+			self.llarr.configure(state=DISABLED)
+
+
+
+
+	def firstPage(self):
+		"""Sends acqlist to last page"""
+		
+		# If current page is last page, re-enable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=NORMAL)
+			self.rrarr.configure(state=NORMAL)
+
+		# Set acqlpg to 0 and re-fill listbox
+		self.acqlpg = 0
+		self.fillListBox()
+
+		# If page is now first, disable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=DISABLED)
+			self.llarr.configure(state=DISABLED)
+
 
 		
-
-
-
 
 	def forwardPage(self):
 		"""Sends acqlist forward one page"""
 
-		if self.acqlpg <= self.lastpg - 1:
-			self.acqlpg = self.acqlpg + 1
+		# If current page is first, re-enable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=NORMAL)
+			self.llarr.configure(state=NORMAL)
 
-			# Re-fill listbox
-			self.fillListBox()
+		# Increment acqlpg and re-fill listbox
+		self.acqlpg = self.acqlpg + 1
+		self.fillListBox()
 			
-			if self.acqlpg == self.lastpg:
-				self.rarr.configure(state=DISABLED)
-			elif self.acqlpg == 1:
-				self.larr.configure(state=NORMAL)
+		# If page is now last, disable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=DISABLED)
+			self.rrarr.configure(state=DISABLED)
+
+
+
+	
+	def lastPage(self):
+		"""Sends acqlist to last page"""
+
+		# If current page is first, re-enable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=NORMAL)
+			self.llarr.configure(state=NORMAL)
+
+		# Set acqlpg to last and re-fill listbox
+		self.acqlpg = self.lastpg
+		self.fillListBox()
+			
+		# If page is now last, disable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=DISABLED)
+			self.rrarr.configure(state=DISABLED)
 
 
 
