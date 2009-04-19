@@ -497,15 +497,17 @@ class App(Toplevel):
 		self.acqlnum = self.acqlnum + 1
 		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
 
-		# Update page to show this acquisition if keeppgonacq == False
+
 		if self.acqlpg != self.lastpg:
-			
+			# If page is not last and keeponacq is false, change to last.
 			if keeppgonacq == False:
-				self.acqlpg = self.lastpg
-				self.rarr.configure(state=DISABLED)
-				self.larr.configure(state=NORMAL)
+				self.lastPage()
 			else:
+				# This is in case we were on what was previously the last page
+				# i.e. If page size = 10 and we're at 10 acqs, this acq causes
+				# page 2 to become available
 				self.rarr.configure(state=NORMAL)
+				self.rrarr.configure(state=NORMAL)
 
 
 		# Re-fill listbox
