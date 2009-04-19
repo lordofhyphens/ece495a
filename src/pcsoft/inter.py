@@ -1,8 +1,9 @@
 # inter.py - graphical front-end
 
-from Tkinter import *
 import os, sys, glob, socket
+from Tkinter import *
 from pcsoft_cfg import *
+from math import ceil
 
 global acqfile
 acqfile = ''
@@ -92,9 +93,10 @@ class App(Toplevel):
 		# "Label" label
 		Label(self.acqfrm, text="Label (optional): ").grid(row=1, column=0, sticky=E)
 		
-		# "Label" entry
+		# "Label" entry box
 		self.acqlabel = StringVar()
-		Entry(self.acqfrm, textvariable=self.acqlabel).grid(row=1, column=1, sticky=E+W)
+		self.labelentry = Entry(self.acqfrm, textvariable=self.acqlabel)
+		self.labelentry.grid(row=1, column=1, sticky=E+W)
 
 
 
@@ -116,17 +118,54 @@ class App(Toplevel):
 		self.dispfrm = LabelFrame(self, text="Data Display", padx=5, pady=5)
 		self.dispfrm.grid(row=0, column=1, in_=self)
 
-		## Make acq listbox, bind select event
-		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
-		self.acqlist.grid(row=0, column=0, in_=self.dispfrm, columnspan=4, rowspan=3, sticky=E+W)
-		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
+		
+		# Make arrow buttons
+		self.llarr = Button(self.dispfrm, text="<<", width=1, command=self.firstPage)
+		self.llarr.grid(row=0, column=2, in_=self.dispfrm, sticky=E+W)
+		self.larr = Button(self.dispfrm, text="<", width=1, command=self.backPage)
+		self.larr.grid(row=0, column=3, in_=self.dispfrm, sticky=E+W)
 
+		self.rarr = Button(self.dispfrm, text=">", width=1, command=self.forwardPage)
+		self.rarr.grid(row=0, column=4, in_=self.dispfrm, sticky=E+W)
+		self.rrarr = Button(self.dispfrm, text=">>", width=1, command=self.lastPage)
+		self.rrarr.grid(row=0, column=5, in_=self.dispfrm, sticky=E+W)
+
+
+		# Make acq listbox, bind select event
+		self.acqlist = Listbox(self.dispfrm, selectmode=EXTENDED)
+		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=6, rowspan=3, sticky=E+W)
+		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
 
 		# Make acq listbox scrollbar
 		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL)
 		listscroll.config(command=self.acqlist.yview)
-		listscroll.grid(row=0, column=4, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
+		listscroll.grid(row=1, column=6, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
+
+		# Init acqlpg
+		self.acqlpg = 0 # Current page
+
+		# Configure larr & llarr to be disabled by default
+		self.larr.configure(state=DISABLED)
+		self.llarr.configure(state=DISABLED)
+
+		# Get acqlnum
+		self.acqlnum = 0 # Number of acqs
+		f = open("acqinfo.txt", "r")
+		for line in f:
+			self.acqlnum = self.acqlnum + 1
+		f.close()
+
+		# Set lastpg
+		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+		
+		# If page is last page, disable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=DISABLED)
+			self.rrarr.configure(state=DISABLED)
+
+		# Put acqs in list
 		self.fillListBox()
+
 
 		# Refresh/Clear/Delete/Display buttons
 		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.fillListBox)
@@ -135,14 +174,15 @@ class App(Toplevel):
 		self.displayB = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
 
 		# Add all four buttons to grid
-		refreshList.grid(row=4, column=0, in_=self.dispfrm)
-		clearList.grid(row=4, column=1, in_=self.dispfrm)
-		self.deleteB.grid(row=4, column=2, in_=self.dispfrm)
-		self.displayB.grid(row=4, column=3, in_=self.dispfrm)
+		refreshList.grid(row=4, column=0, in_=self.dispfrm, columnspan=1)
+		clearList.grid(row=4, column=1, in_=self.dispfrm, columnspan=1)
+		self.deleteB.grid(row=4, column=2, in_=self.dispfrm, columnspan=2)
+		self.displayB.grid(row=4, column=4, in_=self.dispfrm, columnspan=2)
 
 		# Disable display&delete buttons to begin
 		self.displayB.configure(state=DISABLED)
 		self.deleteB.configure(state=DISABLED)
+
 
 
 
@@ -213,26 +253,37 @@ class App(Toplevel):
 		"""Reads acquisition list from acqinfo.txt, clears old contents of acquisition
 		list and re-adds them."""
 
+		# Open acqinfo, read first line
 		infofile = open("acqinfo.txt", "r")
 		rln = infofile.readline()
 
+		# Clear acqlist
 		self.acqlist.delete(0, END)
-
-		while rln != "":
-			# Strip trailing newline and return characters
+		
+		i = 0
+		lcount = 0
+		while (rln != "") and (lcount < acqpgsize):
+			# Strip trailing newline and return characters, then split label from line
 			rln = rln.strip("\r\n")
 			rlnsplit = rln.split('|')
 
-			# Prettify the acqlist entry
-			acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10:len(rlnsplit[0])-1]
+			if i >= self.acqlpg*acqpgsize and i < (self.acqlpg+1)*acqpgsize:
+				# Prettify the acqlist entry
+				acqlistline = rln[2:5]+' '+rln[0:2]+', '+rln[5:9]+': '+rln[10:len(rlnsplit[0])-1]
 
-			# Add label if it exists
-			if rlnsplit[1] != '':
-				acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
+				# Add label if it exists
+				if rlnsplit[1] != '':
+					acqlistline += '  -  '+rlnsplit[1].replace('(>$%pipe%$<)', '|')
 
-			self.acqlist.insert(END, acqlistline)
+				# Add entry to acqlist, increment lcount
+				self.acqlist.insert(END, acqlistline)
+				lcount = lcount+1
+
+			# Read next line, increment i
 			rln = infofile.readline()
+			i = i+1
 
+		# Close acqinfo
 		infofile.close()
 
 
@@ -269,6 +320,11 @@ class App(Toplevel):
 		dispfile = open("acqdisp.txt", "w")
 		dispfile.write("")
 		dispfile.close()
+
+		# Reset paging vars
+		self.acqlnum = 0
+		self.acqlpg = 0
+		self.lastpg = 0
 
 
 
@@ -396,7 +452,9 @@ class App(Toplevel):
 	def beginAcqClick(self):
 		"""Replace beginAcq button with endAcq, send begin message to acqdata"""
 
+		# Remove beginAcq, disable labelentry, add endAcq
 		self.beginAcq.grid_remove()
+		self.labelentry.configure(state=DISABLED)
 		self.endAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
 
 		# If old behavior, call acqbin. Otherwise launch acqdata in a subprocess
@@ -408,6 +466,7 @@ class App(Toplevel):
 			theacqlabel = theacqlabel.replace('|', '(>$%pipe%$<)')
 			acqdata.acqbin(acqfile, theacqlabel)
 		else:
+			# Open socket, launch subprocess & accept sock connection
 			self.openSocket()
 			self.proc = subprocess.Popen('acqdata.py',shell=True)
 			self.conn, self.addr = self.sckt.accept()
@@ -422,15 +481,45 @@ class App(Toplevel):
 
 	def endAcqClick(self):
 		"""Replace endAcq button with beginAcq, send end message to acqdata"""
+
+		# If no old behavior, send a terminate message, wait for child and close socket
 		if self.old == False:
 			self.conn.sendto("end", self.addr)
 			self.proc.wait()
 			self.closeSocket()
 
+		# Remove endAcq, enable labelentry, add beginAcq
 		self.endAcq.grid_remove()
+		self.labelentry.configure(state=NORMAL)
 		self.beginAcq.grid(row=3, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
-		self.fillListBox()
-		self.setListToEnd()
+
+		# Update acqlnum
+		self.acqlnum = self.acqlnum + 1
+		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+
+
+		if self.acqlpg != self.lastpg:
+			# If page is not last and keeponacq is false, change to last.
+			if keeppgonacq == False:
+				self.lastPage()
+			else:
+				# This is in case we were on what was previously the last page
+				# i.e. If page size = 10 and we're at 10 acqs, this acq causes
+				# page 2 to become available
+				self.rarr.configure(state=NORMAL)
+				self.rrarr.configure(state=NORMAL)
+
+
+		# Re-fill listbox
+		if keeppgonacq == False:
+			self.fillListBox()
+
+		# Set display to end of page if past visible threshhold
+		if self.acqlpg == self.lastpg:
+			pglen = self.acqlnum % acqpgsize
+			if pglen > 10:
+				self.acqlist.yview(pglen - 10)
+			
 
 
 
@@ -445,16 +534,84 @@ class App(Toplevel):
 
 
 
-	def setListToEnd(self):
-		"""Sets listbox to display the end of the list. Used after endAcq."""
+	def backPage(self):
+		"""Sends acqlist back one page"""
 		
-		# Get size of acqlist
-		listlen = self.acqlist.size()
+		# If current page is last page, re-enable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=NORMAL)
+			self.rrarr.configure(state=NORMAL)
+
+		# Decrement acqlpg and re-fill listbox
+		self.acqlpg = self.acqlpg - 1
+		self.fillListBox()
+
+		# If page is now first, disable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=DISABLED)
+			self.llarr.configure(state=DISABLED)
+
+
+
+
+	def firstPage(self):
+		"""Sends acqlist to last page"""
 		
-		# Set acqlist yview to bottom
-		self.acqlist.yview(listlen - 10)
+		# If current page is last page, re-enable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=NORMAL)
+			self.rrarr.configure(state=NORMAL)
+
+		# Set acqlpg to 0 and re-fill listbox
+		self.acqlpg = 0
+		self.fillListBox()
+
+		# If page is now first, disable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=DISABLED)
+			self.llarr.configure(state=DISABLED)
+
 
 		
+
+	def forwardPage(self):
+		"""Sends acqlist forward one page"""
+
+		# If current page is first, re-enable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=NORMAL)
+			self.llarr.configure(state=NORMAL)
+
+		# Increment acqlpg and re-fill listbox
+		self.acqlpg = self.acqlpg + 1
+		self.fillListBox()
+			
+		# If page is now last, disable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=DISABLED)
+			self.rrarr.configure(state=DISABLED)
+
+
+
+	
+	def lastPage(self):
+		"""Sends acqlist to last page"""
+
+		# If current page is first, re-enable larr & llarr
+		if self.acqlpg == 0:
+			self.larr.configure(state=NORMAL)
+			self.llarr.configure(state=NORMAL)
+
+		# Set acqlpg to last and re-fill listbox
+		self.acqlpg = self.lastpg
+		self.fillListBox()
+			
+		# If page is now last, disable rarr & rrarr
+		if self.acqlpg == self.lastpg:
+			self.rarr.configure(state=DISABLED)
+			self.rrarr.configure(state=DISABLED)
+
+
 
 
 # If command line arg present, invoke binary input file behavior
@@ -477,4 +634,6 @@ root.withdraw()
 app = App()
 app.title("PCDiag Control/Display Interface")
 root.mainloop() 
+
+
 
