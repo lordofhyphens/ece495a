@@ -136,9 +136,10 @@ class App(Toplevel):
 		self.acqlist.grid(row=1, column=0, in_=self.dispfrm, columnspan=6, rowspan=3, sticky=E+W)
 		self.acqlist.bind('<<ListboxSelect>>', self.checkSel)
 
-		# Make acq listbox scrollbar
-		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL)
+		# Make acq list scrollbar
+		listscroll = Scrollbar(self.dispfrm, orient=VERTICAL, relief=SUNKEN)
 		listscroll.config(command=self.acqlist.yview)
+		self.acqlist.config(yscrollcommand=listscroll.set)
 		listscroll.grid(row=1, column=6, in_=self.dispfrm, columnspan=1, rowspan=3, sticky=N+S)
 
 		# Init acqlpg
@@ -305,7 +306,7 @@ class App(Toplevel):
 		# Delete acq files
 		for i in range(len(acqnames)):
 			# reconstruct acq filename
-			for acqfile in glob.glob(pathtodata+acqnames[i]+'*'+fsuffix):
+			for acqfile in glob.glob(pathtodata+acqnames[i]+'*'+fext):
 				os.remove(acqfile)
 
 		# Clear listbox entries
@@ -372,7 +373,7 @@ class App(Toplevel):
 		# Delete acq files
 		for i in range(len(acqsToDel)):
 			acq = self.getAcqFromSel(acqsToDel[i])
-			for acqfile in glob.glob(pathtodata+acq+'*'+fsuffix):
+			for acqfile in glob.glob(pathtodata+acq+'*'+fext):
 				os.remove(acqfile)
 
 
@@ -500,19 +501,18 @@ class App(Toplevel):
 
 		if self.acqlpg != self.lastpg:
 			# If page is not last and keeponacq is false, change to last.
-			if keeppgonacq == False:
+			if viewnewacq == True:
 				self.lastPage()
+				self.fillListBox()
 			else:
 				# This is in case we were on what was previously the last page
 				# i.e. If page size = 10 and we're at 10 acqs, this acq causes
 				# page 2 to become available
 				self.rarr.configure(state=NORMAL)
 				self.rrarr.configure(state=NORMAL)
-
-
-		# Re-fill listbox
-		if keeppgonacq == False:
+		else:
 			self.fillListBox()
+
 
 		# Set display to end of page if past visible threshhold
 		if self.acqlpg == self.lastpg:
@@ -634,6 +634,4 @@ root.withdraw()
 app = App()
 app.title("PCDiag Control/Display Interface")
 root.mainloop() 
-
-
 
