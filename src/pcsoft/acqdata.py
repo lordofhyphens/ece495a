@@ -143,7 +143,8 @@ def main():
 
 	termseq = ''
 	
-	if sckt.recv(1024) == 'begin':
+	drecv = sckt.recv(1024).split(':')
+	if drecv[0] == 'begin':
 		print "Beginning acquisition"
 
 	"""

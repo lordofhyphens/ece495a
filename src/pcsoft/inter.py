@@ -78,19 +78,35 @@ class App(Toplevel):
 		# "Label" entry box, init searchlbl
 		self.acqlabel = StringVar()
 		self.labelentry = Entry(self.acqfrm, textvariable=self.acqlabel)
-		self.labelentry.grid(row=1, column=1, sticky=E+W)
+		self.labelentry.grid(row=1, column=1, columnspan=8, sticky=E+W)
 		self.searchlbl = ''
 
 
+		# "Stop trigger" label
+		Label(self.acqfrm, text="Stop Trigger: ").grid(row=3, column=0, sticky=E)
+
+		# Generate trigger checkbuttons
+		self.t = []
+		trigChck = []
+
+		for i in range(0, 8):
+			self.t.append(IntVar())
+			trigChck.append(Checkbutton(self.acqfrm, padx=0, pady=0, variable=self.t[i]))
+			trigChck[i].grid(row=3, column=(i+1), rowspan=2, sticky=N+S)
+			self.acqfrm.columnconfigure((i+1), weight=0, minsize=0)
+
+		# "MSB first" label
+		Label(self.acqfrm, text="(MSB first)").grid(row=4, column=0, sticky=E)
+
 		# Begin/End Acquisition buttons
 		self.beginAcq = Button(self.acqfrm, text="Begin Acquisition", width=15, command=self.performAcq)
-		self.beginAcq.grid(row=4, column=0, columnspan=2, in_=self.acqfrm, sticky=S)
+		self.beginAcq.grid(row=6, column=0, columnspan=9, in_=self.acqfrm, sticky=S)
 
 		# Do some resizing
 		self.acqfrm.columnconfigure(0, minsize=40)
-		self.acqfrm.columnconfigure(1, minsize=160)
 		self.acqfrm.rowconfigure(0, minsize=20)
 		self.acqfrm.rowconfigure(2, minsize=20)
+		self.acqfrm.rowconfigure(5, minsize=20)
 
 
 
@@ -155,10 +171,10 @@ class App(Toplevel):
 
 
 		# Refresh/Clear/Delete/Display buttons
-		refreshList = Button(self.dispfrm, text="Refresh", width=7, command=self.refreshListBox)
-		clearList = Button(self.dispfrm, text="Clear", width=7, command=self.clearAcqs)
-		self.deleteB = Button(self.dispfrm, text="Delete", width=7, command=self.deleteAcq)
-		self.displayB = Button(self.dispfrm, text="Display", width=7, command=self.displayAcq)
+		refreshList = Button(self.dispfrm, text="Refresh", width=8, command=self.refreshListBox)
+		clearList = Button(self.dispfrm, text="Clear", width=8, command=self.clearAcqs)
+		self.deleteB = Button(self.dispfrm, text="Delete", width=8, command=self.deleteAcq)
+		self.displayB = Button(self.dispfrm, text="Display", width=8, command=self.displayAcq)
 
 		# Add all four buttons to grid
 		refreshList.grid(row=4, column=0, in_=self.dispfrm, columnspan=1)
@@ -525,7 +541,7 @@ class App(Toplevel):
 		
 
 	def performAcq(self):
-		"""Begin performing data acquisition"""
+		"""Perform data acquisition"""
 
 		# Disable beginAcq, disable labelentry 
 		self.beginAcq.configure(state=DISABLED)
@@ -555,7 +571,11 @@ class App(Toplevel):
 			data = self.conn.recv(1024)
 
 			if data == "init":
-				self.conn.send('begin')
+				termtrig = ""
+				for i in range(0, 8):
+					termtrig += str(self.t[i].get())
+
+				self.conn.send('begin:'+termtrig)
 
 				# If no old behavior, send a terminate message, wait for child and close socket
 				if self.old == False:
