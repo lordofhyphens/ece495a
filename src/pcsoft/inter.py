@@ -1,6 +1,6 @@
 # inter.py - graphical front-end
 
-import os, sys, glob, socket
+import os, sys, glob, socket, subprocess
 from Tkinter import *
 from pcsoft_cfg import *
 from math import ceil
@@ -18,6 +18,7 @@ class App(Toplevel):
 
 		# Set old behavior flag & init socketOpened
 		self.socketOpened = False
+		self.octaveOpened = False
 		if acqfile != "":
 			self.old = True
 		else:
@@ -37,6 +38,10 @@ class App(Toplevel):
 		# If socket is open, close it
 		if self.socketOpened == True:
 			self.closeSocket()
+
+		# If octave is opened, close it
+		if self.octaveOpened == True:
+			self.dispproc.terminate()
 		
 		print "\nTerminating PCDiag Interface"
 		root.destroy()
@@ -538,6 +543,19 @@ class App(Toplevel):
 		dispfile.close()
 
 
+		# if Octave was previously launched, kill it
+		if self.octaveOpened == True:
+			self.dispproc.terminate()
+			self.dispproc.wait()
+			self.octaveOpened == False
+
+		# Launch octave to display data
+		self.dispproc = subprocess.Popen(['octave', '--persist', '--silent', 'dispd.m'], shell=True)
+		self.octaveOpened = True
+
+		
+
+
 		
 
 	def performAcq(self):
@@ -565,7 +583,7 @@ class App(Toplevel):
 		else:
 			# Open socket, launch subprocess & accept sock connection
 			self.openSocket()
-			self.proc = subprocess.Popen('acqdata.py',shell=True)
+			self.proc = subprocess.Popen(['python', 'acqdata.py'],shell=True)
 			self.conn, self.addr = self.sckt.accept()
 
 			data = self.conn.recv(1024)
@@ -690,11 +708,10 @@ class App(Toplevel):
 if len(sys.argv) == 2:
 	acqfile = sys.argv[1]
 
-# If old behavior, import old acqdata. Else import subprocess
+# If command line arg is present, import acqdata for binary acquisition
 if acqfile != '':
 	import acqdata
-else:
-	import subprocess
+
 
 
 
