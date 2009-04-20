@@ -8,6 +8,7 @@
 \usepackage{multirow}
 \usepackage[draft]{pdfpages}
 \usepackage{listings}
+\usepackage{amsmath}
 \usepackage{color}
 \usepackage{cite}
 \usepackage{url}
@@ -34,13 +35,15 @@
 % Documents that are part of the appendix need to go here.
 
 % All datasheets for our project.
-\include{appendix_datasheet}
+%\include{appendix_datasheet}
 
 % All code listings for our project.
+\include{engdrawings}
 \include{code_listings}
-\include{drawings}
 \end{appendix}
 % for cost information, need to call xilinx.
+
+\addcontentsline{toc}{section}{References}
 \bibliographystyle{ieeetr}
 \bibliography{citations}
 \printindex

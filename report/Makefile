@@ -9,7 +9,7 @@ all: ${INCL_FILES}
 	${TEX} ${FILES}
 	
 clean: 
-	rm -f *.aux *.log *.pdf *.toc *.idx *.ind
+	rm -f *.aux *.log design_report.pdf *.toc *.idx *.ind
 
 index: ${INCL_FILES}
 	${TEX} ${FILES}
