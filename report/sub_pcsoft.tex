@@ -1,0 +1,146 @@
+%Subsystem report for the PC Software subsystem
+\fancyfoot[R]{NH}
+\section[PC Software]{PC Software Subsystem}
+\subsection{Description}
+	The PC Software subsystem is responsible for performing two major tasks of 
+the PC Diagnostics Tool. The first task is the acquisition of data from the 
+Acquisition Unit / Datapath Control subsystem and subsequent storage of data on 
+the end-user's PC. The second task is the provision of a display/control 
+interface for an end-user operating device. A user must be able to send the 
+necessary signals to the PC Diagnostics Tool hardware to control the output of 
+the tool, and he or she must have a method of organizing and displaying 
+acquired data.
+
+A block diagram of the subsystem is shown in Figure \ref{fig:pcsoft diagram}
+
+
+\subsection[Design Decisions]{Design Decisions}
+\subsubsection[Software Packages]{Software Packages}
+There are two possible approaches to writing software that addresses both of 
+these needs. The first is to utilize proprietary software development 
+environments such as Matlab or Labview that bundle together data acquisition 
+and Graphical User Interface (GUI) functionality in a relatively easy-to-use 
+software package. The second is to manually build custom software to implement 
+these functions.
+
+The first approach considered was to use a proprietary signal processing 
+environment. Perhaps the two most popular software packages in this area are 
+Labview and Matlab. Labview is a development environment produced by National 
+Instruments. Its base package offers user-friendly GUI development tools, ample 
+drivers for data acquisition into the PC and even some signal processing 
+functionality \cite{web:labviewbase}. Matlab is a widely-known computing environment for science 
+and engineering applications with extensive signal processing functionality, 
+GUI-development tools and a data acquisition toolbox for acquiring data into 
+the PC [2]. In other words, both packages offer exactly the needed 
+functionality for this subsystem.
+
+These features come at a price, however. The Labview base package costs 
+\$1249 \cite{web:labviewbase}, while Matlab costs \$500 for a single-user license with an 
+additional \$200 cost for the Data Acquisition Toolbox \cite{web:matlab}\cite{web:matlabdaq}. 
+Furthermore, the nature of development environments like Labview and Matlab mean that 
+developing a solution in either would result in a user interface that is only usable in 
+Labview or Matlab. This means that end-users would be required to have working 
+copies of whichever environment was used to develop the UI. Since hobbyists are 
+the target market for othe PC Diagnostics Tool, it is not reasonable to expect 
+that every user will possess a copy of Matlab or Labview, and it is even less 
+reasonable to assume that every user would purchase a copy in order to use the 
+GUI. Building standalone applications in either environment is possible, but it 
+comes at further cost: the Labview Application Builder for Windows, at \$999 \cite{web:labviewbase} 
+or the Matlab Compiler, at \$500 \cite{web:matlabcompiler}. 
+
+With these cost considerations in mind, a proprietary solution was ruled out. 
+The next options explored were programming languages and software packages that 
+were inexpensive or free and could be used to implement the PC software. It was 
+first necessary to break down the two tasks of the subsystem to understand what 
+was required. A break-down of necessary functionality required to implement each
+ task is shown in Table \ref{tab:required functionality}.
+
+
+\begin{table}[h]
+\caption[Software functionality]{PC Software tasks broken down by the necessary 
+functionality to perform each.}
+\begin{tabular}{l | p{7cm}}
+	Task & Necessary functionality \\ \hline
+	Data acquisition and storage & Serial port communications library, File I/O \\ \hline
+	Display/control interface & Serial port communications library, GUI library, 
+	Signal/waveform plotting
+\end{tabular}
+\label{tab:required functionality}
+\end{table}
+
+
+Of the required functionality, nearly every modern programming language has a 
+capacity for serial port communications, file I/O and building GUIs, so the deciding 
+factor would lie elsewhere. Some deciding factors were brainstormed, and languages were 
+evaluated based on cost, ease of implementation and whether or not the resulting 
+software would work on different operating systems (i.e. whether it was “cross-platform”).  Programming languages considered were C++, Java, and Python. 
+
+The language comparison performed is shown in Table \ref{tab:languages features}. 
+Due to non-availability of concrete data, performance of all three languages was 
+considered to be “good-enough” for the software's purposes. All three languages here are 
+widely-used, and considering again the target market of hobbyists, it can be expected 
+that the languages are optimized enough for the performance needed. In considering the 
+ease of implementation for each language, it was found that all the languages had online 
+documentation available as well as a serial port library. The only criteria on which they
+differed was the “level” of the language. Programming languages can be classified by what 
+level the code required to perform a given task is abstracted away from the low-level 
+hardware details of accomplishing the task, with high-level languages being farther 
+abstracted from the details \cite{web:suranathesis}. Higher level languages are therefore 
+easier to implement code with because the language compile or interpreter handle things 
+like memory management and CPU operations.
+
+
+\begin{table}[h]
+\caption[Language features]{Comparison of programming language features.}
+\begin{tabular}{l | c | p{6cm} | c}
+	Language & Cost & Ease of implementation & Cross-platform? \\ 
+	\hline
+	C++ & Free & Online documentation, serial port library, medium-level language \cite{web:cpptut}\cite{web:cppserial} & No \\ 
+	\hline
+	Java & Free & Online documentation, serial port library, medium-level language \cite{web:javaapi}\cite{web:javaserial} & Yes \\
+	\hline
+	Python & Free & Online documentation, serial port library, high-level language \cite{web:pydoc}\cite{web:pyserial} & Yes \\
+\end{tabular}
+\label{tab:languages features}
+\end{table}
+
+
+After careful consideration of each language's features, it was decided to use Python as 
+the programming language. Chosing C++ has no obvious benefits while having the exclusive 
+drawback of not being cross-platform, and while Java has, for the purposes of this subsystem, 
+essentially the same features as Python, a Python implementation should be easier because of 
+its status as a high-level programming language.
+
+For the signal/waveform plotting, it was decided from the beginning that, given the target 
+market of hobbyists, real-time data display would not be necessary. Furthermore, many hobbyists 
+using the PC Diagnostics Tool will have some technical background in engineering, and perhaps 
+even some experience with computation software like Matlab. It seems reasonable, then, to 
+perform the data plotting in a numerical computational environment in order to allow users to 
+easily extend whatever functionality is provided by the default PC software. GNU Octave, a free, 
+open source, Matlab-like numerical computing software package, provides such an 
+environment \cite{web:octave}.
+
+A list of software packages used for PC Software subsystem is shown in Table \ref{tab:software packages}. 
+Python and GNU Octave have been previously discussed. PySerial is a cross-platform serial 
+communications library for Python, and pywin32 is a Windows 32 API library for Python which is 
+required for pySerial to work on Windows. All software packages are free and open source.
+
+
+\begin{table}[h]
+\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
+\begin{tabular}{l | p{8cm}}
+	Software Package & Description \\ \hline
+	Pyton & Programming language used to implement data acquisition and interface software. \\ 
+	\hline
+	pySerial & Serial port communications library for Python. \\
+	\hline
+	pywin32 & Windows 32 API library for Python, required for pySerial on Windows \\
+	\hline
+	\multicolumn{2}{l}{Total cost: \$0} \\
+\end{tabular}
+\label{tab:software packages}
+\end{table}
+
+
+\subsubsection[Software Design]{Software Design}
+
