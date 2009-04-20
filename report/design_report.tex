@@ -6,7 +6,7 @@
 \usepackage{fancyhdr}
 \usepackage{makeidx}
 \usepackage{multirow}
-\usepackage{pdfpages}
+\usepackage[draft]{pdfpages}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{cite}
@@ -18,7 +18,7 @@
 \begin{document}
 \maketitle
 \tableofcontents
-
+\include{executive_summary}
 \include{acknowledgements}
 \chapter{Subsystem Discussions}
 %include subsystem reports here.
@@ -34,12 +34,14 @@
 % Documents that are part of the appendix need to go here.
 
 % All datasheets for our project.
-% commented out for now. Uncomment when done
-%\include{appendix_datasheet}
+\include{appendix_datasheet}
 
 % All code listings for our project.
 \include{code_listings}
+\include{drawings}
 \end{appendix}
-\bibliographystyle{plain}
+% for cost information, need to call xilinx.
+\bibliographystyle{ieeetr}
 \bibliography{citations}
+\printindex
 \end{document}

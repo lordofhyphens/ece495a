@@ -15,9 +15,21 @@ modules. The bus width was set at 10 bits, which was the minimum size for
  accepting output from the analog input module designed for use with this 
 datapath.
 
-Figure \ref{fig:datapath diagram} shows a block diagram of the datapath system.
- 
+Figure \ref{fig:datapath diagram} shows a block diagram of the datapath system. 
+The Serial Control Unit (SCU)\index{SCU}, when enabled, accepts data over the bus from 
+either the digital input module or the analog input module. The bus control 
+itself is managed by the Master Control Unit (MCU)\index{MCU}. The MCU also 
+manages the optional control lines for the input modules and supports up to 
+6-bit widths for input module configuration. The MCU also manages the on/off 
+and reset functionality of the SCU itself. The commands are represented with 8-bit opcodes that are forwarded over the serial link through the SCU to the MCU. 
 
+\begin{figure}[hbp]
+\caption{Datapath block diagram}
+\begin{center}
+\includegraphics[width=4in]{../drawings/datapath_block.png}
+\end{center}
+\label{fig:datapath diagram}
+\end{figure}
 \subsection[Tradeoffs]{Design Decisions and Tradeoffs} 
 Table \ref{tab:control comparison} lists an overview of the options considered
  for the datapath control subsystem. Cost refers to the per-unit cost of a 
@@ -113,16 +125,17 @@ control to the primary MCU. This secondary MCU is another Atmel ATMega8515. A
 different model of MCU would suffice, but using a second ATMega8515 allows  
 for simpler procurement.
 
+\subsection{Performance}
 With the serialization bottleneck in-place, bus width represents a tradeoff 
 between capacity and acquisition performance. The maximum rate of samples per
 second is set by ${Outgoing Baud Rate}/{Sample Width}$. Figure \ref{fig:baud rates and sample} 
 illustrates this relationship. The hardware maximum for the bus width is 16 bits
 per sample (which is the width of two of the transceivers). The 10-bit samples
-are packed tightly before serialization to reduce wasted space. If the 
-selected serial output system is very fast, then more samples 
-can be processed by the host PC. Due to restrictions on the communications 
-interface with the host PC, the USART \index{usart} interface is used 
-asynchronously, which is included as part of the ATMega8515 MCU
+are packed tightly before serialization (see Listing\ref{lst:scu_c}) to reduce
+ wasted space. If the selected serial output system is very fast, then more 
+samples can be processed by the host PC. Due to restrictions on the 
+communications interface with the host PC, the USART \index{usart} interface 
+is used asynchronously, which is included as part of the ATMega8515 MCU
 \cite{ds:ATMEGA8515}.
 
 \begin{figure}[hbp]
@@ -130,3 +143,24 @@ asynchronously, which is included as part of the ATMega8515 MCU
 \includegraphics[width=3in]{baud_rate.png}
 \label{fig:baud rates and sample}
 \end{figure}
+\subsection{Implementation and Cost}
+%Datapath cost components:
+%pcb fabrication
+%components themselves
+%assembly costs
+
+\subsection{Recommendations for Further Study and Conclusions}
+Several enchancements can be made to the design of the datapath controllers.
+An in-system programming interface may be added to the overall design to allow
+for updates to the microcontroller's firmware. These updates could allow for 
+changes to control protocols or the addition of new data protocols. Such an 
+interface would be relatively inexpensive to add, costing mainly space on the 
+controller board.
+
+Performance may be enchanced by utilizing more powerful microcontrollers with
+higher clock speeds for the SCU in particular and possibly the MCU. Increasing 
+the capability of the SCU relaxes the bottleneck in the serialization, allowing for greater performance.
+
+The design at present makes a useful low-performance device for hobbyists but 
+does not have the necessary speeds for fast digital logic acquisition and 
+analysis.
