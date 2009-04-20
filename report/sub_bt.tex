@@ -29,7 +29,7 @@ needs.  Without this feature the BG203 would have had limited use.
 
 The choice of the WT32 Bluegiga over the Roving Networks Bluetooth comes from 
 the features of the chip.  Now, there are many common features of the two chips
- like how they are both qualified bluetooth modules and both work on 3.3 volts.
+ like how they are both qualified Bluetooth modules and both work on 3.3 volts.
   But what made the WT32 more preferable was the fact that ``A host processor 
 can control the functionality with ASCII commands via UART or USB 
 interface'' meaning that a program can be made to give the chip commands 
@@ -37,5 +37,22 @@ instead of having to do it manually\cite{web:wt32-price}.  This is why that
 even though the WT32 Bluegiga is the most expensive out of all the chips it is 
 the chip that is best for this type of project.
 
-The program that was written for this works by sending the command over the USART.  This is done simply by having a set of commands that were taken from the 
-IWRAP user's guide.  All the user needs to make sure of is that the WT32 is in data mode and then all the user has to do is type in the command they want to use and then the program will send it to the chip and then it is done.
+The program that was written for this works by sending the command over the
+ usart.  This is done simply by having a set of commands that were taken from 
+the IWRAP user's guide. The low-level commands have been exposed for purposes
+of experimentation; they are not required in the normal operation of the 
+subsystem. The activation of one of the commands is handled by use of a
+single-character opcode that is sent over the serial link to the PC. The SCU
+forwards the command to the MCU, which decodes the command and relays back a
+pointer in the SCU's memory for the desired command. Data transmission is 
+halted and the command-mode escape sequence is then sent over the SCU's serial
+link with the WT32 Bluetooth stack, followed by the ASCII command to the WT32's firmware. 
+ 
+  The commands that were chosen were CALL, CLOSE, CONNECT, ECHO, KILL, and
+ RESET.  CALL was chosen because the Bluetooth must be called so that one can
+ connect with it.  CLOSE was selected so that one can close the connection 
+with the Bluetooth.  CONNECT was chosen so that one can connect with the chip.
+  ECHO was chosen in case someone needed to echo data through the Bluetooth
+ connection.  KILL was chosen in case anyone needs to kill the connection to
+ the Bluetooth.  Lastly, RESET was chosen so that the software in the Bluetooth
+ can be reset. 
