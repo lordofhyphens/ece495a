@@ -1,12 +1,11 @@
-\setcounter{section}{1}
 \stepcounter{chapter}
 \addcontentsline{toc}{chapter}{\numberline{\Alph{chapter}}Engineering Drawings}
-
-\addcontentsline{toc}{section}{\Alph{chapter}.Data Acquisition Unit Datapath}
+\stepcounter{section}
+\addcontentsline{toc}{section}{\numberline{\thesection}Data Acquisition Unit Datapath}
 \label{sch:datapath}
 \includepdf{acquunit.pdf}
 \stepcounter{section}
 
-\addcontentsline{toc}{section}{\numberline{\Alph{chapter}.\value{section}}Analog Input Amplification Circuit}
+\addcontentsline{toc}{section}{\numberline{\thesection}Analog Input Amplification Circuit}
 \label{sch:signal amp}
 \includepdf{amplification.pdf}
