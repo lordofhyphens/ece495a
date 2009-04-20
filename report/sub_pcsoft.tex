@@ -28,25 +28,25 @@ environment. Perhaps the two most popular software packages in this area are
 Labview and Matlab. Labview is a development environment produced by National 
 Instruments. Its base package offers user-friendly GUI development tools, ample 
 drivers for data acquisition into the PC and even some signal processing 
-functionality [1]. Matlab is a widely-known computing environment for science 
+functionality \cite{web:labviewbase}. Matlab is a widely-known computing environment for science 
 and engineering applications with extensive signal processing functionality, 
 GUI-development tools and a data acquisition toolbox for acquiring data into 
 the PC [2]. In other words, both packages offer exactly the needed 
 functionality for this subsystem.
 
 These features come at a price, however. The Labview base package costs 
-\$1249 [1], while Matlab costs \$500 for a single-user license with an 
-additional \$200 cost for the Data Acquisition Toolbox [2][3]. Furthermore, the 
-nature of development environments like Labview and Matlab mean that developing 
-a solution in either would result in a user interface that is only usable in 
+\$1249 \cite{web:labviewbase}, while Matlab costs \$500 for a single-user license with an 
+additional \$200 cost for the Data Acquisition Toolbox \cite{web:matlab}\cite{web:matlabdaq}. 
+Furthermore, the nature of development environments like Labview and Matlab mean that 
+developing a solution in either would result in a user interface that is only usable in 
 Labview or Matlab. This means that end-users would be required to have working 
 copies of whichever environment was used to develop the UI. Since hobbyists are 
 the target market for othe PC Diagnostics Tool, it is not reasonable to expect 
 that every user will possess a copy of Matlab or Labview, and it is even less 
 reasonable to assume that every user would purchase a copy in order to use the 
 GUI. Building standalone applications in either environment is possible, but it 
-comes at further cost: the Labview Application Builder for Windows, at \$999 [1] 
-or the Matlab Compiler, at \$500 [4]. 
+comes at further cost: the Labview Application Builder for Windows, at \$999 \cite{web:labviewbase} 
+or the Matlab Compiler, at \$500 \cite{web:matlabcompiler}. 
 
 With these cost considerations in mind, a proprietary solution was ruled out. 
 The next options explored were programming languages and software packages that 
@@ -85,9 +85,9 @@ documentation available as well as a serial port library. The only criteria on w
 differed was the “level” of the language. Programming languages can be classified by what 
 level the code required to perform a given task is abstracted away from the low-level 
 hardware details of accomplishing the task, with high-level languages being farther 
-abstracted from the details [5]. Higher level languages are therefore easier to implement
-code with because the language compile or interpreter handle things like memory management
-and CPU operations.
+abstracted from the details \cite{web:suranathesis}. Higher level languages are therefore 
+easier to implement code with because the language compile or interpreter handle things 
+like memory management and CPU operations.
 
 
 \begin{table}[h]
@@ -95,11 +95,11 @@ and CPU operations.
 \begin{tabular}{l | c | p{6cm} | c}
 	Language & Cost & Ease of implementation & Cross-platform? \\ 
 	\hline
-	C++ & Free & Online documentation, serial port library, medium-level language [6][7] & No \\ 
+	C++ & Free & Online documentation, serial port library, medium-level language \cite{web:cpptut}\cite{web:cppserial} & No \\ 
 	\hline
-	Java & Free & Online documentation, serial port library, medium-level language [8][9] & Yes \\
+	Java & Free & Online documentation, serial port library, medium-level language \cite{web:javaapi}\cite{web:javaserial} & Yes \\
 	\hline
-	Python & Free & Online documentation, serial port library, high-level language [10][11] & Yes \\
+	Python & Free & Online documentation, serial port library, high-level language \cite{web:pydoc}\cite{web:pyserial} & Yes \\
 \end{tabular}
 \label{tab:languages features}
 \end{table}
@@ -118,7 +118,7 @@ even some experience with computation software like Matlab. It seems reasonable,
 perform the data plotting in a numerical computational environment in order to allow users to 
 easily extend whatever functionality is provided by the default PC software. GNU Octave, a free, 
 open source, Matlab-like numerical computing software package, provides such an 
-environment [12].
+environment \cite{web:octave}.
 
 A list of software packages used for PC Software subsystem is shown in Table \ref{tab:software packages}. 
 Python and GNU Octave have been previously discussed. PySerial is a cross-platform serial 
