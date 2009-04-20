@@ -168,7 +168,11 @@ class App(Toplevel):
 
 		# Set acqlnum & lastpg
 		self.acqlnum = self.acqtotalnum
-		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+		
+		if self.acqlnum == 0:
+			self.lastpg = 0
+		else:
+			self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
 		
 		# Put acqs in list and update arrows
 		self.fillListBox()
@@ -234,8 +238,8 @@ class App(Toplevel):
 
 		# Resize for prettiness
 		self.ctrlfrm.rowconfigure(3, weight=0, minsize=10)
-		self.ctrlfrm.columnconfigure(6, weight=0, minsize=20)
-		self.ctrlfrm.columnconfigure(9, weight=0, minsize=20)
+		self.ctrlfrm.columnconfigure(6, weight=0, minsize=40)
+		self.ctrlfrm.columnconfigure(9, weight=0, minsize=40)
 
 
 
@@ -325,7 +329,10 @@ class App(Toplevel):
 		else:
 			self.acqlnum = self.acqsrchnum
 
-		self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
+		if self.acqlnum == 0:
+			self.lastpg = 0
+		else:
+			self.lastpg = ceil(1.0*self.acqlnum/acqpgsize) - 1
 		
 
 	
