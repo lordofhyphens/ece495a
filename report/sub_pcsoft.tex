@@ -28,11 +28,11 @@ environment. Perhaps the two most popular software packages in this area are
 Labview and Matlab. Labview is a development environment produced by National 
 Instruments. Its base package offers user-friendly GUI development tools, ample 
 drivers for data acquisition into the PC and even some signal processing 
-functionality \cite{web:labviewbase}. Matlab is a widely-known computing environment for science 
-and engineering applications with extensive signal processing functionality, 
-GUI-development tools and a data acquisition toolbox for acquiring data into 
-the PC [2]. In other words, both packages offer exactly the needed 
-functionality for this subsystem.
+functionality \cite{web:labviewbase}. Matlab is a widely-known computing 
+environment for science and engineering applications with extensive signal 
+processing functionality, GUI-development tools and a data acquisition toolbox 
+for acquiring data into the PC \cite{web:matlab}. In other words, both packages 
+offer exactly the needed functionality for this subsystem.
 
 These features come at a price, however. The Labview base package costs 
 \$1249 \cite{web:labviewbase}, while Matlab costs \$500 for a single-user license with an 
@@ -73,7 +73,8 @@ Of the required functionality, nearly every modern programming language has a
 capacity for serial port communications, file I/O and building GUIs, so the deciding 
 factor would lie elsewhere. Some deciding factors were brainstormed, and languages were 
 evaluated based on cost, ease of implementation and whether or not the resulting 
-software would work on different operating systems (i.e. whether it was ``cross-platform'').  Programming languages considered were C++, Java, and Python. 
+software would work on different operating systems (i.e. whether it was ``cross-platform'').  
+Programming languages considered were C++, Java, and Python. 
 
 The language comparison performed is shown in Table \ref{tab:languages features}. 
 Due to non-availability of concrete data, performance of all three languages was 
@@ -143,4 +144,30 @@ required for pySerial to work on Windows. All software packages are free and ope
 
 
 \subsubsection[Software Design]{Software Design}
+In order to facilitate the necessary software tasks outlined in Figure \ref{fig:pcsoft diagram}, 
+some design options had to be sifted through. Specifically, how the data acquisition would be 
+achieved. In order to prevent the act of data acquisition from tying up the resources of the user 
+interface, it is necessary to launch the data acquisition software in a separate sub-process. 
+This, however, introduces a problem of how the interface process and the data acquisition process
+will communicate with each other. There exist, however, several techniques that enable communication
+between processes, which are aptly called inter-process communication (IPC) techniques. Pipes are 
+perhaps the simplest method among these, but it turns out that a necessary operating system call named 
+\textit{fork()} does not work on Windows \cite{web:windowsfork}. Furthermore, after much testing, 
+the Python workaround for this inconsistency was found to be non-functional. Sockets are the next-best
+choice because, while they are not the simplest method, sockets can communicate over a network. This
+opens up the possibility of the data acquisition software running on a separate machine from the 
+interface, which could be useful for a few different applications.
+
+There is another problem that the PC Software must solve: when using a Python application to implement
+the user interface and GNU Octave to perform data plotting, it becomes impossible to utilize IPC to
+enable communication between the two. Being that GNU Octave is open source, one solution is to use Octave's
+C++ headers and a software package called Simplified Wrapper and Interface Generator (SWIG) to directly call 
+GNU Octave's plot functions from the interface itself \cite{web:swig}. This turned out to not be feasible 
+due to copyright issues: GNU Octave is distributed under the GNU GPL, a copyleft license that requires 
+any code that links to GPL'd code to itself be released under the GNU GPL \cite{web:gnugpl}. In the interests of potential 
+future commercialization, it was desired that the code to the PC Software not become open source. A simple, 
+effective solution to this is to use Python's \textit{subprocess} module to launch an instance of Octave 
+that executes a data display script. Before the launch, data is written to a control file that the Octave
+ script later reads to find out which data should be displayed. This enables on-demand data plotting without 
+resorting to using GNU Octave headers.
 
