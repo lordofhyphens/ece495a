@@ -52,7 +52,7 @@ The Li-Poly battery integrated with the WT32 bluetooth module provides a level 3
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[scale=0.95]{../drawings/power_gen_fixed.png}
+\includegraphics[width=4in]{../drawings/power_gen_fixed.png}
 \caption[LT1073 Fixed Output Configuration]{LT1073 general fixed output configuration\cite{ds:lt1073}}
 \label{fig:general step-up}
 \end{figure}
@@ -65,7 +65,7 @@ Prototyping the power subsystem is most effectively accomplished using protoboar
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[scale=0.75]{../drawings/power_final_sch.png}
+\includegraphics[width=4in]{../drawings/power_final_sch.png}
 \caption[Power Supply]{Power supply prototype schematic}
 \label{fig:final_power_schematic}
 \end{figure}   
@@ -77,8 +77,10 @@ It is important to note that while prototyping does not require close quarters f
 \small
 \begin{center}
 \begin{tabular}{l| c c c c}
-\setlength{\tabcolsep}{1pt}
-	Device Operation & Supply (Ib) & Active Current(Id) & Idle Current(Id) & Estimated battery\\ 										&				 &													& &life = (Ib / Id) x 0.7\\\hline
+\setlength{\tabcolsep}{0pt}
+	\multirow{2}{*}{Device Operation} & \multirow{2}{*}{Supply ($I_b$)} & Active 
+	& Idle & Estimated battery\\
+    &                 &	Current($I_b$)   &	Current ($I_d$)                  &life = $(I_b / I_d) x 0.7$\\\hline
 	Li-Poly          & 780mAh &													 & &											\\
 	One MCU          &        & 12 mA                    & 5.5 mA      & 54.33 hr \\
 	Both MCUs        &        & 24 mA                    & 11.0 mA     & 38.01 hr \\    
@@ -105,7 +107,8 @@ Cost\cite{web:caddell-burns-price} \cite{web:wt32-price} \cite{web:resistor-pric
 \begin{tabular}{l|l|l|l|l}
 \setlength{\tabcolsep}{1pt}
 Product \# & Description & Quantity & Price/Unit & Total \\\hline
-WRL-08952  & Bluetooth® Breakout - Bluegiga WT-32  &          1 &    \$89.95 &    \$89.95 \\
+\multirow{2}{*}{WRL-08952}  & Bluetooth® Breakout & \multirow{2}{*}{1} & \multirow{2}{*}{\$89.95} & \multirow{2}{*}{\$89.95} \\
+		   & - Bluegiga WT-32  &          &   &     \\
 
     1N5818 & Schottky Diode &         20 &     \$0.14 &     \$2.84 \\
 
@@ -117,11 +120,12 @@ COM-00526  & Voltage Regulator - 3.3V  &          1 &     \$1.95 &     \$1.95 \\
 
 COM-00527  & Voltage Regulator adjustable &          1 &     \$1.95 &     \$1.95 \\
 
- LT1073CN8  & MicroPower DC-DC Converter &          2 &     \$3.15 &     \$6.30 \\
-
-LT1073CN8-12  & MicroPower DC-DC Converter (12 VDC FIXED) &          2 &     \$3.15 &     \$6.30 \\
-
-LT1073CN8-5  & MicroPower DC-DC Converter (lead free) &          2 &     \$3.15 &     \$6.30 \\
+LT1073CN8  & MicroPower DC-DC 		 & \multirow{2}{*}{2} & \multirow{2}{*}{\$3.15} & \multirow{2}{*}{\$6.30} \\
+			 &	Converter  &          &      &      \\
+LT1073CN8-12  & MicroPower DC-DC 		 & \multirow{2}{*}{2} & \multirow{2}{*}{\$3.15} & \multirow{2}{*}{\$6.30} \\
+			 &	Converter (12 VDC FIXED) &          &      &      \\
+LT1073CN8-5  & MicroPower DC-DC 		 & \multirow{2}{*}{2} & \multirow{2}{*}{\$3.15} & \multirow{2}{*}{\$6.30} \\
+			 & Converter (lead free) &           &   &  \\
 
    7300-11 & Caddell-Burns 68uH inductor &          2 &     \$5.40 &    \$10.80 \\
    271-308  & 100 pc resistor assortment & 					1 &			\$6.49 &    \$6.49 \\
@@ -143,17 +147,18 @@ The actual cost for production is much less than prototype implementation as opt
 \setlength{\tabcolsep}{1pt}
     Part \# & Description &   Quantity &   Per/Unit & Total Cost \\\hline
 
-WRL-08952  & Bluetooth® Breakout - Bluegiga WT-32  &          1 &    \$89.95 &    \$89.95 \\
-
+\multirow{2}{*}{WRL-08952}  & Bluetooth® Breakout & \multirow{2}{*}{1} & \multirow{2}{*}{\$89.95} & \multirow{2}{*}{\$89.95} \\
+		   & - Bluegiga WT-32  &          &   &     \\
     1N5818 & Schottky Diode &          2 &     \$0.14 &     \$0.28 \\
 
     G13440 & 100uF dipped Tantalum Capacitor &          1 &     \$1.00 &     \$1.00 \\
 
      G7102 & 47uF dipped Tantalum Capacitor &          1 &     \$1.00 &     \$1.00 \\
 
-LT1073CN8-12  & MicroPower DC-DC Converter (12 VDC FIXED) &          1 &     \$3.15 &     \$3.15 \\
-
-LT1073CN8-5  & MicroPower DC-DC Converter (lead free) &          1 &     \$3.15 &     \$3.15 \\
+LT1073CN8-12  & MicroPower DC-DC 		 & \multirow{2}{*}{1} & \multirow{2}{*}{\$3.15} & \multirow{2}{*}{\$3.15} \\
+			 &	Converter (12 VDC FIXED) &          &      &      \\
+LT1073CN8-5  & MicroPower DC-DC 		 & \multirow{2}{*}{1} & \multirow{2}{*}{\$3.15} & \multirow{2}{*}{\$3.15} \\
+			 & Converter (lead free) &           &   &  \\
 
    7300-11 & Caddell-Burns 68uH inductor &          2 &     \$5.40 &    \$10.80 \\
 
@@ -161,7 +166,8 @@ LT1073CN8-5  & MicroPower DC-DC Converter (lead free) &          1 &     \$3.15 
 
    271-308 & 100 pc resistor assortment &          1 &     \$6.49 &     \$6.49 \\
 
-  SNN5794A & 3.7 V Lithium Ion Rechargeable Battery &          1 &     \$9.95 &     \$9.95 \\
+  SNN5794A & 3.7 V Lithium Ion  & \multirow{2}{*}{1} & \multirow{2}{*}{\$9.95} &\multirow{2}{*}{\$9.95} \\
+		   & Rechargeable Battery &    &   & \\
   Grand Total & & & & \$127.26\\
 
 \end{tabular}  
