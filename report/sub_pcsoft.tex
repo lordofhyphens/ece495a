@@ -51,9 +51,9 @@ additional \$200 cost for the Data Acquisition Toolbox \cite{web:matlab}\cite{we
 Furthermore, the nature of development environments like Labview and Matlab mean that 
 developing a solution in either would result in a user interface that is only usable in 
 Labview or Matlab. This means that end-users would be required to have working 
-copies of whichever environment was used to develop the UI. Since hobbyists are 
-the target market for othe PC Diagnostics Tool, it is not reasonable to expect 
-that every user will possess a copy of Matlab or Labview, and it is even less 
+copies of whichever environment was used to develop the UI. Since home users and 
+hobbyists are the target market for othe PC Diagnostics Tool, it is not reasonable 
+to expect that every user will possess a copy of Matlab or Labview, and it is even less 
 reasonable to assume that every user would purchase a copy in order to use the 
 GUI. Building standalone applications in either environment is possible, but it 
 comes at further cost: the Labview Application Builder for Windows, at \$999 \cite{web:labviewbase} 
@@ -132,27 +132,6 @@ allow users to easily extend whatever functionality is provided by the default P
 GNU Octave, a free, open source, Matlab-like numerical computing software package, provides 
 such an environment \cite{web:octave}.
 
-A list of software packages used for PC Software subsystem is shown in Table \ref{tab:software packages}. 
-Python and GNU Octave have been previously discussed. PySerial is a cross-platform serial 
-communications library for Python, and pywin32 is a Windows 32 API library for Python which is 
-required for pySerial to work on Windows. All software packages are free and open source.
-
-
-\begin{table}[bhp]
-\begin{tabular}{l | p{8cm}}
-	Software Package & Description \\ \hline
-	Python & Programming language used to implement data acquisition and interface software. \\ 
-	\hline
-	pySerial & Serial port communications library for Python. \\
-	\hline
-	pywin32 & Windows 32 API library for Python, required for pySerial on Windows \\
-	\hline
-	\multicolumn{2}{l}{Total cost: \$0} \\
-\end{tabular}
-\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
-\label{tab:software packages}
-\end{table}
-
 
 \subsubsection[Software Implementation]{Software Implementation}
 In order to facilitate the necessary software tasks outlined in Figure 
@@ -184,6 +163,31 @@ use Python's \textit{subprocess} module to launch an instance of Octave that exe
 script. Before the launch, data is written to a control file that the Octave script later reads 
 to find out which data should be displayed. This enables on-demand data plotting without resorting 
 to using GNU Octave headers.
+
+
+\subsection[Software Listings \& Cost]{Software Listings \& Cost}
+
+A list of software packages used for PC Software subsystem is shown in Table \ref{tab:software packages}. 
+Python and GNU Octave have been previously discussed. PySerial is a cross-platform serial 
+communications library for Python, and pywin32 is a Windows 32 API library for Python which is 
+required for pySerial to work on Windows. All software packages are free and open source.
+
+
+\begin{table}[h]
+\begin{tabular}{l | p{8cm}}
+	Software Package & Description \\ \hline
+	Python & Programming language used to implement data acquisition and interface software. \\ 
+	\hline
+	pySerial & Serial port communications library for Python. \\
+	\hline
+	pywin32 & Windows 32 API library for Python, required for pySerial on Windows \\
+	\hline
+	\multicolumn{2}{l}{Total cost: \$0} \\
+\end{tabular}
+\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
+\label{tab:software packages}
+\end{table}
+
 
 \subsection[Software Design]{Software Design}
 A block diagram of the PC software files is shown in Figure \ref{fig:pcsoft files diagram}. Blocks 
@@ -314,3 +318,57 @@ the next file name to be displayed by incrementing the acquisition part letter b
 Called by dispd.m. Takes the current acquisition file name, reads in the data and plots it.
 Sets the plot title as the date of the acquisition and, if the label exists, adds it to the
 legend.
+
+
+
+\subsection[Performance Data]{Performance Data}
+Booga.
+
+
+\subsection[Fault Analysis]{Fault Analysis}
+Due to the nature of software, there is not a great deal that can go wrong with this subsystem 
+because software does not degrade or fail randomly. However, an exhaustive look at the mechanisms and
+operations invoked by the software reveal a few areas where damage to a user's PC may occur: file 
+writing, socket communication and sub-process launching.
+
+The program does do some file writing, but this is not troublesome in itself. In the event that the data
+ acquisition process malfunctioned in some way, for instance the stop trigger that a user specified was 
+never seen and the software simply continued to acquire data, the worst that would happen is the data
+acquisition software would continue to write data until the user's storage device filled up, at which
+point the process would error out and terminate due to not having any space left to write. The only way
+this process could destroy a user's personal data is through some catastrophic failure of the PC storage
+device and/or operating system. No software can be prepared for such a failure.
+
+The socket communication itself does pose any trouble. If the user modified the program so that data
+acquisition was performed on a separate machine and the interface communicated to the data acquisition
+software over a network, it would open up the potential for another person to hijack the data acquisition
+process. However, in such an event, the worst a hijacker could do would be to keep the data acquisition
+process from terminating, which would again only fill up the storage device. Furthermore, this can only
+occur if a user modifies the PC Software's default functionality. A user doing such a thing would certainly
+understand the risks being taken.
+
+Finally, subprocess launching is the last area where potential failure could occur. The user interface
+launches subprocesses in two instances: when performing data acquisition and when displaying the plot
+of selected data. The software contains code to re-launch subprocesses, so that a subprocess is launched
+every time a data acquisition or display is triggered. The software contains code to \textit{wait()} 
+for each subprocess before re-launching, which is important because \textit{wait()} is an operating system
+call that suspends the operation of the current program until a child process has terminated. This in theory
+should ensure that the program does not end up launching many subprocesses over the course of multiple 
+acquisitions/displays. Assuming somehow that the \textit{wait()} call is ineffective, it may
+be possible during normal use of the interface for a user to launch so many subprocesses that the user's
+PC crashes, which could cause loss of unsaved data including acquisitions currently in process.
+
+Luckily, even in such an event, considerable damage should not be possible. In the event that a large
+number of subprocesses are inadvertently launched by a user, the user's PC should simply slowly grind
+to a halt due to the number of resources the subprocesses are utilizing. This will probably result in
+the computer freezing up, so the damage should cost at most however much unsaved data that was lost
+during the crash costed. Since the target market of the PC Diagnostics Tool is home users and hobbyists,
+there is little chance of valuable corporate data being lost here.
+
+
+\subsection[Conclusions \& Recommendations]{Conclusions \& Recommendations}
+Given that the PC Software subsystem has undergone no real-world testing, only 
+simulation of input data using generated binary files, the subsystem needs further
+testing. Currently the only untested portion of the subsystem is the data acquisition
+over serial port, but having to handle real-world data may reveal mistakes in the
+operation of the software that are, up to now, not understood.
