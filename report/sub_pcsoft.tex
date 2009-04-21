@@ -218,7 +218,61 @@ whether the input signal is analog or digital; allows user to enable/disable out
 the GNU Octave data display script in a separate subprocess when such input has occurred.
 \end{itemize}
 
+
+A screenshot of the interface that inter.py creates is shown in Figure \ref{fig:pcsoft inter ss}. The
+UI consists of three different areas: the Data Acquisition frame, the Data Display frame and the
+Control Interface frame.
+
+\begin{figure}[bhp]
+\begin{center}
+\includegraphics[scale=0.6]{../drawings/pcsoft_inter_ss.png}
+\end{center}
+\caption[PC Software Interface Screenshot]{Screenshot of the PC Software GUI front-end.}
+\label{fig:pcsoft inter ss}
+\end{figure}
+
+
+The data acquisition process is initiated in the Data Acquisition frame by clicking on the 
+``Begin Acquisition'' button. A series of checkboxes labeled ``Stop Trigger'' allows the user
+ to define the bit pattern that the data acquisition software will detect to terminate the 
+acquisition session. An optional label entry field allows the user to associate a label with 
+an acquisition session as a means of organizing data that is captured by the software.
+
+
+The Control Interface frame provides the user with configuration options for the acquisition
+hardware. A group of 6 checkboxes labeled ``Config 1-6'' are general configuration options for
+the currently active input. Two radio buttons provide control over the type of input signal,
+and a last checkbox allows the user to enable or disable output.
+
+
+The Data Display frame provides the user with an interface for managing previously acquired
+data. The acquisition list displays and orders acquisitions by date and number. Labels are
+displayed for acquisitions that have them. Because a user may eventually accumulate hundreds
+of acquisitions, acquisitions are broken up into ``pages,'' which ensures that not too many
+are displayed at one time. Four arrow buttons on the top right allow the user to go to the first 
+page, the previous page, the next page or the last page. Four buttons at the bottom of the 
+acquisition allow the user to perform various actions:
+
+\begin{itemize}
+\item ``Refresh'' - Refreshes the list.
+\item ``Clear'' - Deletes every acquisition in the acquisition list.
+\item ``Delete'' - Deletes only the selected acquisitions out of the list.
+\item ``Display'' - Provides on-demand data plotting by launching the GNU Octave data display script.
+\end{itemize}
+
+
 \subsubsection[acqdata.py]{acqdata.py}
+Acqdata.py is the data acquisition software. It is launched in a separate process when a user 
+clicks on the ``Begin Acquisition'' button in the interface. This program quite simply reads
+opens a connection with the serial port and reads data in continuously into a buffer until the 
+stop trigger is detected. To avoid a possible buffer overflow, data is written to a binary file
+when the buffer fills. In the case of large acquisitions, acqdata.py will break the acquisition 
+output up into several parts. Output file names follow a format: \\\ \\
+DDMonYY\_Np \\\ \\
+
+where ``DD'' is the two-digit date of the acquisition, ``Mon'' is a three letter abbreviation 
+of the month of the acquisition, ``YYYY'' is the four-digit year of the acquisition, ``N'' is 
+the number of the acquisition on the date it occurred and ``p'' is the letter of the acquisition part, starting with `a' and continuing through `z'. 
 
 \subsubsection[pcsoft\_cfg.py]{pcsoft\_cfg.py}
 
