@@ -198,6 +198,10 @@ changes to control protocols or the addition of new data protocols. Such an
 interface would be relatively inexpensive to add, costing mainly space on the 
 controller board.
 
+The prototype implemented utilized a mix of 5V-supply and 3.3V-supply ICs. The 
+power supply subsystem can be simplified if all of the components used a single
+supply voltage (likely 3.3V). This change is nearly transparent and thus is included in the parts listing as the recommended design.
+
 Performance may be enchanced by utilizing more powerful microcontrollers with
 higher clock speeds for the SCU in particular and possibly the MCU. Increasing 
 the capability of the SCU relaxes the bottleneck in the serialization, allowing for greater performance. The on-board wireless protocol stack processor may be 

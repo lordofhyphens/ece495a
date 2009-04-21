@@ -3,11 +3,11 @@
 \section[PC Software]{PC Software Subsystem}
 \subsection{Description}
 	The PC Software subsystem is responsible for performing two major tasks of 
-the PC Diagnostics Tool. The first task is the acquisition of data from the 
+the Modular Wireless Diagnostic Tool (M-WDT). The first task is the acquisition of data from the 
 Acquisition Unit / Datapath Control subsystem and subsequent storage of data on 
 the end-user's PC. The second task is the provision of a display/control 
 interface for an end-user operating device. A user must be able to send the 
-necessary signals to the PC Diagnostics Tool hardware to control the output of 
+necessary signals to the M-WDT hardware to control the output of 
 the tool, and he or she must have a method of organizing and displaying 
 acquired data.
 
@@ -29,14 +29,14 @@ are not part of the subsystem.}
 \subsubsection[Software Packages]{Software Packages}
 There are two possible approaches to writing software that addresses both of 
 these needs. The first is to utilize proprietary software development 
-environments such as Matlab or Labview that bundle together data acquisition 
+environments such as Matlab or LabVIEW that bundle together data acquisition 
 and Graphical User Interface (GUI) functionality in a relatively easy-to-use 
 software package. The second is to manually build custom software to implement 
 these functions.
 
 The first approach considered was to use a proprietary signal processing 
 environment. Perhaps the two most popular software packages in this area are 
-Labview and Matlab. Labview is a development environment produced by National 
+LabVIEW and Matlab. LabVIEW is a development environment produced by National 
 Instruments. Its base package offers user-friendly GUI development tools, ample 
 drivers for data acquisition into the PC and even some signal processing 
 functionality \cite{web:labviewbase}. Matlab is a widely-known computing 
@@ -45,18 +45,18 @@ processing functionality, GUI-development tools and a data acquisition toolbox
 for acquiring data into the PC \cite{web:matlab}. In other words, both packages 
 offer exactly the needed functionality for this subsystem.
 
-These features come at a price, however. The Labview base package costs 
+These features come at a price, however. The LabVIEW base package costs 
 \$1249 \cite{web:labviewbase}, while Matlab costs \$500 for a single-user license with an 
 additional \$200 cost for the Data Acquisition Toolbox \cite{web:matlab}\cite{web:matlabdaq}. 
-Furthermore, the nature of development environments like Labview and Matlab mean that 
+Furthermore, the nature of development environments like LabVIEW and Matlab mean that 
 developing a solution in either would result in a user interface that is only usable in 
-Labview or Matlab. This means that end-users would be required to have working 
+LabVIEW or Matlab. This means that end-users would be required to have working 
 copies of whichever environment was used to develop the UI. Since home users and 
-hobbyists are the target market for othe PC Diagnostics Tool, it is not reasonable 
-to expect that every user will possess a copy of Matlab or Labview, and it is even less 
+hobbyists are the target market for other M-WDT, it is not reasonable 
+to expect that every user will possess a copy of Matlab or LabVIEW, and it is even less 
 reasonable to assume that every user would purchase a copy in order to use the 
 GUI. Building standalone applications in either environment is possible, but it 
-comes at further cost: the Labview Application Builder for Windows, at \$999 \cite{web:labviewbase} 
+comes at further cost: the LabVIEW Application Builder for Windows, at \$999 \cite{web:labviewbase} 
 or the Matlab Compiler, at \$500 \cite{web:matlabcompiler}. 
 
 With these cost considerations in mind, a proprietary solution was ruled out. 
@@ -125,7 +125,7 @@ its status as a high-level programming language.
 
 For the signal/waveform plotting, it was decided from the beginning that, given the target 
 market of hobbyists, real-time data display would not be necessary. Furthermore, many 
-hobbyists using the PC Diagnostics Tool will have some technical background in engineering, 
+hobbyists using the M-WDT will have some technical background in engineering, 
 and perhaps even some experience with computation software like Matlab. It seems reasonable, 
 then, to perform the data plotting in a numerical computational environment in order to 
 allow users to easily extend whatever functionality is provided by the default PC software. 
@@ -156,7 +156,7 @@ utilize IPC to enable communication between the two. Being that GNU Octave is op
 solution is to use Octave's C++ headers and a software package called Simplified Wrapper and Interface
  Generator (SWIG) to directly call  GNU Octave's plot functions from the interface itself \cite{web:swig}. 
 This turned out to not be feasible due to copyright issues: GNU Octave is distributed under the GNU 
-GPL, a copyright license that requires any code that links to GPL'd code to itself be released under 
+GPL\index{GPL}, a copyright license that requires any code that links to GPL'd code to itself be released under 
 the GNU GPL \cite{web:gnugpl}. In the interests of potential future commercialization, it was desired 
 that the code to the PC Software not become open source. A simple, effective solution to this is to 
 use Python's \textit{subprocess} module to launch an instance of Octave that executes a data display 
@@ -184,7 +184,7 @@ required for pySerial to work on Windows. All software packages are free and ope
 	\hline
 	\multicolumn{2}{l}{Total cost: \$0} \\
 \end{tabular}
-\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
+\caption[Software packages]{Software packages utilized by the PC Software subsystem, along with total cost.}
 \label{tab:software packages}
 \end{table}
 
@@ -223,7 +223,7 @@ the GNU Octave data display script in a separate subprocess when such input has 
 \end{itemize}
 
 
-A screenshot of the interface that inter.py creates is shown in Figure \ref{fig:pcsoft inter ss}. The
+A screen capture of the interface that inter.py creates is shown in Figure \ref{fig:pcsoft inter ss}. The
 UI consists of three different areas: the Data Acquisition frame, the Data Display frame and the
 Control Interface frame.
 
@@ -231,7 +231,7 @@ Control Interface frame.
 \begin{center}
 \includegraphics[scale=0.6]{../drawings/pcsoft_inter_ss.png}
 \end{center}
-\caption[PC Software Interface Screenshot]{Screenshot of the PC Software GUI front-end.}
+\caption[PC Software Interface Screen Capture]{Screen Capture of the PC Software GUI front-end.}
 \label{fig:pcsoft inter ss}
 \end{figure}
 
@@ -321,8 +321,33 @@ legend.
 
 
 
-\subsection[Performance Data]{Performance Data}
-Booga.
+\subsection[Performance]{Performance}
+In order to meet previously-established guidelines for bandwidth, the PC software will have
+to acquire data over the serial port at a data rate of 921.6 kbps. While it is expected that 
+the PC Software will be able to meet this specification, it is presently untested because a fully-
+functional version of the board was never arrived at. The PC software will also have to be
+capable of sending signals to the microprocessor to control the output of data, which is again
+untested.
+
+Input of data has been simulated by generating signals in GNU Octave, saving them to a binary
+file and writing a separate acquisition function that reads in binary data. This acquisition
+functionality is fully functional, which has allowed testing of all the functionality in the 
+Data Display section of the user interface. Presently, page-scrolling using arrow keys,
+label search and the Refresh, Clear, Delete and Display buttons have been confirmed to be working. 
+
+
+\subsection[Implementation Schedule Data]{Implementation Schedule Data}
+An implementation of this subsystem in the context of product production involves the creation
+of compact discs that contain the software and the software packages it utilizes. This should
+be relatively straightforward, and should not contribute greatly to the implementation schedule
+of the entire project.
+
+
+\subsection[Environmental \& Societal Issues]{Environmental \& Societal Issues}
+The environmental and societal impact of the PC Software subsystem is fairly low. The software
+operates on any regular personal computer, requiring no special hardware. Furthermore, the
+software functionality is fairly limited in scope, and it should not be possible to modify
+the code in order to perform illegal or immoral actions.
 
 
 \subsection[Fault Analysis]{Fault Analysis}
@@ -362,7 +387,7 @@ Luckily, even in such an event, considerable damage should not be possible. In t
 number of subprocesses are inadvertently launched by a user, the user's PC should simply slowly grind
 to a halt due to the number of resources the subprocesses are utilizing. This will probably result in
 the computer freezing up, so the damage should cost at most however much unsaved data that was lost
-during the crash costed. Since the target market of the PC Diagnostics Tool is home users and hobbyists,
+during the crash costed. Since the target market of the M-WDT is home users and hobbyists,
 there is little chance of valuable corporate data being lost here.
 
 There is no proposed modification here, because the software should currently be designed to avoid
@@ -373,6 +398,18 @@ subprocesses to terminate would have to be designed.
 \subsection[Conclusions \& Recommendations]{Conclusions \& Recommendations}
 Given that the PC Software subsystem has undergone no real-world testing, only 
 simulation of input data using generated binary files, the subsystem needs further
-testing. Currently the only untested portion of the subsystem is the data acquisition
-over serial port, but having to handle real-world data may reveal mistakes in the
-operation of the software that are, up to now, not understood.
+testing. Currently untested portions of the subsystem include the data acquisition
+over serial port and the control communication with the MCU/SCU. While it 
+is expected that the software should perform these functions without error, being
+presented with real-world data may reveal mistakes in the operation of the software 
+that are, up to now, not understood.
+
+One characteristic of the current design that may need further study is the current
+mechanism used for data display. It was discovered that when the interface launches
+the GNU Octave display script in a separate subprocess, it takes several seconds
+for the GNU Octave program itself to start up. This is slow and unwieldy; ideally,
+data should be displayed near instantly or at least much faster than it is presently.
+
+Further study should include a re-examination of the way data plotting is performed. 
+It may be advantageous to utilize a graphics library and perform plotting directly 
+in the user interface, skipping the GNU Octave component altogether.
