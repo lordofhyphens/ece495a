@@ -15,7 +15,7 @@ modules. The bus width was set at 10 bits, which was the minimum size for
  accepting output from the analog input module designed for use with this 
 datapath.
 
-Figure \ref{fig:datapath diagram} shows a block diagram of the datapath system. 
+Figure \ref{fig:datapath diagram} shows a block diagram of the datapath system. The complete schematic is located at in the appendix at page \pageref{sch:datapath}. 
 The Serial Control Unit (SCU)\index{SCU}, when enabled, accepts data over the bus from 
 either the digital input module or the analog input module. The bus control 
 itself is managed by the Master Control Unit (MCU)\index{MCU}. The MCU also 
@@ -131,7 +131,7 @@ between capacity and acquisition performance. The maximum rate of samples per
 second is set by ${Outgoing Baud Rate}/{Sample Width}$. Figure \ref{fig:baud rates and sample} 
 illustrates this relationship. The hardware maximum for the bus width is 16 bits
 per sample (which is the width of two of the transceivers). The 10-bit samples
-are packed tightly before serialization (see Listing\ref{lst:scu_c}) to reduce
+are packed tightly before serialization (see Listing \ref{lst:scu_c}) to reduce
  wasted space. If the selected serial output system is very fast, then more 
 samples can be processed by the host PC. Due to restrictions on the 
 communications interface with the host PC, the USART \index{usart} interface 
