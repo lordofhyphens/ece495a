@@ -158,3 +158,14 @@ Figure \ref{sch:analog input} and Table \ref{tab:analog input parts}. 12 resisto
 \end{center}
 \label{tab:analog input parts}
 \end{table}
+
+It took approximately 1 week to ship when parts for the prototype were ordered. Building this circuit is straight forward and simple. It can easily be done within a day. The troubleshooting is where most of the time will take. It took me about 3 months of troubleshooting to get values that I was content with. Also, it could take longer depending if you test it with the micro controller or not. I would anticipate this would take a month to complete at the most to get it to perform ideally. 1 week to obtain the parts and 3 weeks to build and troubleshoot.
+
+The circuit described here can function even with variances in the expected values. In addition, it is better to test this circuit out when it is actually connected to the micro controller to ensure it works with the system as expected.
+
+Only 6 variable resistances were used for the prototype and a multiplexer could have been used with less channels. The size of the multiplexer depends on how many different amplification levels are wanted. With 6 resistance values, an 8 channel multiplexer could be used to save some money.
+
+Another concern realized late into the process was how the analogue to digital converter would fit in with the rest of the data path. No time was spent looking and understanding this process during the building of this circuit. The only concern was making sure the final output was between 0 and 5 volts. To implement the entire system, the data sheet of the analogue to digital converter must be evaluated and a solution created to fit in the analogue to digital converter with the data path.
+
+This circuit alone is functional but was never tested with the rest of the system.
+
