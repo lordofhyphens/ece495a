@@ -15,6 +15,7 @@ Table\ref{tab:bt_prices} to see the difference in price.
 \begin{tabular}{l | c c } 
 	System Name & Packaging & Price \\\hline
 	WT32 Bluegiga Breakout & Dual-Inline & \$89.95/unit \\
+	WT32 Bluegiga & Surface Mount & \$49.95/unit \\
 	BG203 & & \$54.95 \\
 	Roving Networks & & \$59.95
 \end{tabular}
@@ -35,7 +36,14 @@ can control the functionality with ASCII commands via UART or USB
 interface'' meaning that a program can be made to give the chip commands 
 instead of having to do it manually\cite{web:wt32-price}.  This is why that 
 even though the WT32 Bluegiga is the most expensive out of all the chips it is 
-the chip that is best for this type of project.
+the chip that is best for this type of project. 
+
+If a circuit board is fabricated for the design, the surface-mount version of 
+the WT32 is recommended; the breakout chip itself comes without pin headers 
+(they must be soldered on separately). However, the breakout chip is capable of
+ being easily removed from the assembly if a pin header/socket attachment is 
+used. In addition, the WT32 is a 3.3V logic part and requires adapted logic 
+levels if the rest of the circuit uses 5V. 
 
 \subsection{Command Protocols}
 The program that was written for this works by sending the command over the

@@ -148,7 +148,8 @@ is used asynchronously, which is included as part of the ATMega8515 MCU
 Table \ref{tab:datap costs} summarizes the costs involved in implementing the 
 datapath control subsystem. The circuit board printing costs are an estimate, 
 and assume that low cost is prioritized over production speed. Also, the board
-costs are expected to be combined with the power subsystem itself. All costs are for the recommended vendors and at low quantities.
+costs are expected to be combined with the power subsystem itself. All costs 
+are for the recommended vendors and at low quantities.
 
 \begin{table}[hbp]
 \caption{Pricing information for subsystem components\cite{web:batchpcb}\cite{web:jameco_atmel}\cite{web:jameco_inv}.}
@@ -157,9 +158,10 @@ costs are expected to be combined with the power subsystem itself. All costs are
 \begin{tabular}{l | c c r}
 	Item & Quantity & Unit Cost & Total Cost \\ \hline
 	Printed Circuit Board & 1 & \$50 & \$50 \\
-	ATMega8515 (PLCC) & 2 & \$4.58 & \$9.16 \\
+	ATMega8515L (PLCC) & 2 & \$4.58 & \$9.16 \\
 	74AC04 & 1 & \$0.056 & \$0.056\\
-	74AC245  & 10 & \$0.089 & \$0.89 
+	74AC245  & 10 & \$0.089 & \$0.89\\
+	Headers & 2 & \$2.95 &  \$5.90
 \end{tabular}
 \end{center}
 \label{tab:datap costs}
@@ -170,7 +172,9 @@ The PCB fabrication lead time is variable, lasting from either days at a high
 preferable to wait the extra time. Once the board has been printed, the rest of
  the components can be assembled within a few hours, given experience with a 
 soldering iron and a steady hand. This design may also be machine-assembled if 
-mass-production is desired.
+mass-production is desired. Hobbyists may also opt to attempt to etch their own
+ circuit boards; but this is not recommended because the net routing is 
+difficult to complete satisfactorily. Pin headers were chosen for linking the datapath control to the input modules for their flexibility in accepting connections, but slot connecters could be substituted.
 
 \subsection{Recommendations for Further Study and Conclusions}
 Several enchancements can be made to the design of the datapath controllers.
@@ -182,8 +186,9 @@ controller board.
 
 Performance may be enchanced by utilizing more powerful microcontrollers with
 higher clock speeds for the SCU in particular and possibly the MCU. Increasing 
-the capability of the SCU relaxes the bottleneck in the serialization, allowing for greater performance.
+the capability of the SCU relaxes the bottleneck in the serialization, allowing for greater performance. The on-board wireless protocol stack processor may be 
+utilized for such a function, but such a change requires 
 
 The design at present makes a useful low-performance device for hobbyists but 
-does not have the necessary speeds for fast digital logic acquisition and 
-analysis.
+does not have the necessary speed for fast digital logic acquisition and 
+analysis. 
