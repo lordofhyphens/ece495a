@@ -39,7 +39,7 @@ given solution, Complexity is the amount of up-front design work that would
  functionality but had very few limits in the the types of solutions that
  could be realized. FPGAs have an additional advantage over basic logic gates
  in that they are able to be relatively easily reconfigured or updating, which
- would make prottotyping simpler. However, both solutions low-level
+ would make prototyping simpler. However, both solutions low-level
  implementations were considered to be too time-inefficient for this design.
  A general purpose "bare" microprocessor was also considered, but was quickly
  dismissed for similar reasons as FPGAs - the infrastructure required to get
@@ -143,11 +143,34 @@ is used asynchronously, which is included as part of the ATMega8515 MCU
 \includegraphics[width=3in]{baud_rate.png}
 \label{fig:baud rates and sample}
 \end{figure}
-\subsection{Implementation and Cost}
-%Datapath cost components:
-%pcb fabrication
-%components themselves
-%assembly costs
+\subsection{Cost and Implementation}
+
+Table \ref{tab:datap costs} summarizes the costs involved in implementing the 
+datapath control subsystem. The circuit board printing costs are an estimate, 
+and assume that low cost is prioritized over production speed. Also, the board
+costs are expected to be combined with the power subsystem itself. All costs are for the recommended vendors and at low quantities.
+
+\begin{table}[hbp]
+\caption{Pricing information for subsystem components\cite{web:batchpcb}\cite{web:jameco_atmel}\cite{web:jameco_inv}.}
+\small
+\begin{center}
+\begin{tabular}{l | c c r}
+	Item & Quantity & Unit Cost & Total Cost \\ \hline
+	Printed Circuit Board & 1 & \$50 & \$50 \\
+	ATMega8515 (PLCC) & 2 & \$4.58 & \$9.16 \\
+	74AC04 & 1 & \$0.056 & \$0.056\\
+	74AC245  & 10 & \$0.089 & \$0.89 
+\end{tabular}
+\end{center}
+\label{tab:datap costs}
+\end{table}
+
+The PCB fabrication lead time is variable, lasting from either days at a high
+ cost per board or weeks at a low cost per board. For hobbyists, it is 
+preferable to wait the extra time. Once the board has been printed, the rest of
+ the components can be assembled within a few hours, given experience with a 
+soldering iron and a steady hand. This design may also be machine-assembled if 
+mass-production is desired.
 
 \subsection{Recommendations for Further Study and Conclusions}
 Several enchancements can be made to the design of the datapath controllers.
