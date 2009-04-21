@@ -11,7 +11,18 @@ necessary signals to the PC Diagnostics Tool hardware to control the output of
 the tool, and he or she must have a method of organizing and displaying 
 acquired data.
 
-A block diagram of the subsystem is shown in Figure \ref{fig:pcsoft diagram}
+A block diagram of the subsystem is shown in Figure \ref{fig:pcsoft sub diagram}
+
+
+\begin{figure}[bhp]
+\begin{center}
+\includegraphics[scale=0.75]{../drawings/pcsoft_sub_diagram.png}
+\end{center}
+\caption[PC Software Block Diagram]{Block diagram of the PC Software Subsystem. White blocks
+are not part of the subsystem.}
+\label{fig:pcsoft sub diagram}
+\end{figure}
+
 
 
 \subsection[Design Decisions]{Design Decisions}
@@ -56,15 +67,15 @@ was required. A break-down of necessary functionality required to implement each
  task is shown in Table \ref{tab:required functionality}.
 
 
-\begin{table}[h]
-\caption[Software functionality]{PC Software tasks broken down by the necessary 
-functionality to perform each.}
+\begin{table}[bhp]
 \begin{tabular}{l | p{7cm}}
 	Task & Necessary functionality \\ \hline
 	Data acquisition and storage & Serial port communications library, File I/O \\ \hline
 	Display/control interface & Serial port communications library, GUI library, 
 	Signal/waveform plotting
 \end{tabular}
+\caption[Software functionality]{PC Software tasks broken down by the necessary 
+functionality to perform each.}
 \label{tab:required functionality}
 \end{table}
 
@@ -91,8 +102,7 @@ easier to implement code with because the language compile or interpreter handle
 like memory management and CPU operations.
 
 
-\begin{table}[h]
-\caption[Language features]{Comparison of programming language features.}
+\begin{table}[bhp]
 \begin{tabular}{l | c | p{6cm} | c}
 	Language & Cost & Ease of implementation & Cross-platform? \\ 
 	\hline
@@ -102,6 +112,7 @@ like memory management and CPU operations.
 	\hline
 	Python & Free & Online documentation, serial port library, high-level language \cite{web:pydoc}\cite{web:pyserial} & Yes \\
 \end{tabular}
+\caption[Language features]{Comparison of programming language features.}
 \label{tab:languages features}
 \end{table}
 
@@ -113,13 +124,13 @@ essentially the same features as Python, a Python implementation should be easie
 its status as a high-level programming language.
 
 For the signal/waveform plotting, it was decided from the beginning that, given the target 
-market of hobbyists, real-time data display would not be necessary. Furthermore, many hobbyists 
-using the PC Diagnostics Tool will have some technical background in engineering, and perhaps 
-even some experience with computation software like Matlab. It seems reasonable, then, to 
-perform the data plotting in a numerical computational environment in order to allow users to 
-easily extend whatever functionality is provided by the default PC software. GNU Octave, a free, 
-open source, Matlab-like numerical computing software package, provides such an 
-environment \cite{web:octave}.
+market of hobbyists, real-time data display would not be necessary. Furthermore, many 
+hobbyists using the PC Diagnostics Tool will have some technical background in engineering, 
+and perhaps even some experience with computation software like Matlab. It seems reasonable, 
+then, to perform the data plotting in a numerical computational environment in order to 
+allow users to easily extend whatever functionality is provided by the default PC software. 
+GNU Octave, a free, open source, Matlab-like numerical computing software package, provides 
+such an environment \cite{web:octave}.
 
 A list of software packages used for PC Software subsystem is shown in Table \ref{tab:software packages}. 
 Python and GNU Octave have been previously discussed. PySerial is a cross-platform serial 
@@ -127,11 +138,10 @@ communications library for Python, and pywin32 is a Windows 32 API library for P
 required for pySerial to work on Windows. All software packages are free and open source.
 
 
-\begin{table}[h]
-\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
+\begin{table}[bhp]
 \begin{tabular}{l | p{8cm}}
 	Software Package & Description \\ \hline
-	Pyton & Programming language used to implement data acquisition and interface software. \\ 
+	Python & Programming language used to implement data acquisition and interface software. \\ 
 	\hline
 	pySerial & Serial port communications library for Python. \\
 	\hline
@@ -139,35 +149,55 @@ required for pySerial to work on Windows. All software packages are free and ope
 	\hline
 	\multicolumn{2}{l}{Total cost: \$0} \\
 \end{tabular}
+\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
 \label{tab:software packages}
 \end{table}
 
 
-\subsubsection[Software Design]{Software Design}
-In order to facilitate the necessary software tasks outlined in Figure \ref{fig:pcsoft diagram}, 
-some design options had to be sifted through. Specifically, how the data acquisition would be 
-achieved. In order to prevent the act of data acquisition from tying up the resources of the user 
-interface, it is necessary to launch the data acquisition software in a separate sub-process. 
-This, however, introduces a problem of how the interface process and the data acquisition process
-will communicate with each other. There exist, however, several techniques that enable communication
-between processes, which are aptly called inter-process communication (IPC) techniques. Pipes are 
-perhaps the simplest method among these, but it turns out that a necessary operating system call named 
-\textit{fork()} does not work on Windows \cite{web:windowsfork}. Furthermore, after much testing, 
-the Python workaround for this inconsistency was found to be non-functional. Sockets are the next-best
-choice because, while they are not the simplest method, sockets can communicate over a network. This
-opens up the possibility of the data acquisition software running on a separate machine from the 
-interface, which could be useful for a few different applications.
+\subsubsection[Software Implementation]{Software Implementation}
+In order to facilitate the necessary software tasks outlined in Figure 
+\ref{fig:pcsoft sub diagram}, some design options had to be sifted through. Specifically, 
+how the data acquisition would be achieved. In order to prevent the act of data 
+acquisition from tying up the resources of the user interface, it is necessary to launch 
+the data acquisition software in a separate sub-process. This, however, introduces a 
+problem of how the interface process and the data acquisition process will communicate with 
+each other. There exist, however, several techniques that enable communication between 
+processes, which are aptly called inter-process communication (IPC) techniques. Pipes are 
+perhaps the simplest method among these, but it turns out that a necessary operating system 
+call named \textit{fork()} does not work on Windows \cite{web:windowsfork}. Furthermore, 
+after much testing, the Python workaround for this inconsistency was found to be non-functional. 
+Sockets are the next-best choice because, while they are not the simplest method, sockets can
+ communicate over a network. This opens up the possibility of the data acquisition software 
+running on a separate machine from the interface, which could be useful for a few different 
+applications.
 
-There is another problem that the PC Software must solve: when using a Python application to implement
-the user interface and GNU Octave to perform data plotting, it becomes impossible to utilize IPC to
-enable communication between the two. Being that GNU Octave is open source, one solution is to use Octave's
-C++ headers and a software package called Simplified Wrapper and Interface Generator (SWIG) to directly call 
-GNU Octave's plot functions from the interface itself \cite{web:swig}. This turned out to not be feasible 
-due to copyright issues: GNU Octave is distributed under the GNU GPL, a copyleft license that requires 
-any code that links to GPL'd code to itself be released under the GNU GPL \cite{web:gnugpl}. In the interests of potential 
-future commercialization, it was desired that the code to the PC Software not become open source. A simple, 
-effective solution to this is to use Python's \textit{subprocess} module to launch an instance of Octave 
-that executes a data display script. Before the launch, data is written to a control file that the Octave
- script later reads to find out which data should be displayed. This enables on-demand data plotting without 
-resorting to using GNU Octave headers.
+There is another problem that the PC Software must solve: when using a Python application to 
+implement the user interface and GNU Octave to perform data plotting, it becomes impossible to 
+utilize IPC to enable communication between the two. Being that GNU Octave is open source, one 
+solution is to use Octave's C++ headers and a software package called Simplified Wrapper and Interface
+ Generator (SWIG) to directly call  GNU Octave's plot functions from the interface itself \cite{web:swig}. 
+This turned out to not be feasible due to copyright issues: GNU Octave is distributed under the GNU 
+GPL, a copyright license that requires any code that links to GPL'd code to itself be released under 
+the GNU GPL \cite{web:gnugpl}. In the interests of potential future commercialization, it was desired 
+that the code to the PC Software not become open source. A simple, effective solution to this is to 
+use Python's \textit{subprocess} module to launch an instance of Octave that executes a data display 
+script. Before the launch, data is written to a control file that the Octave script later reads 
+to find out which data should be displayed. This enables on-demand data plotting without resorting 
+to using GNU Octave headers.
 
+\subsection[Software Design]{Software Design}
+A block diagram of the PC software files is shown in Figure \ref{fig:pcsoft files diagram}. Blocks 
+in blue represent files that execute code. Blocks in green are data/control files required for normal 
+program operation. Blocks in red represent data that is saved to an end-user's PC storage device.
+ A description of the functionality for each file in the software follows.
+
+
+\begin{figure}[bhp]
+\begin{center}
+\includegraphics[scale=0.65]{../drawings/pcsoft_files_diagram.png}
+\end{center}
+\caption[PC Software Files Block Diagram]{Block diagram of the PC Software files. Blocks in blue
+indicate files in which execution of code occurs. Blocks in green are data/control files. Blocks
+in red represent acquired data.}
+\label{fig:pcsoft sub diagram}
+\end{figure}
