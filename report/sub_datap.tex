@@ -160,7 +160,7 @@ are for the recommended vendors and at low quantities.
 \begin{tabular}{l | c c r}
 	Item & Quantity & Unit Cost & Total Cost \\ \hline
 	Printed Circuit Board & 1 & \$50 & \$50 \\
-	ATMega8515L (PLCC) & 2 & \$4.58 & \$9.16 \\
+	ATMega8515(L) (PLCC) & 2 & \$4.58 & \$9.16 \\
 	74AC04 & 1 & \$0.056 & \$0.056\\
 	74AC245  & 10 & \$0.089 & \$0.89\\
 	Headers & 2 & \$2.95 &  \$5.90
@@ -177,6 +177,18 @@ soldering iron and a steady hand. This design may also be machine-assembled if
 mass-production is desired. Hobbyists may also opt to attempt to etch their own
  circuit boards; but this is not recommended because the net routing is 
 difficult to complete satisfactorily. Pin headers were chosen for linking the datapath control to the input modules for their flexibility in accepting connections, but slot connecters could be substituted.
+
+\subsection{Fault Analysis}
+Both the MCU and SCU require each other to boot the acquisition unit. A fault 
+in the SPI bus interface between them would hang the system or place it into an
+unknown state. The data output of the acquisiton unit is invalid while a control
+switch is being made. The MCU is sensitive to bad data; the user, if operating
+the device, can activate both input modules at once. The behavior in this case
+is undefined. However, the included PC software disallows this state.
+
+The SCU and the Wireless Link must have their USART settings set identically for any communication to take place. In order to send commands to the Wireless Link
+stack, the flow of data must be halted. During this time, no data is sent to the
+Host PC.  
 
 \subsection{Recommendations for Further Study and Conclusions}
 Several enchancements can be made to the design of the datapath controllers.
