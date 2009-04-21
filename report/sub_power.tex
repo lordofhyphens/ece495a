@@ -3,7 +3,7 @@
 \section [Power]{Power Subsystem}
 \subsection{Description}
 
-The power system \index{power} provides reliable, standalone power to all other hardware subsystems. The design supports three different voltage levels as the ATMEGA8518 MCU, analog signal conditioner, and WT32 bluetooth module all require different reference voltages. The source has the flexibility to operate from battery or, when interfaced with a standard USB port, charge the in-system battery and provide uninterrupted power when switching between the two.  
+The power system \index{power} provides reliable, standalone power to all other hardware subsystems. The design supports three different voltage levels as the ATMEGA8518 MCU, analog signal conditioner, and WT32 Bluetooth \textregistered module all require different reference voltages. The source has the flexibility to operate from battery or, when interfaced with a standard USB port, charge the in-system battery and provide uninterrupted power when switching between the two.  
 
 \subsection{System Power Requirements}
 
@@ -27,9 +27,9 @@ Each subsystem requires a different supply voltage as shown in Table \ref{tab:po
 
 \subsection{Battery}
 
-Taken into consideration are three potential in-system, rechargeable battery\index{battery} supply options: Alkaline, NiMH, or Li-Poly. For some of the basic metrics taken into consideration see table \ref{tab:battery comparison}. Alkaline batteries in series are not a bad option as it would provide the 3V DC source necessary for the MCU and a similar arrangement could provide power for the other sub-systems as well. The issue with this approach is efficient in-system charging. As with all of the rechargeable batteries considered, use of multiple-cells in a charging system require some intelligent monitoring of each cell to assure that no cell is too far out of sink which can result in overcharging or reverse-charging as a charged cells will rapidly discharge into the uncharged cell. Overcharging can, at the least, damage the battery if not resulting in a dangerous explosion due to an un-containable build up of gaseous bi-products. Another drawback to Alkaline is that voltage output degrades linearly over time which is unfavorable for high-drain electronics. 
+Taken into consideration are three potential in-system, rechargeable battery\index{battery} supply options: Alkaline, NiMH, or Li-Poly. For some of the basic metrics taken into consideration see table \ref{tab:battery comparison}. Alkaline batteries in series are not a bad option as it would provide the 3V DC source necessary for the MCU/SCU and a similar arrangement could provide power for the other sub-systems as well. The issue with this approach is efficient in-system charging. As with all of the rechargeable batteries considered, use of multiple-cells in a charging system require some intelligent monitoring of each cell to assure that no cell is too far out of sink which can result in overcharging or reverse-charging as a charged cells will rapidly discharge into the uncharged cell. Overcharging can, at the least, damage the battery if not resulting in a dangerous explosion due to an un-containable build up of gaseous bi-products. Another drawback to Alkaline is that voltage output degrades linearly over time which is unfavorable for high-drain electronics. 
 
-NiMH batteries maintain a more consistent voltage over time but have a relatively low efficiency. The best battery solution for this design is the Li-Poly as it not only has a superior efficiency, a single cell outputs a nominal voltage of 3.7 V DC which is acceptable for directly powering the WT-32 bluetooth module. As an added bonus, the WT-32 has a built-in battery charging application as it is often utilized with integrated single cell Li-Poly batteries (i.e. - bluetooth headsets, cell phones). 
+NiMH batteries maintain a more consistent voltage over time but have a relatively low efficiency. The best battery solution for this design is the Li-Poly as it not only has a superior efficiency, a single cell outputs a nominal voltage of 3.7 V DC which is acceptable for directly powering the WT-32 Bluetooth \textregistered module. As an added bonus, the WT-32 has a built-in battery charging application as it is often utilized with integrated single cell Li-Poly batteries (i.e. - Bluetooth \textregistered headsets, cell phones). 
   
 \begin{table}[bhp]
 \caption[Common Battery Types]{Comparison of Common Battery Types\cite{web:bat-tech}}
@@ -48,7 +48,7 @@ NiMH batteries maintain a more consistent voltage over time but have a relativel
 
 \subsection{DC/DC Converter}
 
-The Li-Poly battery integrated with the WT32 bluetooth module provides a level 3.7 V DC source which must be re-leveled and distributed to the other sub-systems with as little ripple as possible. Component selection for this application takes into consideration the need for high efficiency. DC-DC converter packages are cheap and readily available so the alternative of building a custom supply is unnecessary. Low-power DC DC converters come in two basic varieties: fixed and adjustable. The adjustable converters feature a built-in gain setting resistor for the internal op-amp and in the case of the LT1073, only three passives are required to configure the device. Refer to figure \ref{fig:general step-up} for an example of the the fixed output implementation.
+The Li-Poly battery integrated with the WT32 Bluetooth \textregistered module provides a level 3.7 V DC source which must be re-leveled and distributed to the other sub-systems with as little ripple as possible. Component selection for this application takes into consideration the need for high efficiency. DC-DC converter packages are cheap and readily available so the alternative of building a custom supply is unnecessary. Low-power DC DC converters come in two basic varieties: fixed and adjustable. The adjustable converters feature a built-in gain setting resistor for the internal op-amp and in the case of the LT1073, only three passives are required to configure the device. Refer to figure \ref{fig:general step-up} for an example of the fixed output implementation.
 
 \begin{figure}[hbp]
 \centering
@@ -61,7 +61,7 @@ The datasheet for the LT1073 includes straightforward equations for deciding wha
 
 \subsection{Prototyping}
 
-Prototyping the power subsystem is most effectively accomplished using protoboard and a wire wrapping tool. Using DIP wire wrap sockets for the passives required for the LT1073 DC-DC converter allows for fast teaking if output voltages are not within expected tolerances. The working prototype currently supports the WT32 and ATMEGA8518 power requirements. This prototype may also be powered either via the integrated Li-Poly battery cell or standard USB connection. The Li-Poly battery leverages the WT32 built-in charging system. Future expansions will include the +/- 12V DC power support for the Analog Input Module as shown in Figure \ref{fig:final_power_schematic} .
+Prototyping the power subsystem is most effectively accomplished using protoboard and a wire wrapping tool. Using DIP wire wrap sockets for the passives required for the LT1073 DC-DC converter allows for fast tweaking if output voltages are not within expected tolerances. The working prototype currently supports the WT32 and ATMEGA8518 power requirements. This prototype may also be powered either via the integrated Li-Poly battery cell or standard USB connection. The Li-Poly battery leverages the WT32 built-in charging system. Future expansions will include the +/- 12V DC power support for the Analog Input Module as shown in Figure \ref{fig:final_power_schematic} .
 
 \begin{figure}[hbp]
 \centering
@@ -70,7 +70,7 @@ Prototyping the power subsystem is most effectively accomplished using protoboar
 \label{fig:final_power_schematic}
 \end{figure}   
 
-It is important to note that while prototyping does not require close quarters for the necessary components, a production model may require a toroidal instead of rod-type inductor in order to reduce the effects of EMI on the analog circuitry. Also, in the interest of cost, simple electrolytic capacitors are used instead of high end Tantalum capacitors. 1N5818 Schottky diodes are suggested for the LT1073 as they have a low forward voltage drop and switch quickly. Extensive trials are still required for this prototype inorder to establish actual operating battery life, overall battery life, and possible variation due to noise. The critical power drawing component is the Acquisition Unit which may be characterized by the ATMEGA8515. Refer to Table \ref{tab:battery comparison} to view a best/worst case estimates considering only the two MCU in use. It is notable that it would be very unlikely for both MCUs to be operating constantly. 
+It is important to note that while prototyping does not require close quarters for the necessary components, a production model may require a toroidal instead of rod-type inductor in order to reduce the effects of EMI on the analog circuitry. Also, in the interest of cost, simple electrolytic capacitors are used instead of high end Tantalum capacitors. 1N5818 Schottky diodes are suggested for the LT1073 as they have a low forward voltage drop and switch quickly. Extensive trials are still required for this prototype in order to establish actual operating battery life, overall battery life, and possible variation due to noise. The critical power drawing component is the Acquisition Unit which may be characterized by the ATMEGA8515. Refer to Table \ref{tab:battery comparison} to view a best/worst case estimates considering only the two MCU in use. It is notable that it would be very unlikely for both MCUs to be operating constantly. 
 
 \begin{table}[bhp]
 \caption[Estimated Operating Time]{Power consumption estimate -  assuming 30\% idle time\cite{ds:ATMEGA8515}}
@@ -96,7 +96,7 @@ Not all components in the power supply prototype are RoHS (Restriction of Hazard
 
 \subsection{Power Supply Cost}
 
-The implementation of the power supply requires the purchase of several ultimately uncessary components for the purposes of testing and to avoid prototyping delays in the event that a component is faulty or damaged. See Table \ref{tab:power_imp_cost_est} for cost estimates to implement the design.
+The implementation of the power supply requires the purchase of several ultimately unnecessary components for the purposes of testing and to avoid prototyping delays in the event that a component is faulty or damaged. See Table \ref{tab:power_imp_cost_est} for cost estimates to implement the design.
 
 \begin{table}[bhp]
 \caption[Implementation Cost]{Power System Implementation%
@@ -107,7 +107,7 @@ Cost\cite{web:caddell-burns-price} \cite{web:wt32-price} \cite{web:resistor-pric
 \begin{tabular}{l|l|l|l|l}
 \setlength{\tabcolsep}{1pt}
 Product \# & Description & Quantity & Price/Unit & Total \\\hline
-\multirow{2}{*}{WRL-08952}  & Bluetooth® Breakout & \multirow{2}{*}{1} & \multirow{2}{*}{\$89.95} & \multirow{2}{*}{\$89.95} \\
+\multirow{2}{*}{WRL-08952}  & Bluetooth \registeredtext Breakout & \multirow{2}{*}{1} & \multirow{2}{*}{\$89.95} & \multirow{2}{*}{\$89.95} \\
 		   & - Bluegiga WT-32  &          &   &     \\
 
     1N5818 & Schottky Diode &         20 &     \$0.14 &     \$2.84 \\
@@ -136,7 +136,7 @@ Grand Total & & & & \$133.40\\
 \label{tab:power_imp_cost_est}
 \end{table}
 
-The actual cost for production is much less than prototype implementation as optimal components have been chosen. This cost is further lessened due to the likelihood that large quantities will be ordered, however, the proto-type cost estimate shown in Table \ref{tab:power_prod_cost_est} only assumes a minimum number of components required for a single build.
+The actual cost for production is much less than prototype implementation as optimal components have been chosen. This cost is further lessened due to the likelihood that large quantities will be ordered, however, the prototype cost estimate shown in Table \ref{tab:power_prod_cost_est} only assumes a minimum number of components required for a single build.
 
 \begin{table}[bhp]
 \caption[Production Cost]{Power System Production Cost \cite{web:caddell-burns-price} \cite{web:cap-price} \cite{web:batt-price}}
@@ -147,7 +147,7 @@ The actual cost for production is much less than prototype implementation as opt
 \setlength{\tabcolsep}{1pt}
     Part \# & Description &   Quantity &   Per/Unit & Total Cost \\\hline
 
-\multirow{2}{*}{WRL-08952}  & Bluetooth® Breakout & \multirow{2}{*}{1} & \multirow{2}{*}{\$89.95} & \multirow{2}{*}{\$89.95} \\
+\multirow{2}{*}{WRL-08952}  & Bluetooth \registeredtext Breakout & \multirow{2}{*}{1} & \multirow{2}{*}{\$89.95} & \multirow{2}{*}{\$89.95} \\
 		   & - Bluegiga WT-32  &          &   &     \\
     1N5818 & Schottky Diode &          2 &     \$0.14 &     \$0.28 \\
 
