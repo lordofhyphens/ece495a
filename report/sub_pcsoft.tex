@@ -321,8 +321,33 @@ legend.
 
 
 
-\subsection[Performance Data]{Performance Data}
-Booga.
+\subsection[Performance]{Performance}
+In order to meet previously-established guidelines for bandwidth, the PC software will have
+to acquire data over the serial port at a data rate of 921.6 kbps. While it is expected that 
+the PC Software will be able to meet this specification, it is presently untested because a fully-
+functional version of the board was never arrived at. The PC software will also have to be
+capable of sending signals to the microprocessor to control the output of data, which is again
+untested.
+
+Input of data has been simulated by generating signals in GNU Octave, saving them to a binary
+file and writing a separate acquisition function that reads in binary data. This acquisition
+functionality is fully functional, which has allowed testing of all the functionality in the 
+Data Display section of the user interface. Presently, page-scrolling using arrow keys,
+label search and the Refresh, Clear, Delete and Display buttons have been confirmed to be working. 
+
+
+\subsection[Implementation Schedule Data]{Implementation Schedule Data}
+An implementation of this subsystem in the context of product production involves the creation
+of compact discs that contain the software and the software packages it utilizes. This should
+be relatively straightforward, and should not contribute greatly to the implementation schedule
+of the entire project.
+
+
+\subsection[Environmental \& Societal Issues]{Environmental \& Societal Issues}
+The environmental and societal impact of the PC Software subsystem is fairly low. The software
+operates on any regular personal computer, requiring no special hardware. Furthermore, the
+software functionality is fairly limited in scope, and it should not be possible to modify
+the code in order to perform illegal or immoral actions.
 
 
 \subsection[Fault Analysis]{Fault Analysis}
@@ -373,6 +398,18 @@ subprocesses to terminate would have to be designed.
 \subsection[Conclusions \& Recommendations]{Conclusions \& Recommendations}
 Given that the PC Software subsystem has undergone no real-world testing, only 
 simulation of input data using generated binary files, the subsystem needs further
-testing. Currently the only untested portion of the subsystem is the data acquisition
-over serial port, but having to handle real-world data may reveal mistakes in the
-operation of the software that are, up to now, not understood.
+testing. Currently untested portions of the subsystem include the data acquisition
+over serial port and the control communication with the microcontroller. While it 
+is expected that the software should perform these functions without error, being
+presented with real-world data may reveal mistakes in the operation of the software 
+that are, up to now, not understood.
+
+One characteristic of the current design that may need further study is the current
+mechanism used for data display. It was discovered that when the interface launches
+the GNU Octave display script in a separate subprocess, it takes several seconds
+for the GNU Octave program itself to start up. This is slow and unwieldy; ideally,
+data should be displayed near instantly or at least much faster than it is presently.
+
+Further study should include a re-examination of the way data plotting is performed. 
+It may be advantageous to utilize a graphics library and perform plotting directly 
+in the user interface, skipping the GNU Octave component altogether.
