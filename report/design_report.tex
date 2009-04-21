@@ -21,9 +21,14 @@
 % start the document
 \begin{document}
 \maketitle
-\tableofcontents
 \include{executive_summary}
 \include{acknowledgements}
+
+\tableofcontents
+
+\chapter{Introduction}
+\include{introduction}
+\include{description}
 \chapter{Subsystem Discussions}
 %include subsystem reports here.
 %like this: \include{report_name}
@@ -42,10 +47,17 @@
 
 % All code listings for our project.
 \include{code_listings}
+\fancyfoot[R]{}
 
 % Recommended vendor list.
 \include{vendors}
+\fancyfoot[R]{}
 \include{engdrawings}
+
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
 \end{appendix}
 
 \addcontentsline{toc}{chapter}{Bibliography}
