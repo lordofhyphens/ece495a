@@ -3,6 +3,23 @@ Thumbs.db
 .~lock*
 *.~*
 
+#ignore swap files from vim
+*.swp
+# ignore LaTeX intermediate files
+*.out
+*.bbl
+*.blg
+*.lof
+*.aux
+*.log
+*.idx
+*.toc
+*.ind
+# ignore AVR Studio files
+*.aps
+*.bin
+*.tst
+*.aws
 # ignore backup files created by Eagle
 *.s\#*
 *.s\#*
