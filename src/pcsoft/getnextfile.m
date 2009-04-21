@@ -6,7 +6,7 @@ function nextfile = getnextfile(file, fext)
 	if(letterascii != 122)
 		nextfile = strcat(substr(file, 1, letterpos-1), char(letterascii + 1), fext);
 	else
-		nextfile = strcat(substr(file, 1, letterpos-1), fext);
+		nextfile = strcat(substr(file, 1, letterpos-1), 'aa', fext);
 	endif
 
 endfunction

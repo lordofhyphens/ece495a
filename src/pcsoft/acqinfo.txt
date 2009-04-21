@@ -1,5 +1,10 @@
-20Apr2009_1:|
-20Apr2009_2:|
-20Apr2009_3:|RLC Branch 1 Voltage
-20Apr2009_4:|RLC Branch 2 Voltage
-20Apr2009_5:|Filter A out
+07Apr2009_1:|
+08Apr2009_1:|
+12Apr2009_1:|RLC Branch 1 Voltage
+12Apr2009_2:|RLC Branch 2 Voltage
+14Apr2009_1:|Filter A out
+14Apr2009_2:|Filter B out
+14Apr2009_3:|Filter C out
+15Apr2009_1:|
+15Apr2009_2:|Input Impedance 1
+20Apr2009_1:|R2 Voltage
