@@ -306,6 +306,11 @@ acquisition and readandplot.m to read in the binary acquisition data and display
 
 
 \subsubsection[getnextfile.m]{getnextfile.m}
+Called by dispd.m when the display file has multiple parts. Takes current filename and gets
+the next file name to be displayed by incrementing the acquisition part letter by one.
 
 
 \subsubsection[readandplot.m]{readandplot.m}
+Called by dispd.m. Takes the current acquisition file name, reads in the data and plots it.
+Sets the plot title as the date of the acquisition and, if the label exists, adds it to the
+legend.
