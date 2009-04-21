@@ -29,14 +29,14 @@ are not part of the subsystem.}
 \subsubsection[Software Packages]{Software Packages}
 There are two possible approaches to writing software that addresses both of 
 these needs. The first is to utilize proprietary software development 
-environments such as Matlab or Labview that bundle together data acquisition 
+environments such as Matlab or LabVIEW that bundle together data acquisition 
 and Graphical User Interface (GUI) functionality in a relatively easy-to-use 
 software package. The second is to manually build custom software to implement 
 these functions.
 
 The first approach considered was to use a proprietary signal processing 
 environment. Perhaps the two most popular software packages in this area are 
-Labview and Matlab. Labview is a development environment produced by National 
+LabVIEW and Matlab. LabVIEW is a development environment produced by National 
 Instruments. Its base package offers user-friendly GUI development tools, ample 
 drivers for data acquisition into the PC and even some signal processing 
 functionality \cite{web:labviewbase}. Matlab is a widely-known computing 
@@ -45,18 +45,18 @@ processing functionality, GUI-development tools and a data acquisition toolbox
 for acquiring data into the PC \cite{web:matlab}. In other words, both packages 
 offer exactly the needed functionality for this subsystem.
 
-These features come at a price, however. The Labview base package costs 
+These features come at a price, however. The LabVIEW base package costs 
 \$1249 \cite{web:labviewbase}, while Matlab costs \$500 for a single-user license with an 
 additional \$200 cost for the Data Acquisition Toolbox \cite{web:matlab}\cite{web:matlabdaq}. 
-Furthermore, the nature of development environments like Labview and Matlab mean that 
+Furthermore, the nature of development environments like LabVIEW and Matlab mean that 
 developing a solution in either would result in a user interface that is only usable in 
-Labview or Matlab. This means that end-users would be required to have working 
+LabVIEW or Matlab. This means that end-users would be required to have working 
 copies of whichever environment was used to develop the UI. Since home users and 
-hobbyists are the target market for othe PC Diagnostics Tool, it is not reasonable 
-to expect that every user will possess a copy of Matlab or Labview, and it is even less 
+hobbyists are the target market for other PC Diagnostics Tool, it is not reasonable 
+to expect that every user will possess a copy of Matlab or LabVIEW, and it is even less 
 reasonable to assume that every user would purchase a copy in order to use the 
 GUI. Building standalone applications in either environment is possible, but it 
-comes at further cost: the Labview Application Builder for Windows, at \$999 \cite{web:labviewbase} 
+comes at further cost: the LabVIEW Application Builder for Windows, at \$999 \cite{web:labviewbase} 
 or the Matlab Compiler, at \$500 \cite{web:matlabcompiler}. 
 
 With these cost considerations in mind, a proprietary solution was ruled out. 
@@ -156,7 +156,7 @@ utilize IPC to enable communication between the two. Being that GNU Octave is op
 solution is to use Octave's C++ headers and a software package called Simplified Wrapper and Interface
  Generator (SWIG) to directly call  GNU Octave's plot functions from the interface itself \cite{web:swig}. 
 This turned out to not be feasible due to copyright issues: GNU Octave is distributed under the GNU 
-GPL, a copyright license that requires any code that links to GPL'd code to itself be released under 
+GPL\index{GPL}, a copyright license that requires any code that links to GPL'd code to itself be released under 
 the GNU GPL \cite{web:gnugpl}. In the interests of potential future commercialization, it was desired 
 that the code to the PC Software not become open source. A simple, effective solution to this is to 
 use Python's \textit{subprocess} module to launch an instance of Octave that executes a data display 
@@ -184,7 +184,7 @@ required for pySerial to work on Windows. All software packages are free and ope
 	\hline
 	\multicolumn{2}{l}{Total cost: \$0} \\
 \end{tabular}
-\caption[Software packages]{Software packages utilized by the PC Software subsytem, along with total cost.}
+\caption[Software packages]{Software packages utilized by the PC Software subsystem, along with total cost.}
 \label{tab:software packages}
 \end{table}
 
@@ -223,7 +223,7 @@ the GNU Octave data display script in a separate subprocess when such input has 
 \end{itemize}
 
 
-A screenshot of the interface that inter.py creates is shown in Figure \ref{fig:pcsoft inter ss}. The
+A screen capture of the interface that inter.py creates is shown in Figure \ref{fig:pcsoft inter ss}. The
 UI consists of three different areas: the Data Acquisition frame, the Data Display frame and the
 Control Interface frame.
 
@@ -231,7 +231,7 @@ Control Interface frame.
 \begin{center}
 \includegraphics[scale=0.6]{../drawings/pcsoft_inter_ss.png}
 \end{center}
-\caption[PC Software Interface Screenshot]{Screenshot of the PC Software GUI front-end.}
+\caption[PC Software Interface Screen Capture]{Screen Capture of the PC Software GUI front-end.}
 \label{fig:pcsoft inter ss}
 \end{figure}
 
@@ -399,7 +399,7 @@ subprocesses to terminate would have to be designed.
 Given that the PC Software subsystem has undergone no real-world testing, only 
 simulation of input data using generated binary files, the subsystem needs further
 testing. Currently untested portions of the subsystem include the data acquisition
-over serial port and the control communication with the microcontroller. While it 
+over serial port and the control communication with the MCU/SCU. While it 
 is expected that the software should perform these functions without error, being
 presented with real-world data may reveal mistakes in the operation of the software 
 that are, up to now, not understood.
