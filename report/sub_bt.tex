@@ -5,8 +5,8 @@ For communications between the device and the users computer it was decided
 that a wireless connection would be used.  This is because it would be more 
 convenient for the user to be able to connect to the device wireless instead of
  being tied down by the physical connection.  There were three choices for use:
- the WT 32 Bluegiga made by Bluegiga Technologies, the BG203 made by SparkFun, 
-and the Roving Networks Bluetooth made by Roving Networks.  The first thing 
+ the WT32 Bluegiga made by Bluegiga Technologies, the BGB203-based DIP module made by SparkFun, 
+and the Roving Networks Bluetooth \textregistered made by Roving Networks.  The first thing 
 that is to be taken into consideration is the cost of each chip. Look at 
 Table\ref{tab:bt_prices} to see the difference in price.
 
@@ -14,9 +14,9 @@ Table\ref{tab:bt_prices} to see the difference in price.
 \caption{Comparison between different communications modules \cite{web:wt32-price}\cite{web:bg203-price}\cite{web:roving-price}}
 \begin{tabular}{l | c c } 
 	System Name & Packaging & Price \\\hline
-	WT32 Bluegiga Breakout & Dual-Inline & \$89.95/unit \\
+	WT32 Bluegiga Bluetooth \textregistered Breakout & Dual-Inline & \$89.95/unit \\
 	WT32 Bluegiga & Surface Mount & \$49.95/unit \\
-	BG203 & & \$54.95 \\
+	BGB203 & & \$54.95 \\
 	Roving Networks & & \$59.95
 \end{tabular}
 \label{tab:bt_prices}
@@ -24,13 +24,13 @@ Table\ref{tab:bt_prices} to see the difference in price.
 
 If the decision was to be made based purely on the price of the chip then the 
 BG 203 would have been chosen but it was not.  This is because out of all three
- of these chips the BG203 was not a breakout chip.  A breakout chip is a chip 
+ of these chips the BGB203 was not a breakout chip.  A breakout chip is a chip 
 that will allow the user to program the chip further to better suit the users 
-needs.  Without this feature the BG203 would have had limited use.
+needs.  Without this feature the BGB203 would have had limited use.
 
-The choice of the WT32 Bluegiga over the Roving Networks Bluetooth comes from 
+The choice of the WT32 Bluegiga over the Roving Networks Bluetooth \textregistered comes from 
 the features of the chip.  Now, there are many common features of the two chips
- like how they are both qualified Bluetooth modules and both work on 3.3 volts.
+ like how they are both qualified Bluetooth \textregistered modules and both work on 3.3 volts.
   But what made the WT32 more preferable was the fact that ``A host processor 
 can control the functionality with ASCII commands via UART or USB 
 interface'' meaning that a program can be made to give the chip commands 
@@ -55,13 +55,13 @@ single-character opcode that is sent over the serial link to the PC. The SCU
 forwards the command to the MCU, which decodes the command and relays back a
 pointer in the SCU's memory for the desired command. Data transmission is 
 halted and the command-mode escape sequence is then sent over the SCU's serial
-link with the WT32 Bluetooth stack, followed by the ASCII command to the WT32's firmware. 
+link with the WT32 Bluetooth \textregistered stack, followed by the ASCII command to the WT32's firmware. 
  
   The commands that were chosen were CALL, CLOSE, CONNECT, ECHO, KILL, and
- RESET.  CALL was chosen because the Bluetooth must be called so that one can
+ RESET.  CALL was chosen because the Bluetooth \textregistered must be called so that one can
  connect with it.  CLOSE was selected so that one can close the connection 
-with the Bluetooth.  CONNECT was chosen so that one can connect with the chip.
-  ECHO was chosen in case someone needed to echo data through the Bluetooth
+with the Bluetooth \textregistered.  CONNECT was chosen so that one can connect with the chip.
+  ECHO was chosen in case someone needed to echo data through the Bluetooth \textregistered
  connection.  KILL was chosen in case anyone needs to kill the connection to
- the Bluetooth.  Lastly, RESET was chosen so that the software in the Bluetooth
+ the Bluetooth \textregistered.  Lastly, RESET was chosen so that the software in the Bluetooth \textregistered stack
  can be reset. 
