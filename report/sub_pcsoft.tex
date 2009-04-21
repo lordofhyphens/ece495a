@@ -204,6 +204,19 @@ in red represent acquired data.}
 
 
 \subsubsection[inter.py]{inter.py}
+This is the main hub of the PC Software subsystem. In addition to generating and displaying the 
+main graphical front-end seen by the user, it performs the following tasks:
+
+\begin{itemize}
+\item Initiates the data acquisition process by launching the data acquisition software in a 
+sub-process and communicating with it via sockets.
+\item Enables user to specify configuration bits for the data acquisition hardware, including 
+whether the input signal is analog or digital; allows user to enable/disable output.
+\item Allows user to associate a mnemonic label with a data acquisition.
+\item Provides to user a way to delete, scroll through and search previously saved data.
+\item Enables on-demand data plotting by providing a method of displaying an acquisition; launches 
+the GNU Octave data display script in a separate subprocess when such input has occurred.
+\end{itemize}
 
 \subsubsection[acqdata.py]{acqdata.py}
 
