@@ -1,5 +1,4 @@
-% Subsystem report for Datapath control system, typeset for the LaTeX processor.
-% Copy the next line and put your initials instead of JL.
+% Subsystem report for Power Supply system, typeset for the LaTeX processor.
 \fancyfoot[R]{MM}
 \section [Power]{Power Subsystem}
 \subsection{Description}
@@ -33,7 +32,7 @@ Taken into consideration are three potential in-system, rechargeable battery\ind
 NiMH batteries maintain a more consistent voltage over time but have a relatively low efficiency. The best battery solution for this design is the Li-Poly as it not only has a superior efficiency, a single cell outputs a nominal voltage of 3.7 V DC which is acceptable for directly powering the WT-32 bluetooth module. As an added bonus, the WT-32 has a built-in battery charging application as it is often utilized with integrated single cell Li-Poly batteries (i.e. - bluetooth headsets, cell phones). 
   
 \begin{table}[bhp]
-\caption[Common Battery Types]{Comparison of Common Battery Types\cite{web:bat_tech}}
+\caption[Common Battery Types]{Comparison of Common Battery Types\cite{web:bat-tech}}
 \small
 \begin{center}
 \begin{tabular}{l| c c c}
@@ -49,11 +48,122 @@ NiMH batteries maintain a more consistent voltage over time but have a relativel
 
 \subsection{DC/DC Converter}
 
-The Li-Poly battery integrated with the WT32 bluetooth module provides a level 3.7 V DC source which must be re-leveled and distributed to the other sub-systems with as little ripple as possible. Component selection for this application takes into consideration the need for high efficiency. DC-DC converter packages are cheap and readily available so the alternative of building a custom supply is unnecessary. Low-power DC DC converters come in two basic varieties: fixed and adjustable. The adjustable converters feature a built-in gain setting resistor for the internal op-amp and in the case of the LT1073, only three passives are required to configure the device. 
-
+The Li-Poly battery integrated with the WT32 bluetooth module provides a level 3.7 V DC source which must be re-leveled and distributed to the other sub-systems with as little ripple as possible. Component selection for this application takes into consideration the need for high efficiency. DC-DC converter packages are cheap and readily available so the alternative of building a custom supply is unnecessary. Low-power DC DC converters come in two basic varieties: fixed and adjustable. The adjustable converters feature a built-in gain setting resistor for the internal op-amp and in the case of the LT1073, only three passives are required to configure the device. Refer to figure \ref{fig:general step-up} for an example of the the fixed output implementation.
 
 \begin{figure}[hbp]
 \centering
-\includegraphics[scale=0.5]{power_gen_fixed.png}
+\includegraphics[scale=0.95]{../drawings/power_gen_fixed.png}
 \caption[LT1073 Fixed Output Configuration]{LT1073 general fixed output configuration\cite{ds:lt1073}}
+\label{fig:general step-up}
 \end{figure}
+
+The datasheet for the LT1073 includes straightforward equations for deciding what values are necessary for the passive components depending on the desired output voltage and current. The standard configurations for the fixed voltage step-up converters from 3V to 5V and 12V are sufficient if the components are up to specification. Namely, the inductor must be able to buffer the input voltage when switching on or off. The inductor must have a low resistance to avoid wasting energy and must not saturate. 
+
+\subsection{Prototyping}
+
+Prototyping the power subsystem is most effectively accomplished using protoboard and a wire wrapping tool. Using DIP wire wrap sockets for the passives required for the LT1073 DC-DC converter allows for fast teaking if output voltages are not within expected tolerances. The working prototype currently supports the WT32 and ATMEGA8518 power requirements. This prototype may also be powered either via the integrated Li-Poly battery cell or standard USB connection. The Li-Poly battery leverages the WT32 built-in charging system. Future expansions will include the +/- 12V DC power support for the Analog Input Module as shown in Figure \ref{fig:final_power_schematic} .
+
+\begin{figure}[hbp]
+\centering
+\includegraphics[scale=0.75]{../drawings/power_final_sch.png}
+\caption[Power Supply]{Power supply prototype schematic}
+\label{fig:final_power_schematic}
+\end{figure}   
+
+It is important to note that while prototyping does not require close quarters for the necessary components, a production model may require a toroidal instead of rod-type inductor in order to reduce the effects of EMI on the analog circuitry. Also, in the interest of cost, simple electrolytic capacitors are used instead of high end Tantalum capacitors. 1N5818 Schottky diodes are suggested for the LT1073 as they have a low forward voltage drop and switch quickly. Extensive trials are still required for this prototype inorder to establish actual operating battery life, overall battery life, and possible variation due to noise. The critical power drawing component is the Acquisition Unit which may be characterized by the ATMEGA8515. Refer to Table \ref{tab:battery comparison} to view a best/worst case estimates considering only the two MCU in use. It is notable that it would be very unlikely for both MCUs to be operating constantly. 
+
+\begin{table}[bhp]
+\caption[Estimated Operating Time]{Power consumption estimate -  assuming 30\% idle time\cite{ds:ATMEGA8515}}
+\small
+\begin{center}
+\begin{tabular}{l| c c c c}
+\setlength{\tabcolsep}{1pt}
+	Device Operation & Supply (Ib) & Active Current(Id) & Idle Current(Id) & Estimated battery\\ 										&				 &													& &life = (Ib / Id) x 0.7\\\hline
+	Li-Poly          & 780mAh &													 & &											\\
+	One MCU          &        & 12 mA                    & 5.5 mA      & 54.33 hr \\
+	Both MCUs        &        & 24 mA                    & 11.0 mA     & 38.01 hr \\    
+  Average          &        & 18 mA		                 & 16.5 mA     & 31.11 hr 
+\end{tabular}
+\end{center}
+\label{tab:battery comparison}
+\end{table}
+
+\subsection{RoHS Compliance}
+
+Not all components in the power supply prototype are RoHS (Restriction of Hazardous Substances) compliant as many rod-type passives may contain lead. RoHS restricts the use of lead, mercury, cadmium, hexavalent chromium,and polybrominated diphenylether in electronics. Although this standard is not yet enforced in the United States, it may be soon. It is recommended that any production model only use RoHS compliant materials in the interest of a globally accepted product.
+
+\subsection{Power Supply Cost}
+
+The implementation of the power supply requires the purchase of several ultimately uncessary components for the purposes of testing and to avoid prototyping delays in the event that a component is faulty or damaged. See Table \ref{tab:power_imp_cost_est} for cost estimates to implement the design.
+
+\begin{table}[bhp]
+\caption[Implementation Cost]{Power System Implementation%
+Cost\cite{web:caddell-burns-price} \cite{web:wt32-price} \cite{web:resistor-price} \cite{web:cap-price}}
+\small
+\centering
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{tabular}{rrrrr}
+\setlength{\tabcolsep}{1pt}
+Product # & Description & Quantity & Price/Unit & Total \\
+WRL-08952  & Bluetooth® Breakout - Bluegiga WT-32  &          1 &    \$89.95 &    \$89.95 \\
+
+    1N5818 & Schottky Diode &         20 &     \$0.14 &     \$2.84 \\
+
+    1N4933 & Fast Recovery Power Rectifier &         10 &     \$0.05 &     \$0.53 \\
+
+106CKR050M & Electrolytic Capacitor &         10 &     \$0.05 &     \$0.45 \\
+
+COM-00526  & Voltage Regulator - 3.3V  &          1 &     \$1.95 &     \$1.95 \\
+
+COM-00527  & Voltage Regulator adjustable &          1 &     \$1.95 &     \$1.95 \\
+
+ LT1073CN8  & MicroPower DC-DC Converter &          2 &     \$3.15 &     \$6.30 \\
+
+LT1073CN8-12  & MicroPower DC-DC Converter (12 VDC FIXED) &          2 &     \$3.15 &     \$6.30 \\
+
+LT1073CN8-5#PBF  & MicroPower DC-DC Converter (lead free) &          2 &     \$3.15 &     \$6.30 \\
+
+   7300-11 & Caddell-Burns 68uH inductor &          2 &     \$5.40 &    \$10.80 \\
+   271-308  & 100 pc resistor assortment & 					1 &			\$6.49 &    \$6.49 \\
+   276-309  & 5mm red LED								 &					1 &			\$1.49 &    \$1.49 \\
+   SNN5794A & Motorola battery pack			 &					1	&			on hand&    onhand \\
+Grand Total & & & & \$133.40\\
+\end{tabular}   
+\label{tab:power_imp_cost_est}
+\end{table}
+
+The actual cost for production is much less than prototype implementation as optimal components have been chosen. This cost is further lessened due to the likelihood that large quantities will be ordered, however, the proto-type cost estimate shown in Table \ref{tab:power_prod_cost_est} only assumes a minimum number of components required for a single build.
+
+\begin{table}[bhp]
+\caption[Production Cost]{Power System Production Cost \cite{web:caddell-burns-price} \cite{web:cap-price} \cite{web:batt-price}}
+\small
+\centering
+% Table generated by Excel2LaTeX from sheet 'Sheet1'
+\begin{tabular}{rrrrr}
+\setlength{\tabcolsep}{1pt}
+    Part # & Description &   Quantity &   Per/Unit & Total Cost \\
+
+WRL-08952  & Bluetooth® Breakout - Bluegiga WT-32  &          1 &    \$89.95 &    \$89.95 \\
+
+    1N5818 & Schottky Diode &          2 &     \$0.14 &     \$0.28 \\
+
+    G13440 & 100uF dipped Tantalum Capacitor &          1 &     \$1.00 &     \$1.00 \\
+
+     G7102 & 47uF dipped Tantalum Capacitor &          1 &     \$1.00 &     \$1.00 \\
+
+LT1073CN8-12  & MicroPower DC-DC Converter (12 VDC FIXED) &          1 &     \$3.15 &     \$3.15 \\
+
+LT1073CN8-5#PBF  & MicroPower DC-DC Converter (lead free) &          1 &     \$3.15 &     \$3.15 \\
+
+   7300-11 & Caddell-Burns 68uH inductor &          2 &     \$5.40 &    \$10.80 \\
+
+   276-309 & 5mm red LED &          1 &     \$1.49 &     \$1.49 \\
+
+   271-308 & 100 pc resistor assortment &          1 &     \$6.49 &     \$6.49 \\
+
+  SNN5794A & 3.7 V Lithium Ion Rechargeable Battery &          1 &     \$9.95 &     \$9.95 \\
+  Grand Total & & & & \$127.26\\
+
+\end{tabular}  
+\label{tab:power_prod_cost_est}
+\end{table}
