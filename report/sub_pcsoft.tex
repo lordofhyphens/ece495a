@@ -267,21 +267,45 @@ clicks on the ``Begin Acquisition'' button in the interface. This program quite 
 opens a connection with the serial port and reads data in continuously into a buffer until the 
 stop trigger is detected. To avoid a possible buffer overflow, data is written to a binary file
 when the buffer fills. In the case of large acquisitions, acqdata.py will break the acquisition 
-output up into several parts. Output file names follow a format: \\\ \\
-DDMonYY\_Np \\\ \\
+output up into several parts. Output file names follow a format: \\
+
+DDMonYYYY\_Np, \\
 
 where ``DD'' is the two-digit date of the acquisition, ``Mon'' is a three letter abbreviation 
 of the month of the acquisition, ``YYYY'' is the four-digit year of the acquisition, ``N'' is 
 the number of the acquisition on the date it occurred and ``p'' is the letter of the acquisition part, starting with `a' and continuing through `z'. 
 
+
 \subsubsection[pcsoft\_cfg.py]{pcsoft\_cfg.py}
+This is a small configuration file for global variables that both inter.py and acqdata.py make
+use of. This allows the user some degree of control over the operation of the software.
+
 
 \subsubsection[acqinfo.txt]{acqinfo.txt}
+This file is that stores information for every acquisition that the software processes. Each
+acquisition is stored on a separate line with the following format: \\
+
+DDMonYYYY\_N:[lp]{\tt\char'174}[label], \\
+
+where ``DDMonYYYY\_N'' are the same as described for acqdata.py, where [lp] is either
+the letter of the last part if the acquisition is multi-part or nothing if it is not, [label]
+is the optional label associated with an acquisition, and `:' and `{\tt\char'174}' are separators used by
+the software.
+
 
 \subsubsection[acqdisp.txt]{acqdisp.txt}
+A one-line text file that stores the name of the acquisition that should be displayed by
+the GNU Octave data display script.
+
 
 \subsubsection[dispd.m]{dispd.m}
+Dispd.m is a script that runs in the GNU Octave environment. It reads acqdisp.txt to obtain
+the name of the file it should plot, then reads in the binary data of the file and plots it.
+Dispd.m uses getnextfile.m to obtain the next file part in the case of a multi-part
+acquisition and readandplot.m to read in the binary acquisition data and display it.
+
 
 \subsubsection[getnextfile.m]{getnextfile.m}
+
 
 \subsubsection[readandplot.m]{readandplot.m}
