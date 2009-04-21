@@ -199,5 +199,35 @@ program operation. Blocks in red represent data that is saved to an end-user's P
 \caption[PC Software Files Block Diagram]{Block diagram of the PC Software files. Blocks in blue
 indicate files in which execution of code occurs. Blocks in green are data/control files. Blocks
 in red represent acquired data.}
-\label{fig:pcsoft sub diagram}
+\label{fig:pcsoft files diagram}
 \end{figure}
+
+
+\subsubsection[inter.py]{inter.py}
+This is the main hub of the PC Software subsystem. In addition to generating and displaying the 
+main graphical front-end seen by the user, it performs the following tasks:
+
+\begin{itemize}
+\item Initiates the data acquisition process by launching the data acquisition software in a 
+sub-process and communicating with it via sockets.
+\item Enables user to specify configuration bits for the data acquisition hardware, including 
+whether the input signal is analog or digital; allows user to enable/disable output.
+\item Allows user to associate a mnemonic label with a data acquisition.
+\item Provides to user a way to delete, scroll through and search previously saved data.
+\item Enables on-demand data plotting by providing a method of displaying an acquisition; launches 
+the GNU Octave data display script in a separate subprocess when such input has occurred.
+\end{itemize}
+
+\subsubsection[acqdata.py]{acqdata.py}
+
+\subsubsection[pcsoft\_cfg.py]{pcsoft\_cfg.py}
+
+\subsubsection[acqinfo.txt]{acqinfo.txt}
+
+\subsubsection[acqdisp.txt]{acqdisp.txt}
+
+\subsubsection[dispd.m]{dispd.m}
+
+\subsubsection[getnextfile.m]{getnextfile.m}
+
+\subsubsection[readandplot.m]{readandplot.m}
