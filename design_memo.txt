@@ -1,0 +1,19 @@
+Assessment report:
+	Tools used:
+		* git, a Source Code Repository (used to coordinate collaboration of 
+		       all electronic documents).
+		* Email, for non-immediate communication.
+		* Skype, for a couple teleconferences.
+		* LaTeX, for formatting the design report.
+		* OpenOffice.org Calc, for spreadsheet calculations
+
+Recommendations: 
+	* If the team plans to produce electronic documents, place them under 
+revision control using a tool such as git or Subversion. All team members should
+spend some time familiarizing themselves with the use. These steps will allow 
+a team to efficently make changes to documents, as well as allow the manager to
+keep track of who is changing what. Stick with plain text files as much as 
+possible.
+	* Take special note of any packaging purchased integrated circuits are 
+available in. This will help alleviate headaches later. 
+
