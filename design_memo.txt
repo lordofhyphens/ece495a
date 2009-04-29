@@ -6,14 +6,29 @@ Assessment report:
 		* Skype, for a couple teleconferences.
 		* LaTeX, for formatting the design report.
 		* OpenOffice.org Calc, for spreadsheet calculations
+		* CADSoft EAGLE was used for schematic generation.
+		* Atmel AVR Studio, ATMega MCU simulation.
+		* avr-gcc, C compiler for Atmel microcontrollers.
+
+	Management process changes:
+		* Meetings were kept short and to the point, often becoming quick
+		  check-ins with the project manager as to what needed to be done. 
+		* The RASI chart was there to appease the instructors, as were the
+		  divisions into subsystems. The system was integrated enough to 
+		  make "strict" subsystems problematic. The logical subsystems were
+		  organized by interfaces to each other.
+		* Parts were ordered for the prototype on an as-needed basis.
+		* The manager sought to use a more agile method, which meant remaining
+		  open to change.
 
 Recommendations: 
 	* If the team plans to produce electronic documents, place them under 
-revision control using a tool such as git or Subversion. All team members should
-spend some time familiarizing themselves with the use. These steps will allow 
-a team to efficently make changes to documents, as well as allow the manager to
-keep track of who is changing what. Stick with plain text files as much as 
-possible.
+      revision control using a tool such as git or Subversion. All team members
+      should spend some time familiarizing themselves with the use. These steps
+      will allow a team to efficently make changes to documents, as well as 
+      allow the manager to keep track of who is changing what. Stick with 
+      plain text files as much as possible - they mesh better with SCM systems.
 	* Take special note of any packaging purchased integrated circuits are 
-available in. This will help alleviate headaches later. 
-
+      available in. This will help alleviate headaches later. 
+	* Changes happen. Don't plan so far ahead that a single change breaks
+      everything.
