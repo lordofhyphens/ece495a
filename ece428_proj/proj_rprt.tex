@@ -1,0 +1,36 @@
+\documentclass[]{report}
+\title{Wireless Modular Diagnostic Tooling}
+\author{Nick Hamann \and Matthew Morgan}
+\date{May 4, 2009}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{makeidx}
+\usepackage{multirow}
+\usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{textcomp}
+\usepackage{showlabels}
+\usepackage[colorlinks=false]{hyperref}
+\pagestyle{fancy}
+% doc starts here
+\begin{document}
+\maketitle
+\include{introduction}
+\include{first_design}
+\include{second_design}
+\include{third_design}
+\include{fourth_design}
+\include{conclusion}
+
+% Verilog code
+\include{code_listing}
+\fancyfoot[R]{}
+
+\end{document}
